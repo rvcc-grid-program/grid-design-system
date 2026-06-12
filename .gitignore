@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# logs
+*.log
+pnpm-debug.log*
+
+# local env / scratch
+.env
+.env.*
+*.local
+
+# NOTE deliberately tracked (do not add here):
+#   specimen/specimen.html and specimen/specimen.canvas.html — built outputs,
+#   committed on purpose so PR diffs act as visual/regression snapshots.
+#   CONTRAST.md — generated, committed so reviewers see ratio changes in diffs.
