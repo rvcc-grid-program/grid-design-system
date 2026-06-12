@@ -142,7 +142,8 @@ used only in rows where stacking is an acceptable failure mode.
 
 The only authority is a real paste test. The loop:
 
-1. Build the specimen from the repo root: `pnpm run canvas specimen/specimen.md`.
+1. Build the specimen from the repo root: `pnpm run canvas specimen/specimen.md`
+   (in a consumer repo the same build is `pnpm exec grid-canvas <page.md>`).
 2. Paste the fragment into a sandbox Canvas page's HTML editor; save.
 3. **Reopen the HTML editor** — diff what Canvas kept against what you
    sent (grep for the property you're probing).

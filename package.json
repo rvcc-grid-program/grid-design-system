@@ -1,8 +1,9 @@
 {
   "name": "grid-design-system",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "GRID program design system — Console tokens + course-content components, with the wiki→Canvas build pipeline",
+  "description": "GRID program design system \u2014 Console tokens + course-content components, with the wiki\u2192Canvas build pipeline",
   "bin": {
     "grid-preview": "pipeline/preview-build.js",
     "grid-canvas": "pipeline/canvas-build.js"

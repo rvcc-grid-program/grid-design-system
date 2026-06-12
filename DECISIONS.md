@@ -62,6 +62,18 @@ and why we diverged.
     VALUES unchanged; the dark block is duplicated for the override
     selector (keep the two in sync). Canvas never receives the button or
     script — its template omits both.
+16. **Consumption model** (2026-06-12, first release v1.0.0) — this repo is
+    the org's single source of design truth; changes land here first.
+    Content repos (first: rvcc-grid-program/idmx-225) install it as a pnpm
+    git dependency pinned to a release tag; the package exposes the
+    `grid-preview`/`grid-canvas` CLIs and importable subpaths
+    (`markdown`/`enhance`/`templates`/`config`/`css/*`) for the future 11ty
+    site. Masthead branding comes from the consumer's `grid.config.json`
+    (GRID defaults preserved). The invite app is a MIRROR, not a dependency
+    — it is self-contained by design (zero deps, strict CSP); token/brand
+    changes flow to it as reviewed PRs. No GitHub App anywhere: consumption
+    is plain package management; future live Canvas publishing would be a
+    Canvas API question, not a GitHub one.
 
 ## Probe results — specimen paste tests, 2026-06-12 (verified via saved DOM)
 
