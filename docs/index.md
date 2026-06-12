@@ -9,8 +9,10 @@ fragment, and print. **This page is built by the pipeline it documents** —
 everything you're looking at is the system rendering its own markdown.
 
 ::: callout-note
-This site is public; the repository is private. Nothing here but the design
-itself — specs, decisions, and source live in the repo.
+Specs, decisions, and source live in
+[the repository](https://github.com/rvcc-grid-program/grid-design-system) —
+start with `HANDOFF.md` for the authoring contract and `CANVAS-NOTES.md`
+for the Canvas sanitizer findings.
 :::
 
 ## See it
@@ -55,8 +57,8 @@ the system is doing its job — one brand from first login to final project.
 
 ## For maintainers
 
-The repository (private) holds the full spec: `HANDOFF.md` for component
-DOM contracts and the authoring table, `CANVAS-NOTES.md` for the verified
+The repository holds the full spec: `HANDOFF.md` for component DOM
+contracts and the authoring table, `CANVAS-NOTES.md` for the verified
 Canvas sanitizer findings, `DECISIONS.md` for why everything is the way it
 is, and `CONTRAST.md` for the generated accessibility verification. Build
 this site with `pnpm run site`.
