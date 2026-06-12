@@ -3,8 +3,11 @@
 The design system for the GRID program's course content: design tokens,
 component CSS, specimen, and verification tooling. Built from a 122-file
 content audit of the IDMX-225 course wiki and a Claude Design exploration,
-on the locked Console theme shared with the
-[invite app](../invite-app/design/design_handoff_grid_claim_flow/).
+on the locked Console theme shared with the GRID invite app.
+
+**See it live: [rvcc-grid-program.github.io/grid-design-system](https://rvcc-grid-program.github.io/grid-design-system/)**
+— the specimen page with every component, rendered by the pipeline in this
+repo. It follows your OS light/dark setting and carries the print styles.
 
 ## What lives where
 
