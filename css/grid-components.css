@@ -665,6 +665,54 @@ a.video-title {
   margin: 0 0 16px;
 }
 
+/* ===================== icon gallery (docs site) =================== */
+/* Displays the brand asset set on the Pages landing page. Not part of the
+   authoring contract; never appears in course content. */
+.icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 16px;
+}
+
+.icon-tile {
+  width: 132px;
+  text-align: center;
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-md);
+  padding: 16px 10px 12px;
+  text-decoration: none;
+}
+
+.icon-tile:hover {
+  border-color: hsl(var(--accent));
+}
+
+.icon-tile img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 8px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.icon-tile .icon-name {
+  display: block;
+  font: 500 0.75rem/1.3 var(--font-mono);
+  color: hsl(var(--ink-muted));
+  overflow-wrap: anywhere;
+}
+
+/* for assets designed against a light surface (the currentColor mono glyph
+   renders black inside an <img>) */
+.icon-tile.on-light {
+  background: hsl(0 0% 100%);
+  border-color: hsl(220 22% 85%);
+}
+
 /* ============================= print ============================= */
 @media print {
   body,

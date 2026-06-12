@@ -56,6 +56,30 @@ If this page looks consistent with the claim app students use on day one,
 the system is doing its job — one brand from first login to final project.
 :::
 
+## Brand assets
+
+The GRID mark in every format — the top-left cell lit: your spot in the
+grid. The set is versioned in the repository and served from this site, so
+any GRID property can reference
+`https://rvcc-grid-program.github.io/grid-design-system/icons/<file>`.
+Click a tile for the full-size asset.
+
+<div class="icon-grid">
+  <a class="icon-tile" href="icons/grid-icon.svg"><img src="icons/grid-icon.svg" alt="GRID master icon — gradient squircle, top-left cell lit" /><span class="icon-name">grid-icon.svg</span></a>
+  <a class="icon-tile" href="icons/favicon.svg"><img src="icons/favicon.svg" alt="GRID favicon" /><span class="icon-name">favicon.svg</span></a>
+  <a class="icon-tile" href="icons/apple-touch-icon.svg"><img src="icons/apple-touch-icon.svg" alt="GRID apple-touch icon" /><span class="icon-name">apple-touch-icon.svg</span></a>
+  <a class="icon-tile" href="icons/maskable.svg"><img src="icons/maskable.svg" alt="GRID maskable PWA icon with safe-zone padding" /><span class="icon-name">maskable.svg</span></a>
+  <a class="icon-tile" href="icons/icon-512.png"><img src="icons/icon-512.png" alt="GRID 512 pixel raster icon" /><span class="icon-name">icon-512.png</span></a>
+  <a class="icon-tile on-light" href="icons/grid-glyph-mono.svg"><img src="icons/grid-glyph-mono.svg" alt="GRID monochrome glyph, single-color version of the mark" /><span class="icon-name">grid-glyph-mono.svg</span></a>
+</div>
+
+Rasters for favicons (16/32/48), the 180px apple-touch PNG, PWA sizes
+(192/512 + maskable), and the claim app's `site.webmanifest` are in
+[the icons folder](https://github.com/rvcc-grid-program/grid-design-system/tree/main/docs/icons)
+alongside these. The monochrome glyph is `currentColor` — it inherits
+whatever color the surrounding text has when inlined; the tile above shows
+it on a light surface.
+
 ## For maintainers
 
 The repository holds the full spec: `HANDOFF.md` for component DOM

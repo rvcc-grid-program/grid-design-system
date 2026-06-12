@@ -778,6 +778,54 @@ a.video-title {
   margin: 0 0 16px;
 }
 
+/* ===================== icon gallery (docs site) =================== */
+/* Displays the brand asset set on the Pages landing page. Not part of the
+   authoring contract; never appears in course content. */
+.icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 16px;
+}
+
+.icon-tile {
+  width: 132px;
+  text-align: center;
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-md);
+  padding: 16px 10px 12px;
+  text-decoration: none;
+}
+
+.icon-tile:hover {
+  border-color: hsl(var(--accent));
+}
+
+.icon-tile img {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 8px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.icon-tile .icon-name {
+  display: block;
+  font: 500 0.75rem/1.3 var(--font-mono);
+  color: hsl(var(--ink-muted));
+  overflow-wrap: anywhere;
+}
+
+/* for assets designed against a light surface (the currentColor mono glyph
+   renders black inside an <img>) */
+.icon-tile.on-light {
+  background: hsl(0 0% 100%);
+  border-color: hsl(220 22% 85%);
+}
+
 /* ============================= print ============================= */
 @media print {
   body,
@@ -881,6 +929,26 @@ build time.</p>
 <p>If this page looks consistent with the claim app students use on day one,
 the system is doing its job — one brand from first login to final project.</p>
 </div></div>
+<h2 id="brand-assets" tabindex="-1">Brand assets</h2>
+<p>The GRID mark in every format — the top-left cell lit: your spot in the
+grid. The set is versioned in the repository and served from this site, so
+any GRID property can reference
+<code>https://rvcc-grid-program.github.io/grid-design-system/icons/&lt;file&gt;</code>.
+Click a tile for the full-size asset.</p>
+<div class="icon-grid">
+  <a class="icon-tile" href="icons/grid-icon.svg"><img src="icons/grid-icon.svg" alt="GRID master icon — gradient squircle, top-left cell lit"><span class="icon-name">grid-icon.svg</span></a>
+  <a class="icon-tile" href="icons/favicon.svg"><img src="icons/favicon.svg" alt="GRID favicon"><span class="icon-name">favicon.svg</span></a>
+  <a class="icon-tile" href="icons/apple-touch-icon.svg"><img src="icons/apple-touch-icon.svg" alt="GRID apple-touch icon"><span class="icon-name">apple-touch-icon.svg</span></a>
+  <a class="icon-tile" href="icons/maskable.svg"><img src="icons/maskable.svg" alt="GRID maskable PWA icon with safe-zone padding"><span class="icon-name">maskable.svg</span></a>
+  <a class="icon-tile" href="icons/icon-512.png"><img src="icons/icon-512.png" alt="GRID 512 pixel raster icon"><span class="icon-name">icon-512.png</span></a>
+  <a class="icon-tile on-light" href="icons/grid-glyph-mono.svg"><img src="icons/grid-glyph-mono.svg" alt="GRID monochrome glyph, single-color version of the mark"><span class="icon-name">grid-glyph-mono.svg</span></a>
+</div>
+<p>Rasters for favicons (16/32/48), the 180px apple-touch PNG, PWA sizes
+(192/512 + maskable), and the claim app’s <code>site.webmanifest</code> are in
+<a href="https://github.com/rvcc-grid-program/grid-design-system/tree/main/docs/icons">the icons folder</a>
+alongside these. The monochrome glyph is <code>currentColor</code> — it inherits
+whatever color the surrounding text has when inlined; the tile above shows
+it on a light surface.</p>
 <h2 id="for-maintainers" tabindex="-1">For maintainers</h2>
 <p>The repository holds the full spec: <code>HANDOFF.md</code> for component DOM
 contracts and the authoring table, <code>CANVAS-NOTES.md</code> for the verified
