@@ -6,7 +6,8 @@
   "scripts": {
     "contrast": "node scripts/contrast.js",
     "preview": "node pipeline/preview-build.js",
-    "canvas": "node pipeline/canvas-build.js"
+    "canvas": "node pipeline/canvas-build.js",
+    "site": "node pipeline/preview-build.js docs/index.md && cp specimen/specimen.html specimen/specimen.canvas.html docs/"
   },
   "dependencies": {
     "cheerio": "^1.2.0",

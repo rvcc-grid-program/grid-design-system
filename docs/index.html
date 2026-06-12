@@ -1,0 +1,807 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GRID design system · GRID</title>
+<style>
+/* grid-tokens.css — GRID program design tokens (Console theme).
+   Source of truth: invite-app/design/design_handoff_grid_claim_flow.
+   LOCKED: do not alter values. Extend only with a DECISIONS.md entry.
+   Light is the default and the only theme that reaches Canvas; dark applies
+   in <style>-capable targets via prefers-color-scheme. All colors hsl(). */
+
+:root {
+  /* scale */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-pill: 999px;
+  --shadow-1: 0 1px 2px hsl(220 30% 10% / 0.06), 0 2px 8px hsl(220 30% 10% / 0.06);
+  --shadow-2: 0 8px 24px hsl(220 30% 10% / 0.12), 0 2px 8px hsl(220 30% 10% / 0.08);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Console — light */
+  --paper: 220 26% 96%;
+  --surface: 0 0% 100%;
+  --surface-2: 220 30% 94%;
+  --ink: 222 34% 13%;
+  --ink-muted: 220 14% 37%;
+  --line: 220 22% 85%;
+  --line-strong: 220 20% 70%;
+  --accent: 230 76% 52%;
+  --accent-ink: 0 0% 100%;
+  --link: 230 80% 45%;
+  --accent-soft: 226 84% 94%;
+  --accent-soft-ink: 230 70% 38%;
+  --focus: 230 88% 48%;
+  --glow: 215 95% 60%;
+  --ok: 150 55% 30%;
+  --ok-ink: 120 40% 98%;
+  --ok-soft: 150 52% 93%;
+  --ok-line: 150 42% 70%;
+  --danger: 358 62% 44%;
+  --danger-ink: 0 0% 100%;
+  --danger-soft: 358 82% 96%;
+  --danger-line: 358 58% 78%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4), 0 2px 8px hsl(0 0% 0% / 0.3);
+    --shadow-2: 0 10px 30px hsl(0 0% 0% / 0.5), 0 2px 8px hsl(0 0% 0% / 0.4);
+    --paper: 224 32% 8%;
+    --surface: 223 28% 11%;
+    --surface-2: 222 26% 15%;
+    --ink: 220 32% 94%;
+    --ink-muted: 220 16% 71%;
+    --line: 222 20% 24%;
+    --line-strong: 222 18% 38%;
+    --accent: 226 92% 72%;
+    --accent-ink: 224 44% 8%;
+    --link: 226 94% 78%;
+    --accent-soft: 228 42% 20%;
+    --accent-soft-ink: 226 88% 82%;
+    --focus: 210 96% 66%;
+    --glow: 215 96% 64%;
+    --ok: 150 56% 60%;
+    --ok-ink: 150 40% 9%;
+    --ok-soft: 150 28% 16%;
+    --ok-line: 150 28% 36%;
+    --danger: 358 88% 74%;
+    --danger-ink: 358 40% 12%;
+    --danger-soft: 358 36% 17%;
+    --danger-line: 358 46% 42%;
+  }
+}
+
+/* grid-components.css — GRID course-content components.
+   Layer 2 of the system; requires grid-tokens.css first.
+   Decisions from the Claude Design options canvas + DECISIONS.md.
+   Spacing is margin-based on purpose: if a target ever strips flex, the
+   content still reads. Flex is reserved for rows (masthead, meta bars).
+   Class selectors stay element-agnostic — the pipeline wraps blocks in divs. */
+
+/* ============================== base ============================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: hsl(var(--ink));
+  background:
+    radial-gradient(120% 80% at 100% -10%, hsl(var(--glow) / 0.1), transparent 60%),
+    radial-gradient(90% 70% at -10% 0%, hsl(var(--accent) / 0.06), transparent 55%),
+    hsl(var(--paper));
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100dvh;
+}
+
+.shell {
+  width: min(100% - 32px, 720px);
+  margin-inline: auto;
+  padding-bottom: 56px;
+}
+
+/* Canvas stand-in for the page background */
+.page-wrap {
+  font-family: var(--font-sans);
+  color: hsl(var(--ink));
+  line-height: 1.6;
+  background: hsl(var(--paper));
+  padding: 24px;
+  border-radius: var(--r-lg);
+  max-width: 720px;
+}
+
+a {
+  color: hsl(var(--link));
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1.5px;
+  overflow-wrap: anywhere;
+}
+
+a:hover {
+  text-decoration-thickness: 2.5px;
+}
+
+:where(a):focus-visible {
+  outline: 3px solid hsl(var(--focus));
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ============================ masthead ============================ */
+.masthead {
+  padding: 28px 0 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Brand mark: 2×2 dots, top-left LIT, three dimmed — "your spot in the
+   grid", same story as the invite-app icon. Pure elements, no svg. */
+.brand .mark {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 11px;
+  background: linear-gradient(150deg, hsl(var(--accent)), hsl(var(--accent) / 0.72));
+  text-align: center;
+  box-shadow: var(--shadow-1);
+  padding-top: 8px;
+  line-height: 0;
+}
+
+.brand .bm-row {
+  display: block;
+  margin-bottom: 5px;
+  line-height: 0;
+}
+
+.brand .bm-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: hsl(var(--accent-ink));
+  margin: 0 2.5px;
+}
+
+/* alpha color, not opacity — Canvas strips opacity (verified 2026-06-12)
+   but keeps hsl alpha values */
+.brand .bm-dot.dim {
+  background: hsl(var(--accent-ink) / 0.42);
+}
+
+.brand .wordmark {
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  color: hsl(var(--ink-muted));
+}
+
+.brand .wordmark b {
+  color: hsl(var(--ink));
+}
+
+.brand .term {
+  margin-left: auto;
+  font: 600 0.72rem/1 var(--font-mono);
+  color: hsl(var(--accent-soft-ink));
+  background: hsl(var(--accent-soft));
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+}
+
+.module-label {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(var(--ink-muted));
+}
+
+h1.page-title {
+  margin: 0 0 8px;
+  font-size: clamp(1.55rem, 5vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 760;
+  text-wrap: balance;
+}
+
+/* ========================== content card ========================== */
+.content {
+  background: hsl(var(--surface));
+  border: 1px solid hsl(var(--line));
+  border-top: 3px solid hsl(var(--accent));
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  padding: 28px 26px;
+  margin-top: 14px;
+}
+
+/* ===================== content typography ======================== */
+/* Scale per decision log: h2 1.625rem with hairline rule, h3 1.25rem,
+   h4 1rem. Section headings standardize on h2 post-cleanup. */
+.content h2 {
+  margin: 34px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid hsl(var(--line));
+  font-size: 1.625rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: hsl(var(--ink));
+}
+
+.content h3 {
+  margin: 26px 0 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: hsl(var(--ink));
+}
+
+.content h4 {
+  margin: 20px 0 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: hsl(var(--ink));
+}
+
+.content > h2:first-child,
+.content > h3:first-child {
+  margin-top: 0;
+}
+
+.content p {
+  margin: 0 0 14px;
+}
+
+.content ul,
+.content ol {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+}
+
+.content li {
+  margin-bottom: 7px;
+}
+
+.content li::marker {
+  color: hsl(var(--accent));
+  font-weight: 700;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--r-md);
+  border: 1px solid hsl(var(--line));
+  box-shadow: var(--shadow-1);
+}
+
+.content strong {
+  font-weight: 680;
+}
+
+.content hr {
+  border: 0;
+  border-top: 1px solid hsl(var(--line));
+  margin: 24px 0;
+}
+
+.intro {
+  font-size: 1.02rem;
+  color: hsl(var(--ink-muted));
+  max-width: 52ch;
+}
+
+.footnote {
+  font-size: 0.875rem;
+  color: hsl(var(--ink-muted));
+}
+
+/* ===================== inline code / kbd / wikilink =============== */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: hsl(var(--ink));
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+pre {
+  margin: 0 0 16px;
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-md);
+  padding: 16px 18px;
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: hsl(var(--ink));
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: hsl(var(--surface));
+  border: 1px solid hsl(var(--line-strong));
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 0 6px;
+}
+
+a.wikilink {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: hsl(var(--accent-soft-ink));
+  background: hsl(var(--accent-soft));
+  padding: 1px 8px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  border: 1px solid hsl(var(--line));
+}
+
+a.wikilink:hover {
+  border-color: hsl(var(--accent));
+}
+
+/* ========================== video block ========================== */
+/* Option B (plate card): thumbnail link + flex meta bar. 100% built from
+   Canvas-verified properties. Generated by the pipeline from the corpus's
+   existing thumbnail-link markdown — authors change nothing. */
+.video-card {
+  background: hsl(var(--surface));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+  margin: 0 0 16px;
+}
+
+.video-poster {
+  display: block;
+  line-height: 0;
+  overflow: hidden;
+}
+
+.video-poster img {
+  width: 100%;
+  display: block;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The build prefers YouTube's true-16:9 maxresdefault.jpg; when only the
+   4:3 letterboxed hqdefault exists it adds .letterboxed and this crop
+   (each bar = 9.375% of width). Canvas strips negative margins AND
+   aspect-ratio/object-fit (verified 2026-06-12), so this crop is
+   preview/print-only — in Canvas the fallback shows its bars. */
+.video-poster img.letterboxed {
+  margin: -9.375% 0;
+}
+
+.video-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.play-tile {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  flex: none;
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-ink));
+  text-align: center;
+  line-height: 38px;
+  font-size: 0.9375rem;
+}
+
+.video-text {
+  min-width: 0;
+}
+
+.video-kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--ink-muted));
+}
+
+a.video-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: hsl(var(--link));
+}
+
+.chip-time {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: hsl(var(--ink-muted));
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-pill);
+  padding: 2px 11px;
+}
+
+/* iframe variant — author/build opt-in; Canvas allows YouTube iframes */
+.video-embed {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  display: block;
+}
+
+.video-printurl {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: hsl(var(--ink-muted));
+  padding: 8px 16px;
+  border-top: 1px solid hsl(var(--line));
+  background: hsl(var(--surface-2));
+}
+
+/* ====================== learning objectives ====================== */
+.objectives {
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-md);
+  padding: 20px 24px;
+  margin: 0 0 16px;
+}
+
+.objectives-kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--accent-soft-ink));
+  margin-bottom: 8px;
+}
+
+.objectives p {
+  margin: 0 0 8px;
+}
+
+.objectives ul {
+  margin: 0;
+}
+
+/* ========================= resource links ======================== */
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: hsl(var(--surface));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  margin: 0 0 10px;
+}
+
+.link-row:hover {
+  border-color: hsl(var(--accent));
+}
+
+.link-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex: none;
+  background: hsl(var(--accent-soft));
+  color: hsl(var(--accent-soft-ink));
+  text-align: center;
+  line-height: 34px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.link-body {
+  min-width: 0;
+}
+
+.link-body p {
+  margin: 0;
+}
+
+.link-body a {
+  font-weight: 700;
+}
+
+.link-url {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: hsl(var(--ink-muted));
+  overflow-wrap: anywhere;
+}
+
+/* plain list variant for non-featured links */
+.plain-links .link-url {
+  display: inline;
+  margin-left: 6px;
+}
+
+/* ========================= estimated time ======================== */
+.est-chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(var(--ink-muted));
+  background: hsl(var(--surface-2));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-pill);
+  padding: 4px 14px;
+  margin: 0 0 16px;
+}
+
+.est-chip strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+/* =========================== checkpoint ========================== */
+.checkpoint {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: hsl(var(--ok-soft));
+  border: 1px solid hsl(var(--ok-line));
+  border-radius: var(--r-md);
+  padding: 18px 20px;
+  margin: 0 0 16px;
+}
+
+.checkpoint-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-pill);
+  flex: none;
+  background: hsl(var(--ok));
+  color: hsl(var(--ok-ink));
+  text-align: center;
+  line-height: 34px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.checkpoint-title {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--ok));
+  margin-bottom: 4px;
+}
+
+.checkpoint-body p {
+  margin: 0;
+}
+
+/* ============================ callouts =========================== */
+.callout {
+  border: 1px solid;
+  border-radius: var(--r-md);
+  padding: 18px 20px;
+  margin: 0 0 16px;
+}
+
+.callout-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.callout-ico {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-pill);
+  flex: none;
+  text-align: center;
+  line-height: 26px;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.callout-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.callout-body p {
+  margin: 0 0 8px;
+}
+
+.callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+.callout-warning {
+  background: hsl(var(--danger-soft));
+  border-color: hsl(var(--danger-line));
+}
+
+.callout-warning .callout-ico {
+  background: hsl(var(--danger));
+  color: hsl(var(--danger-ink));
+}
+
+.callout-warning .callout-title {
+  color: hsl(var(--danger));
+}
+
+.callout-note {
+  background: hsl(var(--accent-soft));
+  border-color: hsl(var(--line-strong));
+}
+
+.callout-note .callout-ico {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-ink));
+}
+
+.callout-note .callout-title {
+  color: hsl(var(--accent-soft-ink));
+}
+
+/* ========================= generic card ========================== */
+.card {
+  background: hsl(var(--surface));
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  padding: 22px;
+  margin: 0 0 16px;
+}
+
+/* ============================= print ============================= */
+@media print {
+  body,
+  .page-wrap {
+    background: hsl(0 0% 100%);
+  }
+
+  .content,
+  .card,
+  .video-card,
+  .link-row {
+    box-shadow: none;
+  }
+
+  .video-card,
+  .callout,
+  .objectives,
+  .checkpoint,
+  .link-row,
+  pre {
+    break-inside: avoid;
+  }
+
+  /* a video you can't click needs its address */
+  a.video-title::after,
+  .plain-links a::after {
+    content: " (" attr(href) ")";
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    font-weight: 400;
+    color: hsl(220 14% 37%);
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+<div class="shell">
+
+<header class="masthead">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"><span class="bm-row"><span class="bm-dot">&nbsp;</span><span class="bm-dot dim">&nbsp;</span></span><span class="bm-row"><span class="bm-dot dim">&nbsp;</span><span class="bm-dot dim">&nbsp;</span></span></span>
+    <span class="wordmark"><b>GRID</b> · Fall 2026</span>
+    <span class="term">IDMX-225</span>
+  </div>
+  <p class="module-label">RVCC GRID program</p>
+  <h1 class="page-title">GRID design system</h1>
+</header>
+
+<main>
+<div class="content">
+<p>The design system for GRID course content: one set of Console tokens and
+components flowing from wiki markdown to a styled web page, a Canvas LMS
+fragment, and print. <strong>This page is built by the pipeline it documents</strong> —
+everything you’re looking at is the system rendering its own markdown.</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-ico" aria-hidden="true">i</span><span class="callout-title">Note</span></div><div class="callout-body">
+<p>This site is public; the repository is private. Nothing here but the design
+itself — specs, decisions, and source live in the repo.</p>
+</div></div>
+<h2 id="see-it" tabindex="-1">See it</h2>
+<div class="link-row"><span class="link-ico" aria-hidden="true">↗</span><div class="link-body">
+<p><a href="specimen.html">The specimen — every component, live</a></p>
+</div></div>
+<p>The specimen exercises every component in the system. Try it with your OS in
+light and dark mode (the page follows), narrow the window to phone width,
+and print-preview it to see the print styles.</p>
+<ul>
+<li><a href="specimen.canvas.html">The Canvas fragment</a> — the same specimen as Canvas
+receives it: every style inlined, classes renamed to <code>data-class</code>,
+uppercase baked into text. View source to see what the sanitizer gets.</li>
+</ul>
+<h2 id="how-it-reads" tabindex="-1">How it reads</h2>
+<p>A few of the components, doing their jobs:</p>
+<div class="objectives"><span class="objectives-kicker">Learning objectives</span>
+<p>When you have completed this page you will be able to:</p>
+<ul>
+<li>Recognize the Console theme shared with the GRID claim app</li>
+<li>Know where the specimen and the Canvas fragment live</li>
+<li>Find the spec documents in the repository</li>
+</ul>
+</div>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-ico" aria-hidden="true">!</span><span class="callout-title">Warning</span></div><div class="callout-body">
+<p>Canvas strips <code>box-shadow</code>, <code>letter-spacing</code>, <code>opacity</code>, negative margins,
+and <code>text-transform</code>. Every component here is designed to survive that —
+borders carry structure, shadows are garnish, and uppercase is baked in at
+build time.</p>
+</div></div>
+<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true">✓</span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
+<p>If this page looks consistent with the claim app students use on day one,
+the system is doing its job — one brand from first login to final project.</p>
+</div></div>
+<h2 id="for-maintainers" tabindex="-1">For maintainers</h2>
+<p>The repository (private) holds the full spec: <code>HANDOFF.md</code> for component
+DOM contracts and the authoring table, <code>CANVAS-NOTES.md</code> for the verified
+Canvas sanitizer findings, <code>DECISIONS.md</code> for why everything is the way it
+is, and <code>CONTRAST.md</code> for the generated accessibility verification. Build
+this site with <code>pnpm run site</code>.</p>
+
+</div>
+</main>
+
+</div>
+</div>
+
+
+</body></html>
