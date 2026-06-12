@@ -1,6 +1,10 @@
 /* templates.js — page shells for the two build targets.
-   PoC: plain JS template literals. When the wiki becomes an 11ty site these
-   become .njk layouts; the markup below is the spec for that port. */
+   Plain JS template literals; when the wiki becomes an 11ty site these
+   become .njk layouts, and the markup below is the spec for that port.
+   Branding (program/term/course) comes from the consumer's
+   grid.config.json via config.js. */
+
+import { DEFAULTS } from "./config.js";
 
 /* GRID mark: 2×2 dots, top-left lit, three dimmed ("your spot in the grid")
    — same brand story as the invite-app icon, built from plain elements so it
@@ -62,17 +66,17 @@ const THEME_TOGGLE_SCRIPT = `<script>
 })();
 </script>`;
 
-function brandRow({ withToggle = false } = {}) {
+function brandRow(config, { withToggle = false } = {}) {
   return `<div class="brand">
     <span class="mark" aria-hidden="true">${GRID_MARK_DOTS}</span>
-    <span class="wordmark"><b>GRID</b> · Fall 2026</span>
-    <span class="term">IDMX-225</span>
+    <span class="wordmark"><b>${esc(config.program)}</b> · ${esc(config.term)}</span>
+    <span class="term">${esc(config.course)}</span>
     ${withToggle ? THEME_TOGGLE_BUTTON : ""}
   </div>`;
 }
 
 /* Standalone preview: full document, theme in a <style> tag, real h1. */
-export function previewPage({ title, moduleTitle, bodyHtml, css }) {
+export function previewPage({ title, moduleTitle, bodyHtml, css, config = DEFAULTS }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -90,7 +94,7 @@ ${css}
 <div class="shell">
 
 <header class="masthead">
-  ${brandRow({ withToggle: true })}
+  ${brandRow(config, { withToggle: true })}
 ${moduleTitle ? `  <p class="module-label">${esc(moduleTitle)}</p>\n` : ""}  <h1 class="page-title">${esc(title)}</h1>
 </header>
 
@@ -110,7 +114,7 @@ ${THEME_TOGGLE_SCRIPT}
 
 /* Canvas target: body only (extracted later), no h1 (Canvas shows the page
    title itself). The dot mark needs no svg, so both targets share it. */
-export function canvasPage({ moduleTitle, bodyHtml }) {
+export function canvasPage({ moduleTitle, bodyHtml, config = DEFAULTS }) {
   return `<!doctype html>
 <html lang="en">
 <head><meta charset="utf-8" /></head>
@@ -118,7 +122,7 @@ export function canvasPage({ moduleTitle, bodyHtml }) {
 <div class="page-wrap">
 
 <header class="masthead">
-  ${brandRow()}
+  ${brandRow(config)}
 ${moduleTitle ? `  <p class="module-label">${esc(moduleTitle)}</p>\n` : ""}</header>
 
 <div class="content">

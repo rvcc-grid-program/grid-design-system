@@ -7,6 +7,7 @@ import * as cheerio from "cheerio";
 import { renderPage } from "./markdown.js";
 import { previewPage } from "./templates.js";
 import { enhance, loadSystemCss } from "./enhance.js";
+import { loadConfig } from "./config.js";
 
 const src = process.argv[2];
 if (!src) {
@@ -21,6 +22,7 @@ const doc = previewPage({
   moduleTitle: data.module_title,
   bodyHtml: html,
   css: loadSystemCss(),
+  config: loadConfig(),
 });
 
 writeFileSync(out, (await enhance(cheerio.load(doc))).html());

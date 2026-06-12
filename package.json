@@ -3,6 +3,17 @@
   "private": true,
   "type": "module",
   "description": "GRID program design system — Console tokens + course-content components, with the wiki→Canvas build pipeline",
+  "bin": {
+    "grid-preview": "pipeline/preview-build.js",
+    "grid-canvas": "pipeline/canvas-build.js"
+  },
+  "exports": {
+    "./markdown": "./pipeline/markdown.js",
+    "./enhance": "./pipeline/enhance.js",
+    "./templates": "./pipeline/templates.js",
+    "./config": "./pipeline/config.js",
+    "./css/*": "./css/*"
+  },
   "scripts": {
     "contrast": "node scripts/contrast.js",
     "preview": "node pipeline/preview-build.js",

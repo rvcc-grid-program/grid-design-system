@@ -11,6 +11,7 @@ import * as cheerio from "cheerio";
 import { renderPage } from "./markdown.js";
 import { canvasPage } from "./templates.js";
 import { enhance, loadSystemCss } from "./enhance.js";
+import { loadConfig } from "./config.js";
 
 const src = process.argv[2];
 if (!src) {
@@ -29,6 +30,7 @@ const html = (
       canvasPage({
         moduleTitle: page.data.module_title,
         bodyHtml: page.html,
+        config: loadConfig(),
       }),
     ),
   )
