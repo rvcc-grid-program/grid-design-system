@@ -24,6 +24,14 @@ const THEME_TOGGLE_BUTTON = `<button type="button" id="theme-toggle" class="them
       <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
     </button>`;
 
+/* Runs in <head>, before first paint: apply a saved theme override so a
+   dark-preferring visitor never sees a light flash (and vice versa). The
+   main toggle script below re-reads the same key; this is just the early
+   application. */
+const THEME_HEAD_SCRIPT = `<script>
+try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m === "dark") document.documentElement.setAttribute("data-mode", m); } catch (e) {}
+</script>`;
+
 const THEME_TOGGLE_SCRIPT = `<script>
 (function () {
   var root = document.documentElement, KEY = "grid-theme-mode";
@@ -64,6 +72,7 @@ export function previewPage({ title, moduleTitle, bodyHtml, css }) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${esc(title)} · GRID</title>
+${THEME_HEAD_SCRIPT}
 <style>
 ${css}
 </style>
