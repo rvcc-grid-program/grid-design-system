@@ -1,7 +1,7 @@
 # Decision log — GRID design system
 
 Each entry: the decision, the source, one-line rationale. The Claude Design
-options canvas (canvas-template-test/calude-design/grid-brand) proposed
+options canvas (design-history/claude-design-exploration) proposed
 recommendations; entries marked "canvas ★" accept them, others record where
 and why we diverged.
 

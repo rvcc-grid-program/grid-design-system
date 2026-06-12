@@ -6,7 +6,7 @@ same Console tokens, different problem — long-form instructional content
 flowing through an automated pipeline to three targets.
 
 Component decisions come from the Claude Design options canvas
-(`canvas-template-test/calude-design/grid-brand`) as adjudicated in
+(`design-history/claude-design-exploration`) as adjudicated in
 `DECISIONS.md`. Component inventory comes from the 122-file content audit
 (`idmx-225-wiki/reports/content-pattern-audit-for-canvas-design-system.md`).
 
@@ -24,11 +24,11 @@ Component decisions come from the Claude Design options canvas
 ## Render targets
 
 1. **Preview / future 11ty site** — full CSS in `<style>`, light/dark via
-   `prefers-color-scheme`, built by `canvas-template-test/preview-build.js`.
+   `prefers-color-scheme`, built by `pipeline/preview-build.js`.
 2. **Canvas LMS** (primary) — CSS inlined to `style=""`, light only, classes
    renamed to `data-class` (except Canvas-native classes like
    `inline_disabled`), uppercase baked into text, built by
-   `canvas-template-test/canvas-build.js`.
+   `pipeline/canvas-build.js`.
 3. **Print/PDF** — print the preview; `@media print` lives in the components
    file (page-break protection, shadows off, URL after video/plain links).
 

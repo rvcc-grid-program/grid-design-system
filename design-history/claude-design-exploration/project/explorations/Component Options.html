@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRID — Component Options</title>
+<link rel="stylesheet" href="grid-options.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="snippets.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard, DCPostIt } = window;
+const S = window.GRID_SNIPPETS;
+
+function Snip({ html }) {
+  return <div className="gs board" dangerouslySetInnerHTML={{ __html: html }}></div>;
+}
+
+function App() {
+  return (
+    <DesignCanvas title="GRID · Course content — contested components">
+      <DCSection id="context" title="In context — locked foundation" subtitle="Masthead + content card per the shipped Console theme. Not a decision; it anchors everything below.">
+        <DCArtboard id="ctx" label="Masthead + content card" width={720} height={380}>
+          <Snip html={S.context}></Snip>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="video" title="1 · Video block" subtitle="164 instances across 45 files — the signature element. All three link to the real corpus video.">
+        <DCArtboard id="video-a" label="A · Poster overlay — play badge over thumbnail (absolute positioning is UNVERIFIED in Canvas)" width={680} height={525}>
+          <Snip html={S.videoA}></Snip>
+        </DCArtboard>
+        <DCArtboard id="video-b" label="B · Plate card — flex meta bar, 100% Canvas-safe ★ Recommended" width={680} height={525}>
+          <Snip html={S.videoB}></Snip>
+        </DCArtboard>
+        <DCArtboard id="video-c" label="C · Iframe embed — plays in place; printed URL fallback shown below frame" width={680} height={575}>
+          <Snip html={S.videoC}></Snip>
+        </DCArtboard>
+        <DCPostIt id="video-note" left={2250} top={280} width={250}>My lean: B for the thumbnail-link contract (bulletproof in Canvas, prints cleanly), with C's iframe as a per-video author opt-in — Canvas allows YouTube iframes and in-place playback keeps students on the page.</DCPostIt>
+      </DCSection>
+
+      <DCSection id="headings" title="2 · H2 section treatment &amp; scale" subtitle="Section headings standardize on h2. Same long-form text, two treatments.">
+        <DCArtboard id="head-a" label="A · Hairline rule under h2 · 26/20/16 ★ Recommended" width={680} height={470}>
+          <Snip html={S.headingsA}></Snip>
+        </DCArtboard>
+        <DCArtboard id="head-b" label="B · Pure scale, no rule · 28/21/17" width={680} height={470}>
+          <Snip html={S.headingsB}></Snip>
+        </DCArtboard>
+        <DCPostIt id="head-note" left={1520} top={280} width={240}>A: on long Canvas pages (no sticky nav, no sidebar) the hairline is the only structural cue that survives inlining. The rule is one border-bottom — zero risk.</DCPostIt>
+      </DCSection>
+
+      <DCSection id="objectives" title="3 · Learning objectives" subtitle="24 topic pages open with this. Wrapper vs pure typography.">
+        <DCArtboard id="obj-a" label="A · Designed wrapper on surface-2 ★ Recommended" width={680} height={350}>
+          <Snip html={S.objectivesA}></Snip>
+        </DCArtboard>
+        <DCArtboard id="obj-b" label="B · Typography only" width={680} height={330}>
+          <Snip html={S.objectivesB}></Snip>
+        </DCArtboard>
+        <DCPostIt id="obj-note" left={1520} top={280} width={240}>A earns its box: objectives are the one block students should re-find when self-assessing, and the quiet surface-2 tint keeps it below callouts in the attention order.</DCPostIt>
+      </DCSection>
+
+      <DCSection id="resources" title="4 · Resource links" subtitle="23 files. Rows everywhere vs featured rows + plain list.">
+        <DCArtboard id="res-a" label="A · Rows for everything (4 shown — imagine 10)" width={680} height={500}>
+          <Snip html={S.resourcesA}></Snip>
+        </DCArtboard>
+        <DCArtboard id="res-b" label="B · Featured row + plain list ★ Recommended" width={680} height={420}>
+          <Snip html={S.resourcesB}></Snip>
+        </DCArtboard>
+        <DCPostIt id="res-note" left={1520} top={280} width={240}>B: rows signal "required reading", the plain list keeps 10-link pages scannable. Authors choose by writing ::: link-row only for featured items.</DCPostIt>
+      </DCSection>
+
+      <DCSection id="esttime" title="5 · Estimated time" subtitle="7 files. Chip vs styled text line.">
+        <DCArtboard id="est-a" label="A · Mono chip ★ Recommended" width={680} height={245}>
+          <Snip html={S.estA}></Snip>
+        </DCArtboard>
+        <DCArtboard id="est-b" label="B · Styled text line" width={680} height={245}>
+          <Snip html={S.estB}></Snip>
+        </DCArtboard>
+        <DCPostIt id="est-note" left={1520} top={250} width={240}>A: reads as metadata, not prose — and echoes the mono term pill in the masthead. Authors keep writing the same bold line; the pipeline classes it.</DCPostIt>
+      </DCSection>
+
+      <DCSection id="checkpoint" title="6 · Checkpoint panel" subtitle="No corpus evidence — keep or cut.">
+        <DCArtboard id="chk" label="Keep ★ My call — the green family is otherwise unused on content pages" width={680} height={300}>
+          <Snip html={S.checkpoint}></Snip>
+        </DCArtboard>
+        <DCPostIt id="chk-note" left={795} top={280} width={250}>Keep, narrowly: self-check moments before assignments are real pedagogy (retrieval practice), and ✓-green gives "you're ready" a voice that warning-red and note-blue can't. Cut it if instructors won't write them.</DCPostIt>
+      </DCSection>
+
+      <DCSection id="support" title="Supporting cast — not contested" subtitle="Callouts, wikilink chip, kbd, inline + block code. For judging system coherence only.">
+        <DCArtboard id="sup" label="Callout family · wikilink · code" width={680} height={620}>
+          <Snip html={S.support}></Snip>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App></App>);
+</script>
+</body>
+</html>

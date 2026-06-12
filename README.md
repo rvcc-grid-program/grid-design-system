@@ -16,19 +16,28 @@ on the locked Console theme shared with the
 - `CANVAS-NOTES.md` — Canvas's property allowlist and every gotcha, with
   verified verdicts and the paste-test methodology
 - `DECISIONS.md` — decision log + open Canvas probes
+- `pipeline/` — the wiki→HTML builds: `markdown.js` (the markdown contract),
+  `enhance.js` (shared DOM transforms), `templates.js`, and the two build
+  entry points
+- `design-history/` — provenance: the design brief, the Claude Design
+  context package, and the options-canvas exploration the decisions cite
 - `CONTRAST.md` — generated WCAG AA verification
 - `scripts/contrast.js` — regenerates CONTRAST.md from the token values
 
 ## Consumers
 
-The build pipeline in [`../canvas-template-test/`](../canvas-template-test/)
-reads `css/*` directly (tokens + components concatenated):
+The build pipeline lives in [`pipeline/`](pipeline/) and reads `css/*`
+directly (tokens + components concatenated). From the repo root:
 
 ```bash
-cd ../canvas-template-test
+pnpm install
 pnpm run preview <page.md>   # styled HTML, light/dark, <style> tag
 pnpm run canvas <page.md>    # Canvas-ready inline-styled fragment
 ```
+
+`pipeline/markdown.js` is the markdown contract — every consumer (preview,
+Canvas, future 11ty site) parses wiki markdown through that exact
+configuration.
 
 A future 11ty wiki site is the third consumer: same CSS, same DOM contracts
 (HANDOFF.md), shortcodes/layouts replacing `templates.js`.
