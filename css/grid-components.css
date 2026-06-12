@@ -56,7 +56,7 @@ a:hover {
   text-decoration-thickness: 2.5px;
 }
 
-:where(a):focus-visible {
+:where(a, button):focus-visible {
   outline: 3px solid hsl(var(--focus));
   outline-offset: 2px;
   border-radius: var(--r-sm);
@@ -127,6 +127,49 @@ a:hover {
   background: hsl(var(--accent-soft));
   padding: 6px 10px;
   border-radius: var(--r-pill);
+}
+
+/* User-facing light/dark toggle — preview targets only; the Canvas template
+   never includes the button. Same pattern + localStorage key as the invite
+   app (grid-theme-mode). */
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: hsl(var(--ink));
+  background: hsl(var(--surface));
+  border: 1.5px solid hsl(var(--line-strong));
+  border-radius: var(--r-pill);
+}
+
+.theme-toggle:hover {
+  border-color: hsl(var(--accent));
+}
+
+.theme-toggle svg {
+  width: 19px;
+  height: 19px;
+}
+
+.theme-toggle .i-sun {
+  display: none;
+}
+
+.theme-toggle .i-moon {
+  display: block;
+}
+
+.theme-toggle[data-eff="dark"] .i-sun {
+  display: block;
+}
+
+.theme-toggle[data-eff="dark"] .i-moon {
+  display: none;
 }
 
 .module-label {
@@ -627,6 +670,10 @@ a.video-title {
   body,
   .page-wrap {
     background: hsl(0 0% 100%);
+  }
+
+  .theme-toggle {
+    display: none;
   }
 
   .content,

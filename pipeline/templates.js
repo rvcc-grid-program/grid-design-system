@@ -15,11 +15,44 @@ const esc = (s) =>
     .replace(/</g, "&lt;")
     .replace(/"/g, "&quot;");
 
-function brandRow() {
+/* Theme toggle (preview targets only — never sent to Canvas). Same pattern
+   and localStorage key as the invite app: system default, user override
+   persisted to grid-theme-mode. SVG is fine here; this never meets the
+   Canvas sanitizer. */
+const THEME_TOGGLE_BUTTON = `<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme">
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+    </button>`;
+
+const THEME_TOGGLE_SCRIPT = `<script>
+(function () {
+  var root = document.documentElement, KEY = "grid-theme-mode";
+  var btn = document.getElementById("theme-toggle");
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  function effective() { return root.getAttribute("data-mode") || (mq.matches ? "dark" : "light"); }
+  function sync() {
+    var e = effective();
+    btn.setAttribute("data-eff", e);
+    btn.setAttribute("aria-label", e === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  }
+  try { var saved = localStorage.getItem(KEY); if (saved === "light" || saved === "dark") root.setAttribute("data-mode", saved); } catch (e) {}
+  sync();
+  btn.addEventListener("click", function () {
+    var next = effective() === "dark" ? "light" : "dark";
+    root.setAttribute("data-mode", next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    sync();
+  });
+  mq.addEventListener && mq.addEventListener("change", function () { if (!root.getAttribute("data-mode")) sync(); });
+})();
+</script>`;
+
+function brandRow({ withToggle = false } = {}) {
   return `<div class="brand">
     <span class="mark" aria-hidden="true">${GRID_MARK_DOTS}</span>
     <span class="wordmark"><b>GRID</b> · Fall 2026</span>
     <span class="term">IDMX-225</span>
+    ${withToggle ? THEME_TOGGLE_BUTTON : ""}
   </div>`;
 }
 
@@ -40,7 +73,7 @@ ${css}
 <div class="shell">
 
 <header class="masthead">
-  ${brandRow()}
+  ${brandRow({ withToggle: true })}
 ${moduleTitle ? `  <p class="module-label">${esc(moduleTitle)}</p>\n` : ""}  <h1 class="page-title">${esc(title)}</h1>
 </header>
 
@@ -52,6 +85,7 @@ ${bodyHtml}
 
 </div>
 </div>
+${THEME_TOGGLE_SCRIPT}
 </body>
 </html>
 `;

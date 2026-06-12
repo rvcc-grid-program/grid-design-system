@@ -40,8 +40,9 @@
   --danger-line: 358 58% 78%;
 }
 
+/* Dark applies from the system preference unless the user forced light…    */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-mode="light"]) {
     --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4), 0 2px 8px hsl(0 0% 0% / 0.3);
     --shadow-2: 0 10px 30px hsl(0 0% 0% / 0.5), 0 2px 8px hsl(0 0% 0% / 0.4);
     --paper: 224 32% 8%;
@@ -67,4 +68,33 @@
     --danger-soft: 358 36% 17%;
     --danger-line: 358 46% 42%;
   }
+}
+
+/* …and an explicit dark toggle overrides a system-light preference.
+   Same values as the media-query block above — keep the two in sync. */
+:root[data-mode="dark"] {
+  --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4), 0 2px 8px hsl(0 0% 0% / 0.3);
+  --shadow-2: 0 10px 30px hsl(0 0% 0% / 0.5), 0 2px 8px hsl(0 0% 0% / 0.4);
+  --paper: 224 32% 8%;
+  --surface: 223 28% 11%;
+  --surface-2: 222 26% 15%;
+  --ink: 220 32% 94%;
+  --ink-muted: 220 16% 71%;
+  --line: 222 20% 24%;
+  --line-strong: 222 18% 38%;
+  --accent: 226 92% 72%;
+  --accent-ink: 224 44% 8%;
+  --link: 226 94% 78%;
+  --accent-soft: 228 42% 20%;
+  --accent-soft-ink: 226 88% 82%;
+  --focus: 210 96% 66%;
+  --glow: 215 96% 64%;
+  --ok: 150 56% 60%;
+  --ok-ink: 150 40% 9%;
+  --ok-soft: 150 28% 16%;
+  --ok-line: 150 28% 36%;
+  --danger: 358 88% 74%;
+  --danger-ink: 358 40% 12%;
+  --danger-soft: 358 36% 17%;
+  --danger-line: 358 46% 42%;
 }

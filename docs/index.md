@@ -21,9 +21,10 @@ for the Canvas sanitizer findings.
 [The specimen — every component, live](specimen.html)
 :::
 
-The specimen exercises every component in the system. Try it with your OS in
-light and dark mode (the page follows), narrow the window to phone width,
-and print-preview it to see the print styles.
+The specimen exercises every component in the system. It follows your OS
+light/dark setting — or use the sun/moon toggle in the header (your choice
+sticks). Narrow the window to phone width, and print-preview it to see the
+print styles.
 
 - [The Canvas fragment](specimen.canvas.html) — the same specimen as Canvas
   receives it: every style inlined, classes renamed to `data-class`,

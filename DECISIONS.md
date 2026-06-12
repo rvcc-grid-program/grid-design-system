@@ -56,6 +56,12 @@ and why we diverged.
 14. **markdown-it (not pandoc) is the converter** — one parser shared with
     the future 11ty site; dependencies pinned in package.json; pnpm-only
     repos.
+15. **Preview targets get the invite-app theme toggle** (2026-06-12) —
+    system default + user override on `:root[data-mode]`, persisted to the
+    same `localStorage` key the claim app uses (`grid-theme-mode`). Token
+    VALUES unchanged; the dark block is duplicated for the override
+    selector (keep the two in sync). Canvas never receives the button or
+    script — its template omits both.
 
 ## Probe results — specimen paste tests, 2026-06-12 (verified via saved DOM)
 
