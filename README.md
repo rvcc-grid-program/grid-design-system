@@ -19,6 +19,12 @@ repo. It follows your OS light/dark setting and carries the print styles.
 - `CANVAS-NOTES.md` — Canvas's property allowlist and every gotcha, with
   verified verdicts and the paste-test methodology
 - `DECISIONS.md` — decision log + open Canvas probes
+- `docs/icons/` — the GRID brand icon set (master `grid-icon.svg`, favicons,
+  apple-touch, maskable, PNG rasters, webmanifest), identical to the set the
+  invite app ships. Versioned here AND served by the Pages site, so other
+  GRID properties can reference
+  `https://rvcc-grid-program.github.io/grid-design-system/icons/…`. The
+  webmanifest is the claim app's, kept verbatim as the asset of record.
 - `pipeline/` — the wiki→HTML builds: `markdown.js` (the markdown contract),
   `enhance.js` (shared DOM transforms), `templates.js`, and the two build
   entry points

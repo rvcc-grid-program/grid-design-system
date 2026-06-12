@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="GRID">
+  
+  <g fill="currentColor">
+    <rect x="86" y="86" width="150" height="150" rx="40"></rect>
+    <rect x="276" y="86" width="150" height="150" rx="40" opacity="0.4"></rect>
+    <rect x="86" y="276" width="150" height="150" rx="40" opacity="0.4"></rect>
+    <rect x="276" y="276" width="150" height="150" rx="40" opacity="0.4"></rect>
+  </g>
+</svg>

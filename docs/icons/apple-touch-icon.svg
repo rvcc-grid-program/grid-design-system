@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="GRID">
+  
+  <defs>
+    <linearGradient id="atTile" x1="96" y1="40" x2="416" y2="472" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A4B2FF"></stop><stop offset="1" stop-color="#5C6CDE"></stop>
+    </linearGradient>
+    <linearGradient id="atLit" x1="86" y1="86" x2="236" y2="236" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EEF2FF"></stop><stop offset="1" stop-color="#C2CCFF"></stop>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#atTile)"></rect>
+  <rect x="86" y="86" width="150" height="150" rx="40" fill="url(#atLit)"></rect>
+  <rect x="276" y="86" width="150" height="150" rx="40" fill="#1E2A57"></rect>
+  <rect x="86" y="276" width="150" height="150" rx="40" fill="#1E2A57"></rect>
+  <rect x="276" y="276" width="150" height="150" rx="40" fill="#1E2A57"></rect>
+</svg>

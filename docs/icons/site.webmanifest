@@ -1,0 +1,14 @@
+{
+  "name": "GRID — Claim your repo",
+  "short_name": "GRID",
+  "description": "Claim your GitHub assignment repo for GRID / IDMX.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0E1222",
+  "theme_color": "#5C6CDE",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

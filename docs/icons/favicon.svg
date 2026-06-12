@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="32" height="32" role="img" aria-label="GRID">
+  <defs>
+    <linearGradient id="favTile" x1="96" y1="40" x2="416" y2="472" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A4B2FF"></stop>
+      <stop offset="1" stop-color="#5C6CDE"></stop>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="132" fill="url(#favTile)"></rect>
+  <rect x="78" y="78" width="160" height="160" rx="42" fill="#EEF2FF"></rect>
+  <rect x="274" y="78" width="160" height="160" rx="42" fill="#1E2A57"></rect>
+  <rect x="78" y="274" width="160" height="160" rx="42" fill="#1E2A57"></rect>
+  <rect x="274" y="274" width="160" height="160" rx="42" fill="#1E2A57"></rect>
+</svg>
