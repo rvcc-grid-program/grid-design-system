@@ -9,6 +9,12 @@ const GRID_MARK_DOTS =
   `<span class="bm-row"><span class="bm-dot">&nbsp;</span><span class="bm-dot dim">&nbsp;</span></span>` +
   `<span class="bm-row"><span class="bm-dot dim">&nbsp;</span><span class="bm-dot dim">&nbsp;</span></span>`;
 
+/* GRID favicon — the same inlined SVG data URI the invite app ships
+   (gradient squircle, top-left cell lit). Self-contained, no asset file. */
+const FAVICON_LINK = `<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='t' x1='96' y1='40' x2='416' y2='472' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%23A4B2FF'/><stop offset='1' stop-color='%235C6CDE'/></linearGradient><linearGradient id='l' x1='86' y1='86' x2='236' y2='236' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%23EEF2FF'/><stop offset='1' stop-color='%23C2CCFF'/></linearGradient></defs><rect width='512' height='512' rx='132' fill='url(%23t)'/><rect x='86' y='86' width='150' height='150' rx='40' fill='url(%23l)'/><rect x='276' y='86' width='150' height='150' rx='40' fill='%231E2A57'/><rect x='86' y='276' width='150' height='150' rx='40' fill='%231E2A57'/><rect x='276' y='276' width='150' height='150' rx='40' fill='%231E2A57'/></svg>" />
+<meta name="theme-color" content="#5C6CDE" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0E1322" media="(prefers-color-scheme: dark)" />`;
+
 const esc = (s) =>
   String(s ?? "")
     .replace(/&/g, "&amp;")
@@ -72,6 +78,7 @@ export function previewPage({ title, moduleTitle, bodyHtml, css }) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${esc(title)} · GRID</title>
+${FAVICON_LINK}
 ${THEME_HEAD_SCRIPT}
 <style>
 ${css}
