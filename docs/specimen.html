@@ -778,6 +778,42 @@ a.video-title {
   margin: 0 0 16px;
 }
 
+/* ========================== data-list ============================ */
+/* Zero-tables policy: key-value data renders as a semantic <dl> with flex
+   rows (Canvas-verified), never a <table>. Keys wear the mono chip. */
+dl.data-list {
+  margin: 0 0 16px;
+}
+
+.data-list .data-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid hsl(var(--line));
+}
+
+.data-list .data-row:last-child {
+  border-bottom: 0;
+}
+
+.data-list dt {
+  flex: none;
+  min-width: 5.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: hsl(var(--accent-soft-ink));
+  background: hsl(var(--accent-soft));
+  border-radius: var(--r-sm);
+  padding: 1px 8px;
+}
+
+.data-list dd {
+  margin: 0;
+}
+
 /* ===================== icon gallery (docs site) =================== */
 /* Displays the brand asset set on the Pages landing page. Not part of the
    authoring contract; never appears in course content. */
@@ -941,6 +977,8 @@ and push, or your local copy and the repo will fall out of sync.</p>
   box-shadow: 0 2px 8px hsl(220 30% 10% / 0.08);
 }
 </code></pre>
+<h3 id="common-file-extensions" tabindex="-1">Common file extensions</h3>
+<dl class="data-list"><div class="data-row"><dt>.html</dt><dd>HTML document, the page itself</dd></div><div class="data-row"><dt>.css</dt><dd>stylesheet</dd></div><div class="data-row"><dt>.jpg, .png</dt><dd>images (photo, lossless)</dd></div><div class="data-row"><dt>.svg</dt><dd>vector image, scales without blur</dd></div></dl>
 <div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true">✓</span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
 <p>You can rename a file, show filename extensions, and zip a folder. If any of
 those feel shaky, rewatch Video 1 before starting the assignment.</p>

@@ -55,6 +55,7 @@ Plain markdown everywhere, plus exactly these constructs:
 | Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                   |
 | Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                           |
 | Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                  |
+| Key-value data | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`) | semantic `<dl>` with chip keys — NEVER a `<table>` (zero-tables policy) |
 | Code                | standard fenced block / inline backticks                                                                         | `.content pre` / inline `code` chip                                  |
 | Keys                | `<kbd>Cmd</kbd>` (inline HTML)                                                                                   | keycap style                                                         |
 
@@ -106,6 +107,18 @@ reproduce it exactly.
     <li>…</li>
   </ul>
 </div>
+
+<!-- data-list (enhance.js, from the ::: data-list markdown list) -->
+<dl class="data-list">
+  <div class="data-row">
+    <dt>A</dt>
+    <dd>90–100</dd>
+  </div>
+  <div class="data-row">
+    <dt>B+</dt>
+    <dd>85–89</dd>
+  </div>
+</dl>
 
 <!-- featured link row (URL line added by enhance.js from the href) -->
 <div class="link-row">

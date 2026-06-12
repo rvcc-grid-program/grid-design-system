@@ -778,6 +778,42 @@ a.video-title {
   margin: 0 0 16px;
 }
 
+/* ========================== data-list ============================ */
+/* Zero-tables policy: key-value data renders as a semantic <dl> with flex
+   rows (Canvas-verified), never a <table>. Keys wear the mono chip. */
+dl.data-list {
+  margin: 0 0 16px;
+}
+
+.data-list .data-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid hsl(var(--line));
+}
+
+.data-list .data-row:last-child {
+  border-bottom: 0;
+}
+
+.data-list dt {
+  flex: none;
+  min-width: 5.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: hsl(var(--accent-soft-ink));
+  background: hsl(var(--accent-soft));
+  border-radius: var(--r-sm);
+  padding: 1px 8px;
+}
+
+.data-list dd {
+  margin: 0;
+}
+
 /* ===================== icon gallery (docs site) =================== */
 /* Displays the brand asset set on the Pages landing page. Not part of the
    authoring contract; never appears in course content. */

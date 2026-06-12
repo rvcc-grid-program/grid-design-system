@@ -80,6 +80,17 @@ Add this rule to your stylesheet:
 }
 ```
 
+### Common file extensions
+
+::: data-list
+
+- **.html** — HTML document, the page itself
+- **.css** — stylesheet
+- **.jpg, .png** — images (photo, lossless)
+- **.svg** — vector image, scales without blur
+
+:::
+
 ::: checkpoint
 You can rename a file, show filename extensions, and zip a folder. If any of
 those feel shaky, rewatch Video 1 before starting the assignment.

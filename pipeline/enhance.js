@@ -91,5 +91,23 @@ export async function enhance($) {
     el.attr("class", "est-chip");
   });
 
+  // --- 4. data-list: ::: data-list around a markdown list → semantic <dl> --
+  // Zero-tables policy: key-value data is a definition list, never a table.
+  // Author writes `- **key** — value`; bold lead becomes the <dt>.
+  $("div.data-list").each((_, el) => {
+    const div = $(el);
+    const items = div.find("> ul > li");
+    if (!items.length) return;
+    const rows = items.toArray().map((li) => {
+      const item = $(li);
+      const key = item.children("strong").first();
+      const keyHtml = key.length ? key.html() : "";
+      key.remove();
+      const value = (item.html() ?? "").replace(/^\s*(—|–|-|:)?\s*/, "");
+      return `<div class="data-row"><dt>${keyHtml}</dt><dd>${value}</dd></div>`;
+    });
+    div.replaceWith(`<dl class="data-list">${rows.join("")}</dl>`);
+  });
+
   return $;
 }

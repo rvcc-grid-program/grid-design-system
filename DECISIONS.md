@@ -75,6 +75,16 @@ and why we diverged.
     is plain package management; future live Canvas publishing would be a
     Canvas API question, not a GitHub one.
 
+17. **Zero-tables policy + data-list component** (2026-06-12, v1.1.0) — no
+    `<table>` element in authored markdown, ever. Corpus evidence: all 13
+    export-era table blobs are either layout abuse (→ callouts, cards,
+    galleries) or key-value data (→ the new `::: data-list`, rendered as a
+    semantic `<dl>` with flex rows — dl/dt/dd are on Canvas's official
+    allowlist; empirical probe pending). The course schedule converts to
+    per-week structure. Escape hatch: a real table treatment may be
+    designed ONLY when genuine 3+-column record data shows up in content —
+    zero exists today, so none is built.
+
 ## Probe results — specimen paste tests, 2026-06-12 (verified via saved DOM)
 
 STRIPPED by Canvas: `aspect-ratio`, `object-fit`, **negative margins**,
@@ -102,3 +112,4 @@ hsl(var(--accent-ink) / 0.42)` — alpha colors survive where opacity
 
 - a YouTube `<iframe>` embed (for the option-C opt-in)
 - alpha-background dim dots (fix shipped 2026-06-12; confirm on next paste)
+- dl/dt/dd elements and the data-list flex rows (new in v1.1.0)
