@@ -502,9 +502,9 @@ a.wikilink:hover {
   flex: none;
   background: hsl(var(--accent));
   color: hsl(var(--accent-ink));
-  text-align: center;
-  line-height: 38px;
-  font-size: 0.9375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .video-text {
@@ -606,10 +606,9 @@ a.video-title {
   flex: none;
   background: hsl(var(--accent-soft));
   color: hsl(var(--accent-soft-ink));
-  text-align: center;
-  line-height: 34px;
-  font-size: 1rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .link-body {
@@ -678,10 +677,9 @@ a.video-title {
   flex: none;
   background: hsl(var(--ok));
   color: hsl(var(--ok-ink));
-  text-align: center;
-  line-height: 34px;
-  font-size: 1rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .checkpoint-title {
@@ -719,10 +717,14 @@ a.video-title {
   height: 26px;
   border-radius: var(--r-pill);
   flex: none;
-  text-align: center;
-  line-height: 26px;
-  font-size: 0.875rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* content icons (see pipeline/icons.js) */
+.gi {
+  display: block;
 }
 
 .callout-title {
@@ -926,14 +928,14 @@ dl.data-list {
 components flowing from wiki markdown to a styled web page, a Canvas LMS
 fragment, and print. <strong>This page is built by the pipeline it documents</strong> —
 everything you’re looking at is the system rendering its own markdown.</p>
-<div class="callout callout-note"><div class="callout-head"><span class="callout-ico" aria-hidden="true">i</span><span class="callout-title">Note</span></div><div class="callout-body">
+<div class="callout callout-note"><div class="callout-head"><span class="callout-ico" aria-hidden="true"><svg class="gi gi-info" data-gi="callout-note" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="callout-title">Note</span></div><div class="callout-body">
 <p>Specs, decisions, and source live in
 <a href="https://github.com/rvcc-grid-program/grid-design-system">the repository</a> —
 start with <code>HANDOFF.md</code> for the authoring contract and <code>CANVAS-NOTES.md</code>
 for the Canvas sanitizer findings.</p>
 </div></div>
 <h2 id="see-it" tabindex="-1">See it</h2>
-<div class="link-row"><span class="link-ico" aria-hidden="true">↗</span><div class="link-body">
+<div class="link-row"><span class="link-ico" aria-hidden="true"><svg class="gi gi-arrow-up-right" data-gi="link-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></span><div class="link-body">
 <p><a href="specimen.html">The specimen — every component, live</a></p>
 </div></div>
 <p>The specimen exercises every component in the system. It follows your OS
@@ -955,13 +957,13 @@ uppercase baked into text. View source to see what the sanitizer gets.</li>
 <li>Find the spec documents in the repository</li>
 </ul>
 </div>
-<div class="callout callout-warning"><div class="callout-head"><span class="callout-ico" aria-hidden="true">!</span><span class="callout-title">Warning</span></div><div class="callout-body">
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-ico" aria-hidden="true"><svg class="gi gi-triangle-alert" data-gi="callout-warning" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span><span class="callout-title">Warning</span></div><div class="callout-body">
 <p>Canvas strips <code>box-shadow</code>, <code>letter-spacing</code>, <code>opacity</code>, negative margins,
 and <code>text-transform</code>. Every component here is designed to survive that —
 borders carry structure, shadows are garnish, and uppercase is baked in at
 build time.</p>
 </div></div>
-<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true">✓</span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
+<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true"><svg class="gi gi-check" data-gi="checkpoint-mark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
 <p>If this page looks consistent with the claim app students use on day one,
 the system is doing its job — one brand from first login to final project.</p>
 </div></div>

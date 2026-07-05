@@ -43,21 +43,21 @@ The pipeline's `enhance.js` runs on BOTH HTML targets so they never diverge.
 
 Plain markdown everywhere, plus exactly these constructs:
 
-| Component           | Author writes                                                                                                    | Pipeline produces                                                    |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration |
-| Estimated time      | The existing bold line: `**Estimated time: 25-30 minutes.**`                                                     | `.est-chip` pill — zero migration                                    |
-| Learning objectives | `::: objectives` around stem + list                                                                              | `.objectives` wrapper with kicker                                    |
-| Warning callout     | `::: callout-warning` around text                                                                                | `.callout` with head row (! icon + WARNING)                          |
-| Note callout        | `::: callout-note` around text                                                                                   | `.callout` with head row (i icon + NOTE)                             |
-| Checkpoint          | `::: checkpoint` around text                                                                                     | `.checkpoint` row (✓ mark + CHECKPOINT label)                        |
-| Featured link       | `::: link-row` around ONE markdown link                                                                          | row with ↗ tile, bold link, auto URL line                            |
-| Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                   |
-| Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                           |
-| Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                  |
-| Key-value data | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`) | semantic `<dl>` with chip keys — NEVER a `<table>` (zero-tables policy) |
-| Code                | standard fenced block / inline backticks                                                                         | `.content pre` / inline `code` chip                                  |
-| Keys                | `<kbd>Cmd</kbd>` (inline HTML)                                                                                   | keycap style                                                         |
+| Component           | Author writes                                                                                                    | Pipeline produces                                                       |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration    |
+| Estimated time      | The existing bold line: `**Estimated time: 25-30 minutes.**`                                                     | `.est-chip` pill — zero migration                                       |
+| Learning objectives | `::: objectives` around stem + list                                                                              | `.objectives` wrapper with kicker                                       |
+| Warning callout     | `::: callout-warning` around text                                                                                | `.callout` with head row (triangle-alert icon + WARNING)                |
+| Note callout        | `::: callout-note` around text                                                                                   | `.callout` with head row (info icon + NOTE)                             |
+| Checkpoint          | `::: checkpoint` around text                                                                                     | `.checkpoint` row (check icon + CHECKPOINT label)                       |
+| Featured link       | `::: link-row` around ONE markdown link                                                                          | row with arrow-up-right tile, bold link, auto URL line                  |
+| Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                      |
+| Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                              |
+| Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                     |
+| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with chip keys — NEVER a `<table>` (zero-tables policy) |
+| Code                | standard fenced block / inline backticks                                                                         | `.content pre` / inline `code` chip                                     |
+| Keys                | `<kbd>Cmd</kbd>` (inline HTML)                                                                                   | keycap style                                                            |
 
 Anything not in this table is plain typography. Do not invent new fenced-div
 names without adding them here and to the CSS.
@@ -73,7 +73,7 @@ reproduce it exactly.
 <div class="video-card">
   <a class="video-poster" href="https://youtu.be/ID"><img src="…hqdefault.jpg" alt="…" /></a>
   <div class="video-meta">
-    <span class="play-tile" aria-hidden="true">▶</span>
+    <span class="play-tile" aria-hidden="true"><svg class="gi" data-gi="play-tile">…</svg></span>
     <div class="video-text">
       <span class="video-kicker">Video · YouTube</span>
       <a class="video-title" href="https://youtu.be/ID">Watch on YouTube</a>
@@ -84,7 +84,9 @@ reproduce it exactly.
 <!-- callout (markdown.js container render; -note variant swaps ico/label) -->
 <div class="callout callout-warning">
   <div class="callout-head">
-    <span class="callout-ico" aria-hidden="true">!</span>
+    <span class="callout-ico" aria-hidden="true"
+      ><svg class="gi" data-gi="callout-warning">…</svg></span
+    >
     <span class="callout-title">Warning</span>
   </div>
   <div class="callout-body"><p>…</p></div>
@@ -92,7 +94,9 @@ reproduce it exactly.
 
 <!-- checkpoint -->
 <div class="checkpoint">
-  <span class="checkpoint-mark" aria-hidden="true">✓</span>
+  <span class="checkpoint-mark" aria-hidden="true"
+    ><svg class="gi" data-gi="checkpoint-mark">…</svg></span
+  >
   <div class="checkpoint-body">
     <span class="checkpoint-title">Checkpoint</span>
     <p>…</p>
@@ -122,7 +126,7 @@ reproduce it exactly.
 
 <!-- featured link row (URL line added by enhance.js from the href) -->
 <div class="link-row">
-  <span class="link-ico" aria-hidden="true">↗</span>
+  <span class="link-ico" aria-hidden="true"><svg class="gi" data-gi="link-ico">…</svg></span>
   <div class="link-body">
     <p><a href="…">Label</a><span class="link-url">host/path</span></p>
   </div>
@@ -141,6 +145,22 @@ Labels ("Warning", "Video · YouTube", kickers) are written in normal case
 and uppercased by `text-transform` — the Canvas build bakes the uppercase
 into the text because Canvas strips `text-transform`. Never hard-code
 uppercase in source markup.
+
+### Content icons (pipeline/icons.js)
+
+The five tile glyphs are Lucide icons rendered from a single registry
+(`ICON_USES` in `pipeline/icons.js`): play (filled), arrow-up-right, check,
+triangle-alert, info. Web/PDF targets get an inline `<svg class="gi"
+data-gi="<use>">` using `currentColor` (the tile's CSS `color:` paints it).
+Canvas strips `<svg>`, so `canvas-build.js` swaps each for
+`<img src="…/icons/generated/<use>@3x.png" alt="">` — transparent PNGs with
+the light-theme ink color baked in, generated by `pnpm run build:icons`
+(runs automatically before `pnpm run canvas`) and committed under
+`docs/icons/generated/` so the Pages site hosts them. The base URL is
+overridable via `iconBase` in a consumer's `grid.config.json`. Icons are
+decorative: always `aria-hidden="true"` tile + empty `alt`, next to a real
+text label. New icon usages require a design-owner decision — never pick
+one ad hoc.
 
 ## Canvas degradation notes (per component)
 

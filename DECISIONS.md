@@ -85,6 +85,24 @@ and why we diverged.
     designed ONLY when genuine 3+-column record data shows up in content —
     zero exists today, so none is built.
 
+18. **Lucide content-icon system, SVG source → Canvas PNG** (2026-07-04) —
+    the five content-icon tiles drop their Unicode glyphs (`▶ ↗ ✓ ! i`) for
+    Lucide icons from a single registry (`pipeline/icons.js`): play
+    (filled, 22px), arrow-up-right (20px), check (stroke 2.25, 20px),
+    triangle-alert (16px), info (16px) — mapping, sizes, and colors fixed
+    by the design owner (external handoff, implemented verbatim). Warning
+    upgrades `!` → triangle-alert and note `i` → info deliberately. Web/PDF
+    render inline `<svg class="gi">` with `currentColor`; Canvas gets
+    transparent PNGs (`docs/icons/generated/<use>@3x.png`, committed like
+    the favicons so Pages hosts them), colors resolved from the light
+    `grid-tokens.css` at build time (`pnpm run build:icons`, deterministic,
+    auto-runs before `pnpm run canvas`). PNG base URL defaults to the Pages
+    site, overridable via `iconBase` in a consumer's `grid.config.json`.
+    New dep: `@resvg/resvg-js` (dev-only rasterizer, prebuilt binaries, no
+    install scripts). Tile geometry, tokens, and contrast pairs unchanged;
+    tiles now center via inline-flex. Brand icons and dashboard-app icons
+    explicitly out of scope (Phase 2). Paste test pending (see Still open).
+
 ## Probe results — specimen paste tests, 2026-06-12 (verified via saved DOM)
 
 STRIPPED by Canvas: `aspect-ratio`, `object-fit`, **negative margins**,
@@ -113,3 +131,5 @@ hsl(var(--accent-ink) / 0.42)` — alpha colors survive where opacity
 - a YouTube `<iframe>` embed (for the option-C opt-in)
 - alpha-background dim dots (fix shipped 2026-06-12; confirm on next paste)
 - dl/dt/dd elements and the data-list flex rows (new in v1.1.0)
+- content-icon PNG `<img>` swaps surviving a real Canvas paste (new
+  2026-07-04; URLs 404 until the commit is pushed and Pages deploys)

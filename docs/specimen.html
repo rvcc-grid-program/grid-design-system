@@ -502,9 +502,9 @@ a.wikilink:hover {
   flex: none;
   background: hsl(var(--accent));
   color: hsl(var(--accent-ink));
-  text-align: center;
-  line-height: 38px;
-  font-size: 0.9375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .video-text {
@@ -606,10 +606,9 @@ a.video-title {
   flex: none;
   background: hsl(var(--accent-soft));
   color: hsl(var(--accent-soft-ink));
-  text-align: center;
-  line-height: 34px;
-  font-size: 1rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .link-body {
@@ -678,10 +677,9 @@ a.video-title {
   flex: none;
   background: hsl(var(--ok));
   color: hsl(var(--ok-ink));
-  text-align: center;
-  line-height: 34px;
-  font-size: 1rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .checkpoint-title {
@@ -719,10 +717,14 @@ a.video-title {
   height: 26px;
   border-radius: var(--r-pill);
   flex: none;
-  text-align: center;
-  line-height: 26px;
-  font-size: 0.875rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* content icons (see pipeline/icons.js) */
+.gi {
+  display: block;
 }
 
 .callout-title {
@@ -936,7 +938,7 @@ outputs. The text mimics real course content on purpose.</p>
 </div>
 <h2 id="watching" tabindex="-1">Watching</h2>
 <h3 id="video-1%3A-file-system-basics-(~15min)" tabindex="-1">Video 1: File System Basics (~15min)</h3>
-<div class="video-card"><a class="video-poster" href="https://youtu.be/hw7TwIf1rOw"><img src="https://img.youtube.com/vi/hw7TwIf1rOw/maxresdefault.jpg" alt="Video"></a><div class="video-meta"><span class="play-tile" aria-hidden="true">▶</span><div class="video-text"><span class="video-kicker">Video · YouTube</span><a class="video-title" href="https://youtu.be/hw7TwIf1rOw">Watch on YouTube</a></div></div></div>
+<div class="video-card"><a class="video-poster" href="https://youtu.be/hw7TwIf1rOw"><img class="letterboxed" src="https://img.youtube.com/vi/hw7TwIf1rOw/hqdefault.jpg" alt="Video"></a><div class="video-meta"><span class="play-tile" aria-hidden="true"><svg class="gi gi-play" data-gi="play-tile" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg></span><div class="video-text"><span class="video-kicker">Video · YouTube</span><a class="video-title" href="https://youtu.be/hw7TwIf1rOw">Watch on YouTube</a></div></div></div>
 <h2 id="reading" tabindex="-1">Reading</h2>
 <p>You should choose the reading assignment for the computer(s) you will be
 using for your web development assignments this semester.</p>
@@ -947,7 +949,7 @@ moving, deleting, downloading, and uploading files.</p>
 <p>Make sure filename extensions are visible on your machine. Press
 <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> to show hidden files in the
 Finder open dialog.</p>
-<div class="link-row"><span class="link-ico" aria-hidden="true">↗</span><div class="link-body">
+<div class="link-row"><span class="link-ico" aria-hidden="true"><svg class="gi gi-arrow-up-right" data-gi="link-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></span><div class="link-body">
 <p><a href="https://edu.gcfglobal.org/en/windowsbasics/working-with-files/1/">Windows Basics — Working with Files</a><span class="link-url">edu.gcfglobal.org/en/windowsbasics/working-with-files/1</span></p>
 </div></div>
 <p>Optional extras if you want to go deeper:</p>
@@ -964,11 +966,11 @@ its content.</p>
 <li>Rename <code>My File.HTML</code> to <code>my-file.html</code></li>
 <li>Commit with the message <code>rename: lowercase and hyphens</code> and push</li>
 </ol>
-<div class="callout callout-warning"><div class="callout-head"><span class="callout-ico" aria-hidden="true">!</span><span class="callout-title">Warning</span></div><div class="callout-body">
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-ico" aria-hidden="true"><svg class="gi gi-triangle-alert" data-gi="callout-warning" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span><span class="callout-title">Warning</span></div><div class="callout-body">
 <p>Don’t edit files on github.com directly — always pull, edit locally, commit,
 and push, or your local copy and the repo will fall out of sync.</p>
 </div></div>
-<div class="callout callout-note"><div class="callout-head"><span class="callout-ico" aria-hidden="true">i</span><span class="callout-title">Note</span></div><div class="callout-body">
+<div class="callout callout-note"><div class="callout-head"><span class="callout-ico" aria-hidden="true"><svg class="gi gi-info" data-gi="callout-note" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="callout-title">Note</span></div><div class="callout-body">
 <p>Spaces in filenames become <code>%20</code> in URLs. Use hyphens instead.</p>
 </div></div>
 <p>Add this rule to your stylesheet:</p>
@@ -979,7 +981,7 @@ and push, or your local copy and the repo will fall out of sync.</p>
 </code></pre>
 <h3 id="common-file-extensions" tabindex="-1">Common file extensions</h3>
 <dl class="data-list"><div class="data-row"><dt>.html</dt><dd>HTML document, the page itself</dd></div><div class="data-row"><dt>.css</dt><dd>stylesheet</dd></div><div class="data-row"><dt>.jpg, .png</dt><dd>images (photo, lossless)</dd></div><div class="data-row"><dt>.svg</dt><dd>vector image, scales without blur</dd></div></dl>
-<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true">✓</span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
+<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true"><svg class="gi gi-check" data-gi="checkpoint-mark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
 <p>You can rename a file, show filename extensions, and zip a folder. If any of
 those feel shaky, rewatch Video 1 before starting the assignment.</p>
 </div></div>

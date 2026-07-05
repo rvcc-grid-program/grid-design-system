@@ -12,6 +12,7 @@ import { renderPage } from "./markdown.js";
 import { canvasPage } from "./templates.js";
 import { enhance, loadSystemCss } from "./enhance.js";
 import { loadConfig } from "./config.js";
+import { svgToCanvasImg } from "./icons.js";
 
 const src = process.argv[2];
 if (!src) {
@@ -96,8 +97,15 @@ $("[class], [data-canvas-class]").each((_, el) => {
 
 // 5. extract the body fragment, make it Canvas-safe
 let frag = $("body").html().trim();
+frag = frag.replace(/<(\/?)(section|header)\b/g, "<$1div"); // plain divs for Canvas
+
+// Canvas strips <svg> — swap inline content icons for baked PNGs hosted on
+// the design system's Pages site (override with iconBase in grid.config.json).
+const iconBase =
+  loadConfig().iconBase ?? "https://rvcc-grid-program.github.io/grid-design-system/icons/generated";
+frag = svgToCanvasImg(frag, (use) => `${iconBase}/${use}@3x.png`);
+
 frag = frag
-  .replace(/<(\/?)(section|header)\b/g, "<$1div") // plain divs for Canvas
   .replace(/(^|\s)class="/g, '$1data-class="') // inert semantic markers
   .replace(/data-canvas-class="/g, 'class="'); // real Canvas classes
 

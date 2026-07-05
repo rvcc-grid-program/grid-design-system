@@ -12,6 +12,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { iconFor } from "./icons.js";
 
 /* The design system is the single CSS source for every build target:
    tokens first, then components. */
@@ -58,7 +59,7 @@ export async function enhance($) {
         `<a class="video-poster" href="${href}">` +
         `<img${thumb.letterboxed ? ' class="letterboxed"' : ""} src="${thumb.src}" alt="${alt || "Video thumbnail"}"></a>` +
         `<div class="video-meta">` +
-        `<span class="play-tile" aria-hidden="true">▶</span>` +
+        `<span class="play-tile" aria-hidden="true">${iconFor("play-tile")}</span>` +
         `<div class="video-text">` +
         `<span class="video-kicker">Video · YouTube</span>` +
         `<a class="video-title" href="${href}">${title}</a>` +

@@ -19,3 +19,9 @@ pnpm-debug.log*
 #   specimen/specimen.html and specimen/specimen.canvas.html — built outputs,
 #   committed on purpose so PR diffs act as visual/regression snapshots.
 #   CONTRAST.md — generated, committed so reviewers see ratio changes in diffs.
+
+tmp/
+reports/
+
+# personal Claude Code hooks (local-only verification gate)
+.claude/hooks/

@@ -389,9 +389,9 @@ a.wikilink:hover {
   flex: none;
   background: hsl(var(--accent));
   color: hsl(var(--accent-ink));
-  text-align: center;
-  line-height: 38px;
-  font-size: 0.9375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .video-text {
@@ -493,10 +493,9 @@ a.video-title {
   flex: none;
   background: hsl(var(--accent-soft));
   color: hsl(var(--accent-soft-ink));
-  text-align: center;
-  line-height: 34px;
-  font-size: 1rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .link-body {
@@ -565,10 +564,9 @@ a.video-title {
   flex: none;
   background: hsl(var(--ok));
   color: hsl(var(--ok-ink));
-  text-align: center;
-  line-height: 34px;
-  font-size: 1rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .checkpoint-title {
@@ -606,10 +604,14 @@ a.video-title {
   height: 26px;
   border-radius: var(--r-pill);
   flex: none;
-  text-align: center;
-  line-height: 26px;
-  font-size: 0.875rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* content icons (see pipeline/icons.js) */
+.gi {
+  display: block;
 }
 
 .callout-title {

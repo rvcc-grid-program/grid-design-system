@@ -19,6 +19,7 @@ import bracketedSpans from "markdown-it-bracketed-spans";
 import anchor from "markdown-it-anchor";
 import matter from "gray-matter";
 import { readFileSync } from "node:fs";
+import { iconFor } from "./icons.js";
 
 /* [[slug]] / [[slug|label]] — small inline rule instead of a dependency so
    the Canvas build can later resolve slugs against the wiki itself. */
@@ -54,20 +55,20 @@ const STRUCTURED = {
   "callout-warning": {
     open:
       `<div class="callout callout-warning">` +
-      `<div class="callout-head"><span class="callout-ico" aria-hidden="true">!</span>` +
+      `<div class="callout-head"><span class="callout-ico" aria-hidden="true">${iconFor("callout-warning")}</span>` +
       `<span class="callout-title">Warning</span></div><div class="callout-body">\n`,
     close: "</div></div>\n",
   },
   "callout-note": {
     open:
       `<div class="callout callout-note">` +
-      `<div class="callout-head"><span class="callout-ico" aria-hidden="true">i</span>` +
+      `<div class="callout-head"><span class="callout-ico" aria-hidden="true">${iconFor("callout-note")}</span>` +
       `<span class="callout-title">Note</span></div><div class="callout-body">\n`,
     close: "</div></div>\n",
   },
   checkpoint: {
     open:
-      `<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true">✓</span>` +
+      `<div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true">${iconFor("checkpoint-mark")}</span>` +
       `<div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>\n`,
     close: "</div></div>\n",
   },
@@ -78,7 +79,7 @@ const STRUCTURED = {
   },
   "link-row": {
     open:
-      `<div class="link-row"><span class="link-ico" aria-hidden="true">↗</span>` +
+      `<div class="link-row"><span class="link-ico" aria-hidden="true">${iconFor("link-ico")}</span>` +
       `<div class="link-body">\n`,
     close: "</div></div>\n",
   },
