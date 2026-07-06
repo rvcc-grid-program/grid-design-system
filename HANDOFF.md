@@ -43,21 +43,21 @@ The pipeline's `enhance.js` runs on BOTH HTML targets so they never diverge.
 
 Plain markdown everywhere, plus exactly these constructs:
 
-| Component           | Author writes                                                                                                    | Pipeline produces                                                       |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration    |
-| Estimated time      | The existing bold line: `**Estimated time: 25-30 minutes.**`                                                     | `.est-chip` pill — zero migration                                       |
-| Learning objectives | `::: objectives` around stem + list                                                                              | `.objectives` wrapper with kicker                                       |
-| Warning callout     | `::: callout-warning` around text                                                                                | `.callout` with head row (triangle-alert icon + WARNING)                |
-| Note callout        | `::: callout-note` around text                                                                                   | `.callout` with head row (info icon + NOTE)                             |
-| Checkpoint          | `::: checkpoint` around text                                                                                     | `.checkpoint` row (check icon + CHECKPOINT label)                       |
-| Featured link       | `::: link-row` around ONE markdown link                                                                          | row with arrow-up-right tile, bold link, auto URL line                  |
-| Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                      |
-| Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                              |
-| Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                     |
-| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with chip keys — NEVER a `<table>` (zero-tables policy) |
-| Code                | standard fenced block / inline backticks                                                                         | `.content pre` / inline `code` chip                                     |
-| Keys                | `<kbd>Cmd</kbd>` (inline HTML)                                                                                   | keycap style                                                            |
+| Component           | Author writes                                                                                                    | Pipeline produces                                                                                                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration                                                                                                        |
+| Estimated time      | The existing bold line: `**Estimated time: 25-30 minutes.**`                                                     | `.est-chip` pill — zero migration                                                                                                                                           |
+| Learning objectives | `::: objectives` around stem + list                                                                              | `.objectives` wrapper with kicker                                                                                                                                           |
+| Warning callout     | `::: callout-warning` around text                                                                                | `.callout` with head row (triangle-alert icon + WARNING)                                                                                                                    |
+| Note callout        | `::: callout-note` around text                                                                                   | `.callout` with head row (info icon + NOTE)                                                                                                                                 |
+| Checkpoint          | `::: checkpoint` around text                                                                                     | `.checkpoint` row (check icon + CHECKPOINT label)                                                                                                                           |
+| Featured link       | `::: link-row` around ONE markdown link                                                                          | row with arrow-up-right tile, bold link, auto URL line                                                                                                                      |
+| Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                                                                                                                          |
+| Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                                                                                                                                  |
+| Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                                                                                                                         |
+| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), rows via flex-wrap — NEVER a `<table>` (zero-tables policy) |
+| Code                | standard fenced block / inline backticks                                                                         | `.content pre` / inline `code` chip                                                                                                                                         |
+| Keys                | `<kbd>Cmd</kbd>` (inline HTML)                                                                                   | keycap style                                                                                                                                                                |
 
 Anything not in this table is plain typography. Do not invent new fenced-div
 names without adding them here and to the CSS.
@@ -112,16 +112,15 @@ reproduce it exactly.
   </ul>
 </div>
 
-<!-- data-list (enhance.js, from the ::: data-list markdown list) -->
+<!-- data-list (enhance.js, from the ::: data-list markdown list).
+     dt/dd MUST be direct children of the dl — Canvas unwraps any wrapper
+     div (DECISIONS.md 19). Rows come from CSS flex-wrap; the chip is the
+     inner .data-key span, never the dt itself. -->
 <dl class="data-list">
-  <div class="data-row">
-    <dt>A</dt>
-    <dd>90–100</dd>
-  </div>
-  <div class="data-row">
-    <dt>B+</dt>
-    <dd>85–89</dd>
-  </div>
+  <dt><span class="data-key">A</span></dt>
+  <dd>90–100</dd>
+  <dt><span class="data-key">B+</span></dt>
+  <dd>85–89</dd>
 </dl>
 
 <!-- featured link row (URL line added by enhance.js from the href) -->

@@ -25,3 +25,6 @@ reports/
 
 # personal Claude Code hooks (local-only verification gate)
 .claude/hooks/
+
+# Canvas paste-test evidence (saved DOM from the sandbox page; local only)
+specimen/speciment-canvas-test.html

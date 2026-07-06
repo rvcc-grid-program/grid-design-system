@@ -79,11 +79,12 @@ and why we diverged.
     `<table>` element in authored markdown, ever. Corpus evidence: all 13
     export-era table blobs are either layout abuse (→ callouts, cards,
     galleries) or key-value data (→ the new `::: data-list`, rendered as a
-    semantic `<dl>` with flex rows — dl/dt/dd are on Canvas's official
-    allowlist; empirical probe pending). The course schedule converts to
-    per-week structure. Escape hatch: a real table treatment may be
-    designed ONLY when genuine 3+-column record data shows up in content —
-    zero exists today, so none is built.
+    semantic `<dl>` with flex rows — the original div-row nesting was
+    unwrapped by Canvas's stricter-than-spec dl content model, probes
+    2026-07-06; markup fixed by decision 19). The course schedule
+    converts to per-week structure. Escape hatch: a real table treatment
+    may be designed ONLY when genuine 3+-column record data shows up in
+    content — zero exists today, so none is built.
 
 18. **Lucide content-icon system, SVG source → Canvas PNG** (2026-07-04) —
     the five content-icon tiles drop their Unicode glyphs (`▶ ↗ ✓ ! i`) for
@@ -101,7 +102,42 @@ and why we diverged.
     New dep: `@resvg/resvg-js` (dev-only rasterizer, prebuilt binaries, no
     install scripts). Tile geometry, tokens, and contrast pairs unchanged;
     tiles now center via inline-flex. Brand icons and dashboard-app icons
-    explicitly out of scope (Phase 2). Paste test pending (see Still open).
+    explicitly out of scope (Phase 2). Paste-test verified 2026-07-06.
+
+19. **data-list emits strict-conformant dl** (2026-07-06) — after the dl
+    probe (results below) proved Canvas keeps dl/dt/dd only as direct
+    parent/child, the design owner chose fix (a): `enhance.js` emits
+    `<dt><span class="data-key">…</span></dt><dd>…</dd>` as DIRECT
+    children of the dl — no wrapper div (HTML5-legal, but Canvas unwraps
+    it). Rows are CSS-only: the dl is flex + wrap + baseline, dt is
+    `flex: 0 0 6.5rem`, dd is `flex: 1 1 70%` — the dd fills the rest of
+    its line, forcing the next dt to wrap, so each pair reads as a row.
+    The key chip moved from the dt itself to an inner `.data-key` span
+    (the dt now carries structural padding + border-bottom, which a pill
+    background can't). Every primitive is probe-verified (flex shorthand,
+    wrap, borders, spans; `:last-of-type` inlines statically via juice).
+    Same markup for ALL targets — no Canvas-only divergence. Visual result
+    is identical to the v1.1.0 design in light and dark. Known limit: keys
+    wider than ~6.5rem overflow into the dd padding — keys are short by
+    design (`- **key** — value`).
+
+20. **Weighted spans use the `font:` shorthand** (2026-07-06) — Canvas
+    strips the `font-weight` longhand but keeps the `font:` shorthand
+    (expanded to longhands on save, weight included — probe #2 below), so
+    the design owner chose the shorthand fix: every Canvas-visible
+    weighted rule (`wordmark`, `module-label`, h2/h3/h4, `video-title`,
+    `objectives-kicker`, `link-body a`, `est-chip` + its strong,
+    `checkpoint-title`, `callout-title`, `data-key`) declares
+    `font: <weight> <size>/<line-height> <family>` with all three
+    components explicit (the shorthand resets omitted longhands, so
+    size/family/line-height can never be left to inheritance). Deliberate
+    exceptions: `.content strong` keeps `font-weight: 680` (shorthand
+    would force a size onto an element that must inherit it; Canvas falls
+    back to the element-default bold 700 — acceptable), `h1.page-title`
+    (760, preview-only, clamp() size) and `li::marker`/print rules
+    (preview/print-only). The wordmark keeps a `font-size` longhand
+    fallback before its shorthand (750 was unprobed at the time).
+    Paste-confirmed same day, all weights including 750 — probe #3 below.
 
 ## Probe results — specimen paste tests, 2026-06-12 (verified via saved DOM)
 
@@ -126,10 +162,79 @@ hsl(var(--accent-ink) / 0.42)` — alpha colors survive where opacity
   preview-only garnish. The wordmark/kicker tracking flattens in Canvas;
   accepted — nothing structural depends on it.
 
+## Probe results — specimen paste test, 2026-07-06
+
+Verified via saved DOM: `specimen/speciment-canvas-test.html`.
+
+- **Content-icon PNG swaps: PASS.** All five
+  `<img src="…icons/generated/<use>@3x.png">` survive save-and-reopen with
+  `src`, `alt=""`, `width`/`height`, and `display:block` intact; zero
+  `<svg>` in the saved DOM. The icon system (decision 18) is verified
+  end-to-end.
+- **Alpha-background dim dots: PASS.** The three `.dim` mark dots keep
+  `background: hsl(0 0% 100% / 0.42)` — the 2026-06-12 fix is confirmed.
+- **data-list as shipped: FAIL.** The dt/dd tags were unwrapped and their
+  text merged with no separation (".htmlHTML document, the page itself");
+  the styled `.data-row` divs survived. Root cause identified by the
+  targeted follow-up probe below — the v1.1.0 `::: data-list` component is
+  broken in Canvas output as shipped and must not be used in Canvas-bound
+  content until the fix lands.
+
+## Probe results — targeted dl probe, 2026-07-06
+
+Five cases, verified via saved DOM: `tmp/dl-probe/dl-probe-save.html`.
+
+Canvas does NOT strip definition lists — the official allowlist is
+accurate. The sanitizer enforces a **strict dl content model** (stricter
+than the HTML5 spec, which permits a div grouping wrapper inside dl):
+
+- Plain `<dl><dt><dd>` (dt/dd direct children): **INTACT**, inline
+  styles and `data-class` attributes included.
+- v1.1.0 markup (dt/dd inside `div.data-row` inside dl — HTML5-legal but
+  rejected by Canvas): **UNWRAPPED**, tags removed.
+- dt/dd with no `<dl>` ancestor: **UNWRAPPED**.
+- Div/span fallback with identical styling: **INTACT**.
+
+Two viable fixes were identified: (a) emit dt/dd as direct dl children
+with CSS-only rows, or (b) rename dl/dt/dd → div/span in the Canvas build
+post-inlining. The design owner chose (a) — see decision 19.
+
+## Probe results — specimen paste test #2, 2026-07-06
+
+Verified via saved DOM (second save of `specimen/speciment-canvas-test.html`),
+pasted after the decision-19 data-list fix.
+
+- **decision-19 data-list: PASS.** The assembled component survives:
+  `<dl>` with flex-wrap styles, all four dt/dd pairs as direct children
+  with their flex/padding/border styles, `.data-key` chip spans styled,
+  `:last-of-type` border removal intact.
+- **NEW: `font-weight` (longhand) is STRIPPED.** The sent fragment
+  carried 21 `font-weight` declarations (600/700/750/800); exactly one
+  survived — the term chip, the only element styled with the `font:`
+  shorthand, which Canvas expands to longhands and keeps. Every other
+  bold label (callout/checkpoint titles, video/link titles, wordmark
+  size spans, est-chip, data-key) flattens to normal weight in Canvas.
+  Retro-check: the same stripping is visible in the first 2026-07-06
+  specimen save — this has been true all along, unnoticed because weight
+  loss is subtle at small mono sizes. `<b>` is rewritten to `<strong>`
+  (bold survives as markup). Remediation is a design decision: move
+  weighted span styles to the `font:` shorthand (verified survivor),
+  wrap labels in `<strong>`, or accept the flattening per label.
+
+## Probe results — specimen paste test #3, 2026-07-06
+
+Verified via saved DOM (third save of `specimen/speciment-canvas-test.html`),
+pasted after the decision-20 shorthand conversion.
+
+- **decision-20 `font:` shorthand: PASS, all weights.** Every shorthand
+  survived, expanded by Canvas into longhands with the weight kept:
+  600 ×9, 700 ×9 (normalized to the keyword `bold`), **750** (the
+  wordmark — the nonstandard numeric weight survives too), 800 ×3.
+  Line-heights and families intact. The deliberate `.content strong`
+  `font-weight: 680` longhand was stripped as expected (element-default
+  bold applies). The wordmark's `font-size` longhand fallback proved
+  unnecessary but is harmless — kept.
+
 ## Still open
 
 - a YouTube `<iframe>` embed (for the option-C opt-in)
-- alpha-background dim dots (fix shipped 2026-06-12; confirm on next paste)
-- dl/dt/dd elements and the data-list flex rows (new in v1.1.0)
-- content-icon PNG `<img>` swaps surviving a real Canvas paste (new
-  2026-07-04; URLs 404 until the commit is pushed and Pages deploys)

@@ -95,6 +95,9 @@ export async function enhance($) {
   // --- 4. data-list: ::: data-list around a markdown list → semantic <dl> --
   // Zero-tables policy: key-value data is a definition list, never a table.
   // Author writes `- **key** — value`; bold lead becomes the <dt>.
+  // dt/dd must be DIRECT children of the dl: Canvas's sanitizer unwraps any
+  // wrapper div between dl and dt/dd (probe 2026-07-06), so the row layout
+  // lives in CSS (flex-wrap) and the key chip on an inner span.
   $("div.data-list").each((_, el) => {
     const div = $(el);
     const items = div.find("> ul > li");
@@ -105,7 +108,7 @@ export async function enhance($) {
       const keyHtml = key.length ? key.html() : "";
       key.remove();
       const value = (item.html() ?? "").replace(/^\s*(—|–|-|:)?\s*/, "");
-      return `<div class="data-row"><dt>${keyHtml}</dt><dd>${value}</dd></div>`;
+      return `<dt><span class="data-key">${keyHtml}</span></dt><dd>${value}</dd>`;
     });
     div.replaceWith(`<dl class="data-list">${rows.join("")}</dl>`);
   });

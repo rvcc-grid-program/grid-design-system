@@ -223,9 +223,12 @@ a:hover {
 }
 
 .brand .wordmark {
-  font-weight: 750;
-  letter-spacing: 0.16em;
+  /* font-size longhand kept as fallback: 750 is a nonstandard weight and
+     Canvas's shorthand parser is unverified for it (multiples of 100 are
+     proven) — if the shorthand is dropped, size/family still survive */
   font-size: 0.78rem;
+  font: 750 0.78rem/1.6 var(--font-sans);
+  letter-spacing: 0.16em;
   color: hsl(var(--ink-muted));
 }
 
@@ -287,8 +290,7 @@ a:hover {
 
 .module-label {
   margin: 0 0 6px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font: 700 0.8rem/1.6 var(--font-sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: hsl(var(--ink-muted));
@@ -321,26 +323,20 @@ h1.page-title {
   margin: 34px 0 14px;
   padding-bottom: 10px;
   border-bottom: 1px solid hsl(var(--line));
-  font-size: 1.625rem;
-  font-weight: 800;
+  font: 800 1.625rem/1.3 var(--font-sans);
   letter-spacing: -0.01em;
-  line-height: 1.3;
   color: hsl(var(--ink));
 }
 
 .content h3 {
   margin: 26px 0 10px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.3;
+  font: 700 1.25rem/1.3 var(--font-sans);
   color: hsl(var(--ink));
 }
 
 .content h4 {
   margin: 20px 0 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.3;
+  font: 700 1rem/1.3 var(--font-sans);
   color: hsl(var(--ink));
 }
 
@@ -521,8 +517,7 @@ a.wikilink:hover {
 }
 
 a.video-title {
-  font-size: 1.0625rem;
-  font-weight: 700;
+  font: 700 1.0625rem/1.6 var(--font-sans);
   color: hsl(var(--link));
 }
 
@@ -566,9 +561,7 @@ a.video-title {
 
 .objectives-kicker {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font: 600 0.875rem/1.6 var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: hsl(var(--accent-soft-ink));
@@ -620,7 +613,7 @@ a.video-title {
 }
 
 .link-body a {
-  font-weight: 700;
+  font: 700 1rem/1.6 var(--font-sans);
 }
 
 .link-url {
@@ -640,9 +633,7 @@ a.video-title {
 /* ========================= estimated time ======================== */
 .est-chip {
   display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font: 600 0.875rem/1.6 var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: hsl(var(--ink-muted));
@@ -654,7 +645,7 @@ a.video-title {
 }
 
 .est-chip strong {
-  font-weight: 600;
+  font: 600 0.875rem/1.6 var(--font-mono);
   color: inherit;
 }
 
@@ -684,9 +675,7 @@ a.video-title {
 
 .checkpoint-title {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font: 600 0.875rem/1.6 var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: hsl(var(--ok));
@@ -728,8 +717,7 @@ a.video-title {
 }
 
 .callout-title {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font: 700 0.875rem/1.6 var(--font-sans);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -781,39 +769,45 @@ a.video-title {
 }
 
 /* ========================== data-list ============================ */
-/* Zero-tables policy: key-value data renders as a semantic <dl> with flex
-   rows (Canvas-verified), never a <table>. Keys wear the mono chip. */
+/* Zero-tables policy: key-value data renders as a semantic <dl>, never a
+   <table>. dt/dd are DIRECT children of the dl — Canvas's sanitizer unwraps
+   any wrapper div between them (probe 2026-07-06) — so rows come from
+   flex-wrap: each dd fills the rest of its line, forcing the next dt to
+   wrap. Keys wear the mono chip on an inner .data-key span. */
 dl.data-list {
   margin: 0 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
 }
 
-.data-list .data-row {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
+.data-list dt {
+  flex: 0 0 6.5rem;
   padding: 7px 0;
   border-bottom: 1px solid hsl(var(--line));
 }
 
-.data-list .data-row:last-child {
+.data-list dd {
+  flex: 1 1 70%;
+  margin: 0;
+  padding: 7px 0 7px 12px;
+  border-bottom: 1px solid hsl(var(--line));
+}
+
+.data-list dt:last-of-type,
+.data-list dd:last-of-type {
   border-bottom: 0;
 }
 
-.data-list dt {
-  flex: none;
+.data-list .data-key {
+  display: inline-block;
   min-width: 5.5rem;
   text-align: center;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font: 600 0.875rem/1.6 var(--font-mono);
   color: hsl(var(--accent-soft-ink));
   background: hsl(var(--accent-soft));
   border-radius: var(--r-sm);
   padding: 1px 8px;
-}
-
-.data-list dd {
-  margin: 0;
 }
 
 /* ===================== icon gallery (docs site) =================== */
@@ -994,7 +988,7 @@ Canvas sanitizer findings, <code>DECISIONS.md</code> for why everything is the w
 is, and <code>CONTRAST.md</code> for the generated accessibility verification. Build
 this site with <code>pnpm run site</code>.</p>
 <p>Course wikis consume the system as a pinned package —
-<code>pnpm add "github:rvcc-grid-program/grid-design-system#v1.0.0"</code> — and get
+<code>pnpm add "github:rvcc-grid-program/grid-design-system#v1.2.0"</code> — and get
 the <code>grid-preview</code> / <code>grid-canvas</code> CLIs plus a <code>grid.config.json</code> for their
 course branding. The first consumer is the IDMX-225 wiki.</p>
 

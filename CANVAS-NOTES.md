@@ -15,33 +15,37 @@ host page you don't control.
 ## 1. The CSS property allowlist
 
 Canvas keeps the `style` attribute but filters it property-by-property.
-Verdicts below are from paste tests on 2026-06-11/12.
+Verdicts below are from paste tests on 2026-06-11/12 and 2026-07-06.
 
 ### Verified — survives
 
-| Property                                                               | Notes                                                         |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `display: flex`, `gap`                                                 | Whole rows depend on these (masthead, video meta) — they held |
-| `margin-left: auto`                                                    | Right-aligns the term pill inside flex                        |
-| positive `margin`, `padding`                                           | The system's entire spacing rhythm                            |
-| `border`, `border-radius`                                              | Borders do ALL structural work in this system                 |
-| `background`, incl. `linear-gradient(…)`                               | The brand-mark gradient survives                              |
-| Modern `hsl()` syntax, **including alpha** (`hsl(230 76% 52% / 0.42)`) | Alpha colors are the sanctioned substitute for `opacity`      |
-| `overflow: hidden`                                                     |                                                               |
-| `font-*`, `line-height`, `text-align`, `text-decoration`               |                                                               |
-| `max-width`, `width`, `height` on block elements                       |                                                               |
+| Property                                                               | Notes                                                                                                               |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `display: flex`, `gap`                                                 | Whole rows depend on these (masthead, video meta) — they held                                                       |
+| `margin-left: auto`                                                    | Right-aligns the term pill inside flex                                                                              |
+| positive `margin`, `padding`                                           | The system's entire spacing rhythm                                                                                  |
+| `border`, `border-radius`                                              | Borders do ALL structural work in this system                                                                       |
+| `background`, incl. `linear-gradient(…)`                               | The brand-mark gradient survives                                                                                    |
+| Modern `hsl()` syntax, **including alpha** (`hsl(230 76% 52% / 0.42)`) | Alpha colors are the sanctioned substitute for `opacity`                                                            |
+| `overflow: hidden`                                                     |                                                                                                                     |
+| `font-family`, `font-size`, `line-height`, `text-align`                | but NOT `font-weight` — see STRIPPED (2026-07-06)                                                                   |
+| `font:` shorthand                                                      | Expanded to longhands on save, **weight included** — the sanctioned way to bold a styled span (term chip proves it) |
+| `text-decoration`                                                      |                                                                                                                     |
+| `max-width`, `width`, `height` on block elements                       |                                                                                                                     |
+| `flex` shorthand (`none`, `0 0 6.5rem`, `1 1 70%`), `flex-wrap`        | The data-list rows and every tile depend on these (2026-07-06)                                                      |
 
 ### Verified — STRIPPED
 
-| Property             | Discovered because                             | Workaround                                                    |
-| -------------------- | ---------------------------------------------- | ------------------------------------------------------------- |
-| `text-transform`     | Uppercase labels rendered lowercase            | Build bakes uppercase into the text itself                    |
-| `box-shadow`         | Cards rendered flat                            | None needed — shadows are decoration; borders carry structure |
-| `letter-spacing`     | Wordmark tracking flattened                    | Accepted; nothing structural depends on tracking              |
-| `opacity`            | Dimmed brand dots rendered full-strength       | Alpha color values (`hsl(… / 0.42)`) instead                  |
-| **negative margins** | The thumbnail letterbox crop silently became 0 | Solve at build time, not in CSS (see §4 video)                |
-| `aspect-ratio`       | Letterbox bars appeared                        | Build-time thumbnail selection                                |
-| `object-fit`         | (same)                                         | (same)                                                        |
+| Property                 | Discovered because                                                                                                                                                                                                                         | Workaround                                                                                                                                                                                                                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text-transform`         | Uppercase labels rendered lowercase                                                                                                                                                                                                        | Build bakes uppercase into the text itself                                                                                                                                                                                                                                                                     |
+| `box-shadow`             | Cards rendered flat                                                                                                                                                                                                                        | None needed — shadows are decoration; borders carry structure                                                                                                                                                                                                                                                  |
+| `letter-spacing`         | Wordmark tracking flattened                                                                                                                                                                                                                | Accepted; nothing structural depends on tracking                                                                                                                                                                                                                                                               |
+| `opacity`                | Dimmed brand dots rendered full-strength                                                                                                                                                                                                   | Alpha color values (`hsl(… / 0.42)`) instead                                                                                                                                                                                                                                                                   |
+| **negative margins**     | The thumbnail letterbox crop silently became 0                                                                                                                                                                                             | Solve at build time, not in CSS (see §4 video)                                                                                                                                                                                                                                                                 |
+| `aspect-ratio`           | Letterbox bars appeared                                                                                                                                                                                                                    | Build-time thumbnail selection                                                                                                                                                                                                                                                                                 |
+| `object-fit`             | (same)                                                                                                                                                                                                                                     | (same)                                                                                                                                                                                                                                                                                                         |
+| `font-weight` (longhand) | Specimen paste 2026-07-06: 21 sent, 1 survived — every bold label (callout/checkpoint titles, video/link titles, chips) flattened to normal. The lone survivor came from a `font:` shorthand, which Canvas expands to longhands and keeps. | Use the `font:` shorthand for weighted spans, or real `<strong>` (survives; `<b>` is rewritten to `<strong>`). Fixed 2026-07-06 (DECISIONS.md 20): all Canvas-visible weighted rules converted to the shorthand. Paste-confirmed same day: 600/700/750/800 all survive (700 comes back as the keyword `bold`). |
 
 ### Impossible by nature (inline styles can't express them)
 
@@ -56,14 +60,27 @@ preview-only garnish.
 
 ## 2. Elements and attributes
 
-- **Stripped elements**: `<style>`, `<script>`, `<svg>`. The GRID brand mark
-  is built from styled `<span>` dots for exactly this reason. Icons must be
+- **Stripped elements**: `<style>`, `<script>`, `<svg>`. The GRID brand mark is
+  built from styled `<span>` dots for exactly this reason. Icons must be
   hosted images — never inline SVG. As of 2026-07-04 the five content-icon
   tiles use baked-color transparent PNGs hosted on the Pages site
   (`docs/icons/generated/<use>@3x.png`, generated by `pnpm run build:icons`);
   the Canvas build swaps every `<svg class="gi">` for the matching `<img>`.
-  **Paste test pending** — verify the `<img>` swaps survive a real Canvas
-  paste and date the verdict here.
+  **Verified 2026-07-06** (specimen paste, saved DOM re-inspected): all
+  five `<img>` swaps survive with `src`, `alt=""`, width/height, and
+  `display:block` intact.
+- **The sanitizer enforces a strict dl content model** (targeted dl-probe,
+  2026-07-06): `<dl>`/`<dt>`/`<dd>` SURVIVE intact — including their
+  inline styles and `data-*` attributes — but ONLY when dt/dd are direct
+  children of a `<dl>`. Anything else is unwrapped on save: dt/dd inside a
+  `<div>` row inside the dl (the original v1.1.0 data-list markup — note
+  this div-in-dl grouping IS legal HTML5; Canvas is stricter than the
+  spec), or dt/dd with no dl ancestor, lose their tags and merge into the
+  parent's text. Div/span equivalents of the same layout survive verbatim.
+  Consequence shipped 2026-07-06: data-list emits dt/dd as direct dl
+  children, rows via flex-wrap, key chip on an inner span (all
+  probe-verified primitives). Assume similarly strict content models for
+  other structured elements (table-adjacent, figure, etc.) until probed.
 - **Empty elements are dropped entirely.** A `<span>` with only a style
   attribute vanishes on save. Every decorative-box element carries
   `&nbsp;` content.
