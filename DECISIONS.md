@@ -282,6 +282,66 @@ viable embed path — a future, separate change may propose the authoring
 construct per the new-construct checklist. Paste-vs-imscc-import parity is
 still untested; do not assume it.
 
+## Accent v2 — Indigo primary + Amber highlight, 2026-07-07
+
+Primary accent switched blue → **Indigo-Violet** (`--accent: 256 60% 56%`,
+light) to echo the brand mark; `--link`, `--accent-soft*`, `--focus`, and
+`--glow` retuned to the indigo hue. Dark scopes updated in lockstep (both
+the `prefers-color-scheme` block and the `[data-mode="dark"]` block — the
+two dark blocks this repo keeps in sync).
+
+New secondary **Amber** accent added as `--accent-2*` (`--accent-2`,
+`--accent-2-ink`, `--accent-2-soft`, `--accent-2-soft-ink`,
+`--accent-2-line`), **HIGHLIGHT ONLY** — labels and prose highlights,
+never a primary button, link, or focus ring. The guardrail is structural:
+**no white-on-amber token exists**, so a compliant amber primary cannot be
+assembled from the system. Shipped two utilities in `grid-components.css`:
+`.hl` (prose highlight, amber wash behind ink text) and `.tag` (uppercase
+mono label pill).
+
+Surfaces, ink, `ok`, and `danger` unchanged. All new pairings verified
+≥ AA (see CONTRAST.md, regenerated this turn). LOCKED token values; this
+entry authorizes them.
+
+## Amber highlight variants — highlighter + soft pill, 2026-07-07
+
+The amber highlight family gained a second prose weight and an explicit
+name for the first. `.hl` now also answers to **`.hl-highlighter`** (same
+amber wash behind ink text — the loud, full-swash emphasis); `.hl` remains
+the shorthand so existing authored content is unaffected.
+
+New **`.hl-pill`** is a _soft pill_ inline highlight: rounded,
+`--accent-2-soft` tint with `--accent-2-soft-ink` deep-amber ink — the
+same pairing `.tag` uses — but flowing as prose rather than an uppercase
+label. It is the quieter of the two: use it to tint a value or term; use
+the highlighter (`.hl` / `.hl-highlighter`) for the loudest in-sentence
+emphasis. No tokens changed — both variants reuse existing `--accent-2*`
+values, so light and dark inherit automatically and the
+amber-as-highlight-only guardrail is untouched.
+
+## Token values are mirrored in four places, 2026-07-07
+
+Surfaced during the Accent v2 change: editing `css/grid-tokens.css` is not a
+single-file edit. The same token values are duplicated by hand in **four**
+spots, none of which the CSS updates automatically:
+
+1. `grid-tokens.css` light `:root` — the source of truth.
+2. `grid-tokens.css` dark block #1 — `@media (prefers-color-scheme: dark)`.
+3. `grid-tokens.css` dark block #2 — `:root[data-mode="dark"]` (identical to #1).
+4. `scripts/contrast.js` — hardcoded `light`/`dark` triplet objects. Its
+   generated CONTRAST.md header says the values come from `grid-tokens.css`,
+   but the script never reads the CSS. Left unsynced it silently reports the
+   OLD ratios (this is exactly what happened mid-change and was caught).
+5. `pipeline/icons.js` `INK_LITERALS` — a light-`:root` hex mirror used as the
+   rasterizer fallback. `build-icons.js` reads the real CSS, so shipped PNGs
+   are correct; the fallback still goes stale.
+
+Decision: keep the mirrors (converting `contrast.js` / `icons.js` to parse the
+CSS is a bigger change than this warranted) but document the coupling here and
+in CLAUDE.md so the next token edit updates all of them and re-runs
+`pnpm run contrast`. If this bites again, revisit making `contrast.js` read
+`grid-tokens.css` directly.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified

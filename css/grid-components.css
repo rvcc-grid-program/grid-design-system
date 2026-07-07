@@ -745,6 +745,45 @@ dl.data-list {
   border-color: hsl(220 22% 85%);
 }
 
+/* ==================== amber highlight (accent-2) ================= */
+/* Secondary accent — HIGHLIGHT ONLY. Prose highlights come in two weights, both
+   readable (ink or deep-amber) and Canvas-safe (hsl / hsl-alpha survive inlining):
+     .hl / .hl-highlighter — highlighter: amber wash behind ink text (full swash).
+                             .hl is the shorthand; .hl-highlighter the explicit name.
+     .hl-pill              — soft pill: rounded amber-soft tint + deep-amber ink,
+                             inline in a sentence. Softer than the highlighter.
+   .tag = label pill (NEW / BETA / DUE SOON). No white-on-amber — amber is never
+   a primary button, link, or focus ring. */
+.hl,
+.hl-highlighter {
+  background: hsl(var(--accent-2) / 0.4);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.05em 0.22em;
+  border-radius: 4px;
+  font-weight: 700;
+}
+.hl-pill {
+  background: hsl(var(--accent-2-soft));
+  color: hsl(var(--accent-2-soft-ink));
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.1em 0.5em;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.tag {
+  display: inline-block;
+  vertical-align: middle;
+  font: 700 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+  background: hsl(var(--accent-2-soft));
+  color: hsl(var(--accent-2-soft-ink));
+}
+
 /* ============================= print ============================= */
 @media print {
   body,

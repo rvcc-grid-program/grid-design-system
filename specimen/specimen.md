@@ -42,6 +42,11 @@ Make sure filename extensions are visible on your machine. Press
 <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> to show hidden files in the
 Finder open dialog.
 
+Filenames are [case-sensitive]{.hl} on most servers, so treat
+[my-file.html]{.hl-pill} and [My-File.html]{.hl-pill} as two different
+files. When in doubt, [lowercase everything]{.hl-highlighter}.
+<span class="tag">Tested</span>
+
 ::: link-row
 [Windows Basics — Working with Files](https://edu.gcfglobal.org/en/windowsbasics/working-with-files/1/)
 :::

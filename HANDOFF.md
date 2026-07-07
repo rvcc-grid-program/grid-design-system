@@ -56,6 +56,9 @@ Plain markdown everywhere, plus exactly these constructs:
 | Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                                                                                                                                  |
 | Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                                                                                                                         |
 | Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), rows via flex-wrap — NEVER a `<table>` (zero-tables policy) |
+| Prose highlight     | `[key phrase]{.hl}` (or `.hl-highlighter`)                                                                       | `.hl` amber wash behind ink text — loudest in-sentence emphasis; `.hl` and `.hl-highlighter` are identical                                                                  |
+| Soft-pill highlight | `[key phrase]{.hl-pill}`                                                                                         | `.hl-pill` rounded amber-soft tint + deep-amber ink — quieter inline emphasis for a value or term                                                                           |
+| Label pill          | `<span class="tag">NEW</span>` (inline HTML)                                                                     | `.tag` uppercase mono pill (NEW / BETA / DUE SOON)                                                                                                                          |
 | Code                | standard fenced block / inline backticks                                                                         | `.content pre` / inline `code` chip                                                                                                                                         |
 | Keys                | `<kbd>Cmd</kbd>` (inline HTML)                                                                                   | keycap style                                                                                                                                                                |
 
@@ -131,6 +134,13 @@ reproduce it exactly.
   </div>
 </div>
 
+<!-- amber highlights (inline span utilities; authored as [text]{.class} or
+     raw <span>, passed through untouched — no markdown container). -->
+<span class="hl">case-sensitive</span>
+<span class="hl-highlighter">lowercase everything</span>
+<span class="hl-pill">my-file.html</span>
+<span class="tag">NEW</span>
+
 <!-- masthead (templates.js; module label from frontmatter module_title,
      program/term/course from the consumer's grid.config.json) -->
 <div class="brand">
@@ -176,6 +186,11 @@ one ad hoc.
 - **Brand mark**: dot spans contain `&nbsp;` (Canvas drops empty elements);
   the `.dim` dots use an alpha background color, not `opacity` — alpha
   survives, opacity doesn't.
+- **Amber highlights** (`.hl` / `.hl-highlighter` / `.hl-pill` / `.tag`):
+  built from solid `hsl()` + `hsl()` alpha + `border-radius` only — all
+  survive Canvas inlining. `.tag`'s `letter-spacing` and `text-transform`
+  are stripped/baked (the label still reads uppercase); no `box-shadow` or
+  `opacity` on any of them, so the amber wash and pill tints carry through.
 - **Shadows**: stripped in Canvas — only ever decorative; borders carry
   the structure everywhere.
 - **Spacing is margin-based** by design: if flex were ever stripped, content

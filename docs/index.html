@@ -35,13 +35,21 @@ try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m ==
   --ink-muted: 220 14% 37%;
   --line: 220 22% 85%;
   --line-strong: 220 20% 70%;
-  --accent: 230 76% 52%;
+  /* accent — primary (Indigo-Violet) */
+  --accent: 256 60% 56%;
   --accent-ink: 0 0% 100%;
-  --link: 230 80% 45%;
-  --accent-soft: 226 84% 94%;
-  --accent-soft-ink: 230 70% 38%;
-  --focus: 230 88% 48%;
-  --glow: 215 95% 60%;
+  --link: 256 64% 48%;
+  --accent-soft: 256 82% 95%;
+  --accent-soft-ink: 256 58% 45%;
+  /* accent-2 — secondary (Amber, HIGHLIGHT ONLY) */
+  --accent-2: 38 92% 50%;
+  --accent-2-ink: 30 82% 20%;
+  --accent-2-soft: 43 96% 92%;
+  --accent-2-soft-ink: 30 88% 30%;
+  --accent-2-line: 40 85% 62%;
+  /* effects */
+  --focus: 256 82% 56%;
+  --glow: 250 92% 62%;
   --ok: 150 55% 30%;
   --ok-ink: 120 40% 98%;
   --ok-soft: 150 52% 93%;
@@ -64,13 +72,18 @@ try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m ==
     --ink-muted: 220 16% 71%;
     --line: 222 20% 24%;
     --line-strong: 222 18% 38%;
-    --accent: 226 92% 72%;
-    --accent-ink: 224 44% 8%;
-    --link: 226 94% 78%;
-    --accent-soft: 228 42% 20%;
-    --accent-soft-ink: 226 88% 82%;
-    --focus: 210 96% 66%;
-    --glow: 215 96% 64%;
+    --accent: 256 88% 78%;
+    --accent-ink: 256 44% 10%;
+    --link: 256 92% 82%;
+    --accent-soft: 256 40% 22%;
+    --accent-soft-ink: 256 90% 85%;
+    --accent-2: 40 92% 62%;
+    --accent-2-ink: 36 60% 12%;
+    --accent-2-soft: 36 38% 20%;
+    --accent-2-soft-ink: 42 95% 74%;
+    --accent-2-line: 40 55% 42%;
+    --focus: 250 96% 74%;
+    --glow: 250 96% 66%;
     --ok: 150 56% 60%;
     --ok-ink: 150 40% 9%;
     --ok-soft: 150 28% 16%;
@@ -94,13 +107,18 @@ try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m ==
   --ink-muted: 220 16% 71%;
   --line: 222 20% 24%;
   --line-strong: 222 18% 38%;
-  --accent: 226 92% 72%;
-  --accent-ink: 224 44% 8%;
-  --link: 226 94% 78%;
-  --accent-soft: 228 42% 20%;
-  --accent-soft-ink: 226 88% 82%;
-  --focus: 210 96% 66%;
-  --glow: 215 96% 64%;
+  --accent: 256 88% 78%;
+  --accent-ink: 256 44% 10%;
+  --link: 256 92% 82%;
+  --accent-soft: 256 40% 22%;
+  --accent-soft-ink: 256 90% 85%;
+  --accent-2: 40 92% 62%;
+  --accent-2-ink: 36 60% 12%;
+  --accent-2-soft: 36 38% 20%;
+  --accent-2-soft-ink: 42 95% 74%;
+  --accent-2-line: 40 55% 42%;
+  --focus: 250 96% 74%;
+  --glow: 250 96% 66%;
   --ok: 150 56% 60%;
   --ok-ink: 150 40% 9%;
   --ok-soft: 150 28% 16%;
@@ -858,6 +876,45 @@ dl.data-list {
   border-color: hsl(220 22% 85%);
 }
 
+/* ==================== amber highlight (accent-2) ================= */
+/* Secondary accent — HIGHLIGHT ONLY. Prose highlights come in two weights, both
+   readable (ink or deep-amber) and Canvas-safe (hsl / hsl-alpha survive inlining):
+     .hl / .hl-highlighter — highlighter: amber wash behind ink text (full swash).
+                             .hl is the shorthand; .hl-highlighter the explicit name.
+     .hl-pill              — soft pill: rounded amber-soft tint + deep-amber ink,
+                             inline in a sentence. Softer than the highlighter.
+   .tag = label pill (NEW / BETA / DUE SOON). No white-on-amber — amber is never
+   a primary button, link, or focus ring. */
+.hl,
+.hl-highlighter {
+  background: hsl(var(--accent-2) / 0.4);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.05em 0.22em;
+  border-radius: 4px;
+  font-weight: 700;
+}
+.hl-pill {
+  background: hsl(var(--accent-2-soft));
+  color: hsl(var(--accent-2-soft-ink));
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.1em 0.5em;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.tag {
+  display: inline-block;
+  vertical-align: middle;
+  font: 700 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+  background: hsl(var(--accent-2-soft));
+  color: hsl(var(--accent-2-soft-ink));
+}
+
 /* ============================= print ============================= */
 @media print {
   body,
@@ -988,7 +1045,7 @@ Canvas sanitizer findings, <code>DECISIONS.md</code> for why everything is the w
 is, and <code>CONTRAST.md</code> for the generated accessibility verification. Build
 this site with <code>pnpm run site</code>.</p>
 <p>Course wikis consume the system as a pinned package —
-<code>pnpm add "github:rvcc-grid-program/grid-design-system#v1.2.0"</code> — and get
+<code>pnpm add "github:rvcc-grid-program/grid-design-system#v1.3.0"</code> — and get
 the <code>grid-preview</code> / <code>grid-canvas</code> CLIs plus a <code>grid.config.json</code> for their
 course branding. The first consumer is the IDMX-225 wiki.</p>
 

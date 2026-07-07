@@ -15,7 +15,18 @@ host page you don't control.
 ## 1. The CSS property allowlist
 
 Canvas keeps the `style` attribute but filters it property-by-property.
-Verdicts below are from paste tests on 2026-06-11/12 and 2026-07-06.
+Verdicts below are from paste tests on 2026-06-11/12, 2026-07-06, and
+2026-07-07.
+
+**Amber highlight utilities — Verified 2026-07-07** (Accent v2 paste test,
+instructor-confirmed). `.hl` / `.hl-highlighter` (amber wash: `hsl()` alpha
+background behind ink text), `.hl-pill` and `.tag` (solid `hsl()` amber-soft
+background + deep-amber `hsl()` ink, `border-radius`) all survive the paste —
+they reuse only already-verified properties, so nothing new was at risk.
+`.tag`'s `letter-spacing`/`text-transform` strip/bake as expected (label still
+reads uppercase). The indigo Accent v2 token swap changes only color values,
+not which properties are used — no regression to the survives/stripped tables
+below.
 
 ### Verified — survives
 

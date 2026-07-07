@@ -89,6 +89,6 @@ is, and `CONTRAST.md` for the generated accessibility verification. Build
 this site with `pnpm run site`.
 
 Course wikis consume the system as a pinned package —
-`pnpm add "github:rvcc-grid-program/grid-design-system#v1.2.0"` — and get
+`pnpm add "github:rvcc-grid-program/grid-design-system#v1.3.0"` — and get
 the `grid-preview` / `grid-canvas` CLIs plus a `grid.config.json` for their
 course branding. The first consumer is the IDMX-225 wiki.

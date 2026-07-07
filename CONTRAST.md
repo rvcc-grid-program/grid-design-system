@@ -15,17 +15,19 @@ Canvas receives the light theme only.
 | Muted text on content card | `ink-muted` on `surface` | 6.94:1 | 4.5:1 | pass |
 | Muted text on surface-2 (chips, kickers) | `ink-muted` on `surface-2` | 5.98:1 | 4.5:1 | pass |
 | Muted text on paper (wordmark, module label) | `ink-muted` on `paper` | 6.30:1 | 4.5:1 | pass |
-| Links on content card | `link` on `surface` | 8.56:1 | 4.5:1 | pass |
-| Wikilink / note title / term pill | `accent-soft-ink` on `accent-soft` | 8.33:1 | 4.5:1 | pass |
-| Objectives kicker on surface-2 | `accent-soft-ink` on `surface-2` | 8.70:1 | 4.5:1 | pass |
+| Links on content card | `link` on `surface` | 8.09:1 | 4.5:1 | pass |
+| Wikilink / note title / term pill | `accent-soft-ink` on `accent-soft` | 7.10:1 | 4.5:1 | pass |
+| Objectives kicker on surface-2 | `accent-soft-ink` on `surface-2` | 7.33:1 | 4.5:1 | pass |
 | Warning title on danger-soft | `danger` on `danger-soft` | 5.48:1 | 4.5:1 | pass |
 | Body text inside warning callout | `ink` on `danger-soft` | 14.85:1 | 4.5:1 | pass |
-| Links inside warning callout | `link` on `danger-soft` | 7.53:1 | 4.5:1 | pass |
-| Body text inside note callout | `ink` on `accent-soft` | 13.93:1 | 4.5:1 | pass |
-| Links inside note callout | `link` on `accent-soft` | 7.06:1 | 4.5:1 | pass |
+| Links inside warning callout | `link` on `danger-soft` | 7.11:1 | 4.5:1 | pass |
+| Body text inside note callout | `ink` on `accent-soft` | 14.12:1 | 4.5:1 | pass |
+| Links inside note callout | `link` on `accent-soft` | 6.76:1 | 4.5:1 | pass |
 | Checkpoint title on ok-soft | `ok` on `ok-soft` | 4.94:1 | 4.5:1 | pass |
 | Body text inside checkpoint | `ink` on `ok-soft` | 15.09:1 | 4.5:1 | pass |
-| Play tile / callout ico glyph | `accent-ink` on `accent` | 6.83:1 | 3:1 | pass |
+| Tag / soft-pill highlight text | `accent-2-soft-ink` on `accent-2-soft` | 5.88:1 | 4.5:1 | pass |
+| Ink over amber highlight wash | `accent-2-ink` on `accent-2` | 5.06:1 | 4.5:1 | pass |
+| Play tile / callout ico glyph | `accent-ink` on `accent` | 5.78:1 | 3:1 | pass |
 | Warning ico glyph | `danger-ink` on `danger` | 6.24:1 | 3:1 | pass |
 | Checkpoint mark glyph | `ok-ink` on `ok` | 5.34:1 | 3:1 | pass |
 
@@ -39,17 +41,19 @@ Canvas receives the light theme only.
 | Muted text on content card | `ink-muted` on `surface` | 8.19:1 | 4.5:1 | pass |
 | Muted text on surface-2 (chips, kickers) | `ink-muted` on `surface-2` | 7.36:1 | 4.5:1 | pass |
 | Muted text on paper (wordmark, module label) | `ink-muted` on `paper` | 8.74:1 | 4.5:1 | pass |
-| Links on content card | `link` on `surface` | 7.92:1 | 4.5:1 | pass |
-| Wikilink / note title / term pill | `accent-soft-ink` on `accent-soft` | 7.85:1 | 4.5:1 | pass |
-| Objectives kicker on surface-2 | `accent-soft-ink` on `surface-2` | 8.46:1 | 4.5:1 | pass |
+| Links on content card | `link` on `surface` | 8.47:1 | 4.5:1 | pass |
+| Wikilink / note title / term pill | `accent-soft-ink` on `accent-soft` | 7.99:1 | 4.5:1 | pass |
+| Objectives kicker on surface-2 | `accent-soft-ink` on `surface-2` | 8.74:1 | 4.5:1 | pass |
 | Warning title on danger-soft | `danger` on `danger-soft` | 6.23:1 | 4.5:1 | pass |
 | Body text inside warning callout | `ink` on `danger-soft` | 13.22:1 | 4.5:1 | pass |
-| Links inside warning callout | `link` on `danger-soft` | 6.90:1 | 4.5:1 | pass |
-| Body text inside note callout | `ink` on `accent-soft` | 12.66:1 | 4.5:1 | pass |
-| Links inside note callout | `link` on `accent-soft` | 6.61:1 | 4.5:1 | pass |
+| Links inside warning callout | `link` on `danger-soft` | 7.38:1 | 4.5:1 | pass |
+| Body text inside note callout | `ink` on `accent-soft` | 12.46:1 | 4.5:1 | pass |
+| Links inside note callout | `link` on `accent-soft` | 6.95:1 | 4.5:1 | pass |
 | Checkpoint title on ok-soft | `ok` on `ok-soft` | 7.08:1 | 4.5:1 | pass |
 | Body text inside checkpoint | `ink` on `ok-soft` | 11.44:1 | 4.5:1 | pass |
-| Play tile / callout ico glyph | `accent-ink` on `accent` | 6.69:1 | 3:1 | pass |
+| Tag / soft-pill highlight text | `accent-2-soft-ink` on `accent-2-soft` | 8.23:1 | 4.5:1 | pass |
+| Ink over amber highlight wash | `accent-2-ink` on `accent-2` | 8.94:1 | 4.5:1 | pass |
+| Play tile / callout ico glyph | `accent-ink` on `accent` | 7.61:1 | 3:1 | pass |
 | Warning ico glyph | `danger-ink` on `danger` | 7.09:1 | 3:1 | pass |
 | Checkpoint mark glyph | `ok-ink` on `ok` | 9.03:1 | 3:1 | pass |
 

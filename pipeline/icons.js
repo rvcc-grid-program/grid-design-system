@@ -44,7 +44,7 @@ export const ICON_USES = {
    that instead so they never drift; this map is the authoritative fallback. */
 export const INK_LITERALS = {
   "accent-ink": "#FFFFFF", // --accent-ink: 0 0% 100%
-  "accent-soft-ink": "#1D34A5", // --accent-soft-ink: 230 70% 38%
+  "accent-soft-ink": "#5430B5", // --accent-soft-ink: 256 58% 45%
   "ok-ink": "#FAFDFA", // --ok-ink: 120 40% 98%
   "danger-ink": "#FFFFFF", // --danger-ink: 0 0% 100%
 };
