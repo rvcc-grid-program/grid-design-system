@@ -65,6 +65,15 @@ Plain markdown everywhere, plus exactly these constructs:
 Anything not in this table is plain typography. Do not invent new fenced-div
 names without adding them here and to the CSS.
 
+**Raw-HTML guard.** `html: true` lets the constructs above through, but a tag
+typed loose in prose (a bare `<iframe>`, `<video>`, `<style>`, or a stray
+`<section>`) passes through too — swallowing the rest of the page or vanishing
+silently. `markdown.js` warns (`file:line`, warn-only) on raw HTML outside a
+small hand-writable allowlist (`kbd`, `span`, `br`, `sub`/`sup`, `abbr`,
+`b`/`i`/`em`/`strong`, …; `iframe` only with a YouTube `src`). If you meant a
+tag as text, backtick it; the warning never blocks the build. See DECISIONS.md
+"Raw-HTML prose guard".
+
 ## DOM contracts (what the pipeline emits)
 
 Structured containers are emitted by `markdown.js` — authors never write

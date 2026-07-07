@@ -360,6 +360,48 @@ produced byte-identical output (empty git diff). Remaining hand-sync surface is
 just the two dark blocks inside `grid-tokens.css` — and even those are now
 guarded.
 
+## Raw-HTML prose guard (warn-only) — 2026-07-07
+
+Prompted by a cross-repo handoff from idmx-225 (a consumer): a bare `<iframe>`
+typed in prose passed through `html: true` as a real element, and because
+`<iframe>` has a raw-text content model with no close tag, it swallowed the
+rest of the document. `<video>`/`<audio>`/`<style>` do the same; ordinary tags
+(`<section>`, `<h2>`) silently vanish. The consumer found 60 such lines across
+19 files (Canvas-export debt) once a strict-enough renderer (ours) exposed it.
+
+Decision: add a **warn-only** guard in `pipeline/markdown.js` (`lintRawHtml`,
+run inside `renderPage`, so every consumer inherits it via the shared
+contract). Chosen over the handoff's other options:
+
+- **Layer:** the markdown-it **token stream**, not a post-render regex. Raw
+  HTML the author typed is `html_block`/`html_inline`; our own constructs
+  (container divs, bracketed spans, attrs, wikilinks) are other token types —
+  so the guard separates "author typed a tag" from "our plugin emitted one"
+  with no allowlist needed for the intentional constructs.
+- **Allowlist = the authoring contract:** a small set of hand-writable inline
+  tags (`kbd`, `span`, `br`, `sub`/`sup`, `abbr`, `b`/`i`/`em`/`strong`, …);
+  `iframe` allowed ONLY with a YouTube `src` (the one blessed embed). Anything
+  else warns `file:line` to stderr.
+- **Warn, not escape.** Escaping non-allowlisted raw HTML changes output for
+  any page relying on passthrough → a breaking (minor/major) bump and probe
+  re-pin coordination. Warn-only is additive: no output change (verified — the
+  specimen builds byte-identically), no throw. Escaping stays a future,
+  separate decision once warnings are quiet across consumers.
+
+We already ship `cheerio` (→ `parse5`/`htmlparser2`) and `enhance.js` parses
+the full page every build, so the handoff's "well-formedness assert" option is
+cheap and remains available as a later belt-and-suspenders pass; the
+token-layer check catches the actual failure mode more precisely. Fixture:
+`pipeline/raw-html-guard.fixture.md` (no test runner here — verify by running
+`lintRawHtml` on it).
+
+Two things the first run surfaced: (1) `matter()` strips frontmatter, so token
+lines needed a `lineOffset` to point back at the original file — `renderPage`
+computes it. (2) The guard immediately caught a real raw `<div class=
+"icon-grid">` — the docs-site icon gallery in `docs/index.md`, which is
+intentional bespoke HTML. Blessed via `ALLOWED_RAW_BLOCKS` (keyed by class), so
+genuinely-authored raw blocks are permitted while stray prose tags still warn.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
