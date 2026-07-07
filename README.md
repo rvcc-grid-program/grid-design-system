@@ -36,6 +36,10 @@ repo. It follows your OS light/dark setting and carries the print styles.
   branding), and the two CLI entry points
 - `design-history/` — provenance: the design brief, the Claude Design
   context package, and the options-canvas exploration the decisions cite
+- `runbooks/` — executable probe and verification procedures, written so a
+  session can run them move by move (expected observation per step, stop
+  conditions, verification checks); verdicts they produce land in
+  DECISIONS.md and CANVAS-NOTES.md
 - `CONTRAST.md` — generated WCAG AA verification
 - `scripts/contrast.js` — regenerates CONTRAST.md from the token values
 

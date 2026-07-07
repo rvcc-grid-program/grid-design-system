@@ -18,6 +18,8 @@ the same commit, update every item in this list that mentions what changed:
 - `CONTRAST.md` — generated; rerun `pnpm run contrast` after ANY token change
 - `docs/` (the public Pages site) — rerun `pnpm run site` after CSS,
   template, or landing-page changes; it deploys on push
+- `runbooks/` — executable probe/verification procedures; update any
+  runbook whose steps, paths, or Expect lines the change made stale
 - this file
 
 Before any commit: grep the doc set for paths, commands, names, and claims

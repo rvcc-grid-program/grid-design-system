@@ -133,6 +133,16 @@ routes these through a sentinel attribute so the global rename skips them.
 - **Canvas Student app dark mode** rewrites inline colors with its own
   transforms. Light-theme colors must not carry meaning through subtle
   tint differences alone; spot-check new components on a phone.
+- **YouTube `<iframe>` embed survives the paste (Verified 2026-07-06)**: a
+  standard `https://www.youtube.com/embed/<id>` iframe pasted into the RCE
+  HTML editor survives intact (Route A of `runbooks/probe-youtube-iframe.md`).
+  Canvas normalizes it cosmetically — adds `loading="lazy"`, expands bare
+  `allowfullscreen` to `allowfullscreen="allowfullscreen"`, reorders
+  attributes, wraps it in a `<p>` — but does **not** rewrite it into its own
+  `data-media`/`instructure` media wrapper. `src`, `title`, `width`/`height`,
+  and `allow` are kept; the embed renders and plays. This is a real embed
+  path (distinct from the auto-embed of a plain YouTube _link_ above). Import
+  parity is untested — see §7.
 - **YouTube thumbnails are letterboxed**: `hqdefault.jpg` is 4:3 with black
   bars around 16:9 content, and Canvas strips every CSS cropping technique
   (negative margins, `aspect-ratio`, `object-fit`). Fix lives in the build:
@@ -180,8 +190,6 @@ _quietly_ (the letterbox crop became `margin: 0` with no error anywhere).
 
 ## 7. Open questions
 
-- `<iframe>` YouTube embed end-to-end (allowed per Canvas docs; untested by
-  us) — needed for the video option-C opt-in.
 - Whether the allowlist differs between paste-into-RCE and **imscc import**
   (the eventual delivery path). Re-run the specimen test on the first
   imported package before trusting parity.

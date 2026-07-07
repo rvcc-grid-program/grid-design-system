@@ -235,6 +235,54 @@ pasted after the decision-20 shorthand conversion.
   bold applies). The wordmark's `font-size` longhand fallback proved
   unnecessary but is harmless — kept.
 
+## Runbooks folder, 2026-07-06
+
+Added tracked `runbooks/` for executable probe/verification procedures:
+move-by-move plans with an expected observation per step, stop conditions
+(sandbox-only, human-eyes steps named), and a verification section. First
+entry: `runbooks/probe-youtube-iframe.md`, which settles the open YouTube
+`<iframe>` question below when run. Rationale: probe methodology lived
+only in CANVAS-NOTES.md §6 prose; a runbook makes each probe repeatable
+and blind-executable. Note `reports/` and `tmp/` stay gitignored —
+runbooks are procedures (public, reusable), not session artifacts.
+
+## Probe results — YouTube iframe paste test, 2026-07-06
+
+Ran `runbooks/probe-youtube-iframe.md`. Sent a standard YouTube embed
+iframe (`tmp/probe-iframe.html`) into a **sandbox** Canvas page's HTML
+editor, saved, reopened the editor, and diffed sent vs survived.
+
+**Route A — survives intact.** The iframe was kept, with only cosmetic
+normalization; no Canvas media wrapper (`data-media`/`instructure` did not
+fire). Survived line verbatim:
+
+```html
+<p>
+  <iframe
+    title="Probe: YouTube embed survival"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+    width="560"
+    height="315"
+    loading="lazy"
+    allowfullscreen="allowfullscreen"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  ></iframe>
+</p>
+```
+
+Diff from sent: Canvas added `loading="lazy"`, expanded bare
+`allowfullscreen` to `allowfullscreen="allowfullscreen"`, reordered
+attributes, and wrapped the iframe in a `<p>`. The meaningful attributes
+(`src`, `title`, `width`/`height`, `allow`, `allowfullscreen`) all
+survived. Instructor confirmed the embed renders and plays on the live
+sandbox page.
+
+**Meaning for the video option-C opt-in:** a pasted YouTube iframe is a
+viable embed path — a future, separate change may propose the authoring
+construct per the new-construct checklist. Paste-vs-imscc-import parity is
+still untested; do not assume it.
+
 ## Still open
 
-- a YouTube `<iframe>` embed (for the option-C opt-in)
+- YouTube `<iframe>` embed via **imscc import** — paste path verified
+  2026-07-06 (survives, Route A); import parity untested.
