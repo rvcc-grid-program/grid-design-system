@@ -1,0 +1,46 @@
+/* grid-fonts.css — GRID self-hosted webfonts (A · Signal type direction).
+   Binaries live in repo-root /fonts/ (OFL 1.1; license text alongside).
+   Two variable fonts (one file each = all weights) + Space Mono static R/B.
+
+   PATH: url() is relative to the DOCUMENT when this CSS is inlined into a
+   <style> block (loadSystemCss concatenates it). "../fonts/" resolves from a
+   preview HTML one dir below the repo root (e.g. specimen/specimen.html) and
+   from a consumer that links css/ (css/../fonts). The deployed Pages site is
+   served with docs/ as root — the site build copies /fonts → docs/fonts and
+   handles that path (see the site step). See DECISIONS.md "typographic voice".
+
+   CANVAS: these fonts do NOT reach Canvas. The Canvas build inlines CSS into
+   style="" attributes and strips <style> (juice removeStyleTags + Canvas's own
+   sanitizer, CANVAS-NOTES.md). @font-face is an at-rule, not a property, so it
+   has nowhere to live in a Canvas fragment — base64-inlining the bytes changes
+   nothing. Canvas keeps the system-font fallback in each --font-* stack. This
+   is intentional and verified; do NOT add a base64 font inliner. */
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("../fonts/SchibstedGrotesk[wght].ttf") format("truetype-variations");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../fonts/HankenGrotesk[wght].ttf") format("truetype-variations");
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src: url("../fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src: url("../fonts/SpaceMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
