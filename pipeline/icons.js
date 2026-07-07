@@ -39,15 +39,14 @@ export const ICON_USES = {
   "callout-note": { icon: "info", px: 16, color: "accent-ink" },
 };
 
-/* Light-theme literals for the baked PNG colors. These MIRROR grid-tokens.css
-   (light :root). If you can import the pipeline's token→literal resolver, use
-   that instead so they never drift; this map is the authoritative fallback. */
-export const INK_LITERALS = {
-  "accent-ink": "#FFFFFF", // --accent-ink: 0 0% 100%
-  "accent-soft-ink": "#5430B5", // --accent-soft-ink: 256 58% 45%
-  "ok-ink": "#FAFDFA", // --ok-ink: 120 40% 98%
-  "danger-ink": "#FFFFFF", // --danger-ink: 0 0% 100%
-};
+/* Baked PNG colors come from the single token source (pipeline/tokens.js →
+   css/grid-tokens.css light :root) — no hand-mirrored hex table to go stale.
+   Builds a { color-token → #hex } map for the ICON_USES color tokens. */
+async function defaultInkResolver() {
+  const { readTokenBlocks, hslStringToHex } = await import("./tokens.js");
+  const { light } = readTokenBlocks();
+  return (token) => (light[token] ? hslStringToHex(light[token]) : null);
+}
 
 /* Inline SVG for a usage. `colorLiteral` optional: when omitted the SVG uses
    currentColor (correct for web — the tile sets `color:`); when provided it is
@@ -74,16 +73,17 @@ export function svgToCanvasImg(html, pngHref) {
 }
 
 /* Rasterize all five usages to <outDir>/<use>@3x.png (transparent, color baked).
-   Needs @resvg/resvg-js. `resolve(token)` → CSS color literal; pass one that
-   reads grid-tokens.css if you have it, else defaults to INK_LITERALS. */
+   Needs @resvg/resvg-js. `resolve(token)` → CSS color literal; omit it and the
+   colors come from css/grid-tokens.css via defaultInkResolver(). */
 export async function rasterizeAll({ outDir, resolve } = {}) {
   const { Resvg } = await import("@resvg/resvg-js");
   const { mkdirSync, writeFileSync } = await import("node:fs");
   const { join } = await import("node:path");
   const SCALE = 3;
+  const inkOf = resolve || (await defaultInkResolver());
   mkdirSync(outDir, { recursive: true });
   for (const [use, u] of Object.entries(ICON_USES)) {
-    const literal = (resolve && resolve(u.color)) || INK_LITERALS[u.color];
+    const literal = inkOf(u.color);
     // HTML-inline SVG omits xmlns; resvg is a strict XML parser and needs it.
     const svg = iconFor(use, literal).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ');
     const png = new Resvg(svg, {

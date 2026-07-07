@@ -336,11 +336,29 @@ spots, none of which the CSS updates automatically:
    rasterizer fallback. `build-icons.js` reads the real CSS, so shipped PNGs
    are correct; the fallback still goes stale.
 
-Decision: keep the mirrors (converting `contrast.js` / `icons.js` to parse the
-CSS is a bigger change than this warranted) but document the coupling here and
-in CLAUDE.md so the next token edit updates all of them and re-runs
-`pnpm run contrast`. If this bites again, revisit making `contrast.js` read
-`grid-tokens.css` directly.
+Decision (superseded same day — see below): originally we kept the mirrors and
+just documented the coupling. Revisited immediately and removed the footgun
+instead.
+
+## Single token source — pipeline/tokens.js, 2026-07-07
+
+Killed the four-place coupling above. New `pipeline/tokens.js` is the ONLY
+reader of `css/grid-tokens.css`; it parses the light `:root` and both dark
+scopes and exposes `readTokenBlocks()` / `tripletsOf()` / `hslStringToHex()`.
+
+- `scripts/contrast.js` no longer hardcodes triplets — it derives `light`/
+  `dark` from `readTokenBlocks()`, so CONTRAST.md can never again report stale
+  ratios (its header claim "from css/grid-tokens.css" is now true).
+- `pipeline/build-icons.js` and `pipeline/icons.js` drop their inline parser
+  and the `INK_LITERALS` hex table; the rasterizer defaults its ink colors
+  from `tokens.js`.
+- Bonus guard: `readTokenBlocks()` **throws** if the two dark blocks drift, so
+  the "keep them in sync" rule is now mechanically enforced, not just a comment.
+
+Behavior-preserving: regenerating CONTRAST.md and the PNGs after the refactor
+produced byte-identical output (empty git diff). Remaining hand-sync surface is
+just the two dark blocks inside `grid-tokens.css` — and even those are now
+guarded.
 
 ## Still open
 

@@ -12,15 +12,15 @@ Component decisions come from the Claude Design options canvas
 
 ## Files
 
-| File                                      | Role                                                                                                                                        |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `css/grid-tokens.css`                     | LOCKED Console tokens, light + dark. Extend only with a DECISIONS.md entry.                                                                 |
-| `css/grid-components.css`                 | Every component + base typography + `@media print`.                                                                                         |
-| `specimen/specimen.md`                    | Exercises every component. THE regression test — rebuild after any CSS change.                                                              |
-| `specimen/specimen.html` / `.canvas.html` | Built outputs (preview / Canvas fragment).                                                                                                  |
-| `CONTRAST.md`                             | Generated AA verification (`pnpm run contrast`).                                                                                            |
-| `DECISIONS.md`                            | Why things are the way they are.                                                                                                            |
-| `pipeline/`                               | The builds: `markdown.js` (THE markdown contract), `enhance.js`, `templates.js`, `config.js`, two CLI bins (`grid-preview`, `grid-canvas`). |
+| File                                      | Role                                                                                                                                                                                                                                                             |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `css/grid-tokens.css`                     | LOCKED Console tokens, light + dark. Extend only with a DECISIONS.md entry.                                                                                                                                                                                      |
+| `css/grid-components.css`                 | Every component + base typography + `@media print`.                                                                                                                                                                                                              |
+| `specimen/specimen.md`                    | Exercises every component. THE regression test — rebuild after any CSS change.                                                                                                                                                                                   |
+| `specimen/specimen.html` / `.canvas.html` | Built outputs (preview / Canvas fragment).                                                                                                                                                                                                                       |
+| `CONTRAST.md`                             | Generated AA verification (`pnpm run contrast`).                                                                                                                                                                                                                 |
+| `DECISIONS.md`                            | Why things are the way they are.                                                                                                                                                                                                                                 |
+| `pipeline/`                               | The builds: `markdown.js` (THE markdown contract), `enhance.js`, `templates.js`, `config.js`, `icons.js`/`build-icons.js`, `tokens.js` (THE single reader of `grid-tokens.css` — contrast + icons derive from it), two CLI bins (`grid-preview`, `grid-canvas`). |
 
 Consumers install this repo as a pnpm git dependency pinned to a release
 tag and put a `grid.config.json` (program/term/course) in their repo root —

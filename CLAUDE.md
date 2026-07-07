@@ -38,16 +38,15 @@ the change made stale.
 
 - `css/grid-tokens.css` values are LOCKED (shipped Console theme). Extending
   requires a DECISIONS.md entry. The dark token block exists TWICE (media
-  query + `[data-mode]` override) — keep them in sync.
-- Token values are MIRRORED by hand in two scripts, and both drift silently
-  when `grid-tokens.css` changes. After ANY token edit, update and re-run
-  both: `scripts/contrast.js` (hardcodes light+dark triplets — its output
-  claims to come from the CSS but does NOT read it; add a pair when a new
-  token gets a text/background usage) and `pipeline/icons.js` `INK_LITERALS`
-  (a fallback hex mirror of the light `:root`; `build-icons.js` reads the CSS
-  for real, so the shipped PNGs are correct, but the fallback still rots).
-  Counting the two dark blocks above, a token change touches up to four
-  places.
+  query + `[data-mode]` override) — keep them in sync (now guarded: see below).
+- `pipeline/tokens.js` is the ONLY reader of `grid-tokens.css`; `contrast.js`,
+  `build-icons.js`, and `icons.js` all derive values from it — do NOT
+  reintroduce hardcoded token copies in those files. `readTokenBlocks()`
+  throws if the two dark blocks drift, so a mismatched edit fails the build
+  instead of shipping. After a token edit, just re-run `pnpm run contrast`
+  (and the canvas build, which regenerates the baked PNGs) — no hand-mirroring.
+  When a NEW token gets a text/background usage, add its pair to the `pairs`
+  list in `contrast.js`.
 - The dark theme, hover states, shadows, letter-spacing, and pseudo-elements
   are preview-only garnish — Canvas strips them (verified list in
   CANVAS-NOTES.md). Never let them carry meaning or structure.

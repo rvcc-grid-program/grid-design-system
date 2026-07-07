@@ -6,56 +6,16 @@
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { readTokenBlocks, tripletsOf } from "../pipeline/tokens.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
-const light = {
-  paper: [220, 26, 96],
-  surface: [0, 0, 100],
-  "surface-2": [220, 30, 94],
-  ink: [222, 34, 13],
-  "ink-muted": [220, 14, 37],
-  accent: [256, 60, 56],
-  "accent-ink": [0, 0, 100],
-  link: [256, 64, 48],
-  "accent-soft": [256, 82, 95],
-  "accent-soft-ink": [256, 58, 45],
-  "accent-2": [38, 92, 50],
-  "accent-2-ink": [30, 82, 20],
-  "accent-2-soft": [43, 96, 92],
-  "accent-2-soft-ink": [30, 88, 30],
-  "accent-2-line": [40, 85, 62],
-  ok: [150, 55, 30],
-  "ok-ink": [120, 40, 98],
-  "ok-soft": [150, 52, 93],
-  danger: [358, 62, 44],
-  "danger-ink": [0, 0, 100],
-  "danger-soft": [358, 82, 96],
-};
-
-const dark = {
-  paper: [224, 32, 8],
-  surface: [223, 28, 11],
-  "surface-2": [222, 26, 15],
-  ink: [220, 32, 94],
-  "ink-muted": [220, 16, 71],
-  accent: [256, 88, 78],
-  "accent-ink": [256, 44, 10],
-  link: [256, 92, 82],
-  "accent-soft": [256, 40, 22],
-  "accent-soft-ink": [256, 90, 85],
-  "accent-2": [40, 92, 62],
-  "accent-2-ink": [36, 60, 12],
-  "accent-2-soft": [36, 38, 20],
-  "accent-2-soft-ink": [42, 95, 74],
-  "accent-2-line": [40, 55, 42],
-  ok: [150, 56, 60],
-  "ok-ink": [150, 40, 9],
-  "ok-soft": [150, 28, 16],
-  danger: [358, 88, 74],
-  "danger-ink": [358, 40, 12],
-  "danger-soft": [358, 36, 17],
-};
+// Token values come straight from css/grid-tokens.css — no hand-mirrored
+// copy to drift. tripletsOf() yields { token: [h, s, l] } for the WCAG math
+// below. readTokenBlocks() also asserts the two dark blocks stay in sync.
+const blocks = readTokenBlocks();
+const light = tripletsOf(blocks.light);
+const dark = tripletsOf(blocks.dark);
 
 /* [what it styles, fg token, bg token, size class: normal|large] */
 const pairs = [
