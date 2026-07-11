@@ -15,10 +15,14 @@ import { dirname, join } from "node:path";
 import { iconFor } from "./icons.js";
 
 /* The design system is the single CSS source for every build target:
-   tokens first, then components. */
+   @font-face first (concatenated, NOT @import — the CSS is inlined into a
+   <style> block where a relative @import can't resolve), then tokens, then
+   components. Canvas drops the @font-face during inlining; that's expected. */
 export function loadSystemCss() {
   const cssDir = join(dirname(fileURLToPath(import.meta.url)), "..", "css");
   return (
+    readFileSync(join(cssDir, "grid-fonts.css"), "utf8") +
+    "\n" +
     readFileSync(join(cssDir, "grid-tokens.css"), "utf8") +
     "\n" +
     readFileSync(join(cssDir, "grid-components.css"), "utf8")

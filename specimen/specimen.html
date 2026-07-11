@@ -10,6 +10,61 @@
 try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m === "dark") document.documentElement.setAttribute("data-mode", m); } catch (e) {}
 </script>
 <style>
+/* grid-fonts.css — GRID self-hosted webfonts (A · Signal type direction).
+   Binaries live in repo-root /fonts/ (OFL 1.1; license text alongside).
+   Two variable fonts (one file each = all weights) + Space Mono static R/B.
+
+   PATH: url() is relative to the DOCUMENT when this CSS is inlined into a
+   <style> block (loadSystemCss concatenates it). "../fonts/" resolves from a
+   preview HTML one dir below the repo root (e.g. specimen/specimen.html) and
+   from a consumer that links css/ (css/../fonts). The deployed Pages site is
+   served with docs/ as root — the site build copies /fonts → docs/fonts and
+   handles that path (see the site step). See DECISIONS.md "typographic voice".
+
+   CANVAS: these fonts do NOT reach Canvas. The Canvas build inlines CSS into
+   style="" attributes and strips <style> (juice removeStyleTags + Canvas's own
+   sanitizer, CANVAS-NOTES.md). @font-face is an at-rule, not a property, so it
+   has nowhere to live in a Canvas fragment — base64-inlining the bytes changes
+   nothing. Canvas keeps the system-font fallback in each --font-* stack. This
+   is intentional and verified; do NOT add a base64 font inliner. */
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src:
+    url("../fonts/SchibstedGrotesk[wght].woff2") format("woff2"),
+    url("../fonts/SchibstedGrotesk[wght].ttf") format("truetype-variations");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hanken Grotesk";
+  src:
+    url("../fonts/HankenGrotesk[wght].woff2") format("woff2"),
+    url("../fonts/HankenGrotesk[wght].ttf") format("truetype-variations");
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src:
+    url("../fonts/SpaceMono-Regular.woff2") format("woff2"),
+    url("../fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src:
+    url("../fonts/SpaceMono-Bold.woff2") format("woff2"),
+    url("../fonts/SpaceMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* grid-tokens.css — GRID program design tokens (Console theme).
    Source of truth: invite-app/design/design_handoff_grid_claim_flow.
    LOCKED: do not alter values. Extend only with a DECISIONS.md entry.
@@ -24,8 +79,15 @@ try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m ==
   --r-pill: 999px;
   --shadow-1: 0 1px 2px hsl(220 30% 10% / 0.06), 0 2px 8px hsl(220 30% 10% / 0.06);
   --shadow-2: 0 8px 24px hsl(220 30% 10% / 0.12), 0 2px 8px hsl(220 30% 10% / 0.08);
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  /* type — self-hosted webfonts (css/grid-fonts.css), system fallbacks kept
+     so Canvas (which drops @font-face) degrades to a sane stack. */
+  --font-display: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --weight-body: 400;
+  --weight-medium: 500;
+  --weight-strong: 700;
+  --weight-display: 800;
 
   /* Console — light */
   --paper: 220 26% 96%;
@@ -316,10 +378,11 @@ a:hover {
 
 h1.page-title {
   margin: 0 0 8px;
+  font-family: var(--font-display);
   font-size: clamp(1.55rem, 5vw, 2rem);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-  font-weight: 760;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 800;
   text-wrap: balance;
 }
 
@@ -341,20 +404,21 @@ h1.page-title {
   margin: 34px 0 14px;
   padding-bottom: 10px;
   border-bottom: 1px solid hsl(var(--line));
-  font: 800 1.625rem/1.3 var(--font-sans);
-  letter-spacing: -0.01em;
+  font: 700 1.625rem/1.25 var(--font-display);
+  letter-spacing: -0.02em;
   color: hsl(var(--ink));
 }
 
 .content h3 {
   margin: 26px 0 10px;
-  font: 700 1.25rem/1.3 var(--font-sans);
+  font: 700 1.25rem/1.3 var(--font-display);
+  letter-spacing: -0.01em;
   color: hsl(var(--ink));
 }
 
 .content h4 {
   margin: 20px 0 8px;
-  font: 700 1rem/1.3 var(--font-sans);
+  font: 700 1rem/1.3 var(--font-display);
   color: hsl(var(--ink));
 }
 

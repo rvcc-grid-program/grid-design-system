@@ -11,7 +11,9 @@ repo. It follows your OS light/dark setting and carries the print styles.
 
 ## What lives where
 
-- `css/grid-tokens.css` — Console tokens (locked), light + dark
+- `css/grid-tokens.css` — Console tokens (locked), light + dark, type tokens
+- `css/grid-fonts.css` — `@font-face` for the three self-hosted OFL webfonts
+- `fonts/` — font binaries (woff2 + ttf) with SIL OFL 1.1 licenses
 - `css/grid-components.css` — components, base typography, print styles
 - `specimen/specimen.md` — one page using every component; its two built
   outputs are the regression test for all CSS changes
@@ -49,7 +51,7 @@ This repo is an installable package. A wiki pins a release tag and gets the
 two CLIs:
 
 ```bash
-pnpm add "github:rvcc-grid-program/grid-design-system#v1.4.0"
+pnpm add "github:rvcc-grid-program/grid-design-system#v1.5.0"
 
 pnpm exec grid-preview modules/week-01/some-topic.md   # styled HTML preview
 pnpm exec grid-canvas  modules/week-01/some-topic.md   # Canvas-ready fragment
