@@ -40,6 +40,9 @@ const pairs = [
   ["Play tile / callout ico glyph", "accent-ink", "accent", "large"],
   ["Warning ico glyph", "danger-ink", "danger", "large"],
   ["Checkpoint mark glyph", "ok-ink", "ok", "large"],
+  ["Card marker border on surface (non-text 3:1)", "card-line", "surface", "large"],
+  ["Good-panel text on ok-soft (video compare)", "ok-soft-ink", "ok-soft", "normal"],
+  ["Bad-panel text on danger-soft (video compare)", "danger-soft-ink", "danger-soft", "normal"],
 ];
 
 function hslToRgb([h, s, l]) {

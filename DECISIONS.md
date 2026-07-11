@@ -454,6 +454,32 @@ in video output and loads no fonts yet. Since video rendering supports
 is a tracked follow-up in that repo. Scope + plan: reports/ "GRID typographic
 voice". Ships as **v1.5.0**.
 
+## Video light-ground tokens — card marker + soft-tint ink roles, 2026-07-11
+
+Added three additive color tokens for the Phase 6c video light-ground direction
+(videos moved off the dark cinematic background onto the dashboard's pale
+ground), from a Claude Design handoff (tmp/2026-july-11/video-lightground-handoff):
+
+- **`--card-line`** (light `222 22% 32%`) — a general design-system token: a dark
+  border that marks card-ness on the white surface. Reused by the video `Card`
+  primitive, code panels, and split-compare shells; available to any card in the
+  system. Border role only — never text or fill. (Design explored ink-hairline /
+  70%-ink / indigo-tinted; 70%-ink chosen.)
+- **`--ok-soft-ink`** (light `150 60% 22%`) — dark green text role on `--ok-soft`.
+- **`--danger-soft-ink`** (light `358 65% 34%`) — dark red text role on `--danger-soft`.
+
+The soft-tint ink roles complete the pattern `--accent-soft-ink` already set, so
+compare panels carry **dark text on pastel tints** (never light-on-pastel).
+
+No existing token changed; the amber highlight-only guardrail is untouched (no
+white-on-amber token added). Dark-scope values are provisional — the videos are
+light-only (`data-mode="light"` forced) and never render them; they exist for set
+coherence and to keep the dark blocks complete. All new pairings verified ≥ AA by
+`pnpm run contrast` (24 pairs now): card-line/surface 8.79 (3:1 border rule),
+ok-soft-ink/ok-soft 7.36, danger-soft-ink/danger-soft 7.75 — matching the design
+handoff's computed values exactly. Ships as **v1.6.0**; grid-video-studio bumps
+its dependency after the release (its Phase 6c implementation is gated on it).
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified

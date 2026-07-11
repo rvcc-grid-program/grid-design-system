@@ -30,6 +30,9 @@ Canvas receives the light theme only.
 | Play tile / callout ico glyph | `accent-ink` on `accent` | 5.78:1 | 3:1 | pass |
 | Warning ico glyph | `danger-ink` on `danger` | 6.24:1 | 3:1 | pass |
 | Checkpoint mark glyph | `ok-ink` on `ok` | 5.34:1 | 3:1 | pass |
+| Card marker border on surface (non-text 3:1) | `card-line` on `surface` | 8.79:1 | 3:1 | pass |
+| Good-panel text on ok-soft (video compare) | `ok-soft-ink` on `ok-soft` | 7.36:1 | 4.5:1 | pass |
+| Bad-panel text on danger-soft (video compare) | `danger-soft-ink` on `danger-soft` | 7.75:1 | 4.5:1 | pass |
 
 ## Dark (preview/print targets only)
 
@@ -56,4 +59,7 @@ Canvas receives the light theme only.
 | Play tile / callout ico glyph | `accent-ink` on `accent` | 7.61:1 | 3:1 | pass |
 | Warning ico glyph | `danger-ink` on `danger` | 7.09:1 | 3:1 | pass |
 | Checkpoint mark glyph | `ok-ink` on `ok` | 9.03:1 | 3:1 | pass |
+| Card marker border on surface (non-text 3:1) | `card-line` on `surface` | 5.30:1 | 3:1 | pass |
+| Good-panel text on ok-soft (video compare) | `ok-soft-ink` on `ok-soft` | 9.51:1 | 4.5:1 | pass |
+| Bad-panel text on danger-soft (video compare) | `danger-soft-ink` on `danger-soft` | 7.81:1 | 4.5:1 | pass |
 
