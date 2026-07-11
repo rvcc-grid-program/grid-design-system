@@ -90,6 +90,8 @@ preview-only garnish.
   font inliner (it can't work — there's no `<style>` for the rule). The heading
   `font:` shorthand still carries the weight into Canvas (decision-20); only the
   family name falls back. The type voice is a preview/web/site enhancement only.
+  Paste-verified 2026-07-11 (v1.5.0 specimen): headings/body/chips fall back to
+  the system stacks cleanly; nothing surprising.
 - **The sanitizer enforces a strict dl content model** (targeted dl-probe,
   2026-07-06): `<dl>`/`<dt>`/`<dd>` SURVIVE intact — including their
   inline styles and `data-*` attributes — but ONLY when dt/dd are direct
