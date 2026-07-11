@@ -402,7 +402,46 @@ computes it. (2) The guard immediately caught a real raw `<div class=
 intentional bespoke HTML. Blessed via `ALLOWED_RAW_BLOCKS` (keyed by class), so
 genuinely-authored raw blocks are permitted while stray prose tags still warn.
 
+## Add --field-border extension token — 2026-07-11, proposed by grid-video-studio
+
+Consumer `grid-video-studio`'s dashboard (a form-heavy authoring UI) needed a
+control-boundary color the base token set doesn't provide: `--line-strong`
+(the closest existing candidate) computes to only ~1.9:1 against `--surface`,
+well under WCAG 1.4.11's 3:1 floor for UI component boundaries — visible in
+the field's own contrast audit
+(grid-video-studio's `build/evidence/phase-6a/contrast-audit.md`).
+
+Added `--field-border: hsl(220 16% 56%)` to the light `:root` block. Audited
+pairings:
+
+- `--field-border` / `--surface`: 3.53:1 (pass, 3.0 floor)
+- `--field-border` / `--surface-2`: 3.04:1 (pass, 3.0 floor — tightest
+  pairing in the consumer's audit; flagged there as the first thing to break
+  if either token value drifts)
+
+Naming follows the existing `--line`/`--line-strong` family's pattern
+(purpose-named, not color-named) but scoped to form controls specifically,
+since `--line-strong`'s existing consumers (dividers, non-interactive
+boundaries) have a lower contrast bar than an interactive control boundary
+does, and retuning `--line-strong` itself for the 3:1 UI floor would be a
+breaking change for those other consumers.
+
+Kept as a base token (not a consumer-local extension) because a control-
+boundary color belongs in the same design-system tier as `--focus` and
+`--danger` — any consumer building form UI on these tokens needs it, not
+just this one.
+
+**Dark-mode value is not yet set.** grid-video-studio never renders in dark
+mode (videos are light-only; its dashboard hasn't been dark-audited), so no
+consumer has produced an audited dark counterpart. Do not merge this without
+adding a `--field-border` value to both dark blocks (`@media
+(prefers-color-scheme: dark) :root:not([data-mode="light"])` and
+`:root[data-mode="dark"]`), audited to the same 3:1 floor against dark
+`--surface`/`--surface-2`.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
   2026-07-06 (survives, Route A); import parity untested.
+- `--field-border` dark-mode value (see decision above) — needed before the
+  propose-field-border-token PR can merge.
