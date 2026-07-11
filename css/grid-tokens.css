@@ -23,6 +23,12 @@
   --ink-muted: 220 14% 37%;
   --line: 220 22% 85%;
   --line-strong: 220 20% 70%;
+  /* control boundary (form inputs/textareas) — --line-strong is only ~1.9:1
+     on --surface, under WCAG 1.4.11's 3:1 floor for UI component boundaries.
+     Proposed by grid-video-studio's dashboard (Phase 6a); see DECISIONS.md.
+     Dark-mode value NOT YET SET — do not merge without an audited dark
+     counterpart added to both dark blocks below. */
+  --field-border: 220 16% 56%;
   /* accent — primary (Indigo-Violet) */
   --accent: 256 60% 56%;
   --accent-ink: 0 0% 100%;
