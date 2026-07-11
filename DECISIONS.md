@@ -402,6 +402,58 @@ computes it. (2) The guard immediately caught a real raw `<div class=
 intentional bespoke HTML. Blessed via `ALLOWED_RAW_BLOCKS` (keyed by class), so
 genuinely-authored raw blocks are permitted while stray prose tags still warn.
 
+## Typographic voice — self-hosted OFL fonts, 2026-07-07
+
+Replaced the `system-ui`-only stack with three self-hosted SIL OFL 1.1
+webfonts, from a Claude Design changeset (revised — see below):
+
+- `--font-display` → **Schibsted Grotesk** (variable) — headings, title cards.
+- `--font-sans` → **Hanken Grotesk** (variable) — body, UI, captions.
+- `--font-mono` → **Space Mono** (static R/B) — chips, kickers, code, filenames.
+
+Faces in `css/grid-fonts.css`; binaries in `/fonts/` (woff2 primary + ttf
+fallback); `--font-*` and `--weight-*` tokens added to `grid-tokens.css`.
+Every stack keeps system fallbacks.
+
+**Why the delivered changeset was revised, not applied.** It was built against
+a pre-Accent-v2 `main`: its full-file `grid-tokens.css` reverted the indigo +
+amber system (old blue `230 76% 52%`, no `--accent-2*`). We integrated the font
+tokens surgically onto current `main` instead — LOCKED color/dark values
+untouched. Its Canvas plan (base64-inline the ttf) rests on a false premise and
+was dropped (see below). Its heading patch didn't apply (our file moved for
+amber); heading edits redone by hand.
+
+**Canvas gets system fallback, by design.** `@font-face` cannot survive Canvas
+(at-rule, not inlinable; `<style>` stripped; `juice removeStyleTags`). No base64
+inliner — it can't work. The heading `font:` shorthand still carries weight into
+Canvas (decision-20); only the family falls back. Recorded in CANVAS-NOTES.md.
+
+**woff2.** Converted the ttf to woff2 (Brotli; installed `brotli` as a
+build-time tool — outputs ship, tool does not). ~61% smaller (506 KB → 198 KB).
+`@font-face` lists woff2 first, ttf fallback. Browser-verified loading woff2.
+
+**Heading recalibration.** For Schibsted's heavier cut, `.content h2` weight
+**800 → 700** (and tracking/line-height polish per the design owner). This
+changes the documented heading-scale standard — HANDOFF.md updated in step.
+Contrast unaffected (colors unchanged; `pnpm run contrast` still 0 failures).
+
+**`url()` path.** `../fonts/` resolves for local preview and package consumers.
+The deployed Pages site serves `docs/` as web root, so that relative path would
+escape it and 404. Site wiring (2026-07-11): `pnpm run site` now runs
+`pipeline/site-build.js`, which builds `docs/index.html`, copies the specimen
+pages (including `specimen.webpage.html`, the semantic full-page preview),
+copies `/fonts` → `docs/fonts/` (binaries + OFL licenses), and rewrites the
+inlined `url("../fonts/")` → `url("fonts/")` in every `docs/*.html`. Chosen
+over emitting a special CSS build: the rewrite is a mechanical, verifiable
+post-step and the source CSS stays single-form. Browser-verified over HTTP.
+
+**Downstream objective:** grid-video-studio is a vendoring consumer (copies
+`grid-tokens.css`, currently stale v1.1.0) that uses `--font-sans`/`--font-mono`
+in video output and loads no fonts yet. Since video rendering supports
+`@font-face`, adopting these fonts there (re-vendor tokens + wire font loading)
+is a tracked follow-up in that repo. Scope + plan: reports/ "GRID typographic
+voice". Ships as **v1.5.0**.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified

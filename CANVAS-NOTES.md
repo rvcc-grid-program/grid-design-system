@@ -80,6 +80,16 @@ preview-only garnish.
   **Verified 2026-07-06** (specimen paste, saved DOM re-inspected): all
   five `<img>` swaps survive with `src`, `alt=""`, width/height, and
   `display:block` intact.
+- **Self-hosted webfonts do NOT reach Canvas** (design fact, 2026-07-07): the
+  three GRID fonts (Schibsted/Hanken/Space Mono) are delivered via `@font-face`
+  in `css/grid-fonts.css`. `@font-face` is an at-rule, not a property, so it
+  cannot be inlined onto an element — and `<style>` (where it would otherwise
+  live) is stripped, plus the Canvas build's `juice` inlining runs with
+  `removeStyleTags: true`. So Canvas renders each `--font-*` stack's **system
+  fallback**, not the custom face. This is intentional; do NOT add a base64
+  font inliner (it can't work — there's no `<style>` for the rule). The heading
+  `font:` shorthand still carries the weight into Canvas (decision-20); only the
+  family name falls back. The type voice is a preview/web/site enhancement only.
 - **The sanitizer enforces a strict dl content model** (targeted dl-probe,
   2026-07-06): `<dl>`/`<dt>`/`<dd>` SURVIVE intact — including their
   inline styles and `data-*` attributes — but ONLY when dt/dd are direct

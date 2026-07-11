@@ -14,13 +14,15 @@ Component decisions come from the Claude Design options canvas
 
 | File                                      | Role                                                                                                                                                                                                                                                             |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `css/grid-tokens.css`                     | LOCKED Console tokens, light + dark. Extend only with a DECISIONS.md entry.                                                                                                                                                                                      |
+| `css/grid-tokens.css`                     | LOCKED Console tokens, light + dark, plus `--font-*`/`--weight-*` type tokens. Extend only with a DECISIONS.md entry.                                                                                                                                            |
+| `css/grid-fonts.css`                      | `@font-face` for the three OFL webfonts (woff2 + ttf). Concatenated first by `loadSystemCss` (not `@import`). Canvas drops it.                                                                                                                                   |
+| `fonts/`                                  | Self-hosted font binaries (woff2 primary + ttf fallback) + SIL OFL 1.1 license text. Ships in the package tarball.                                                                                                                                               |
 | `css/grid-components.css`                 | Every component + base typography + `@media print`.                                                                                                                                                                                                              |
 | `specimen/specimen.md`                    | Exercises every component. THE regression test — rebuild after any CSS change.                                                                                                                                                                                   |
 | `specimen/specimen.html` / `.canvas.html` | Built outputs (preview / Canvas fragment).                                                                                                                                                                                                                       |
 | `CONTRAST.md`                             | Generated AA verification (`pnpm run contrast`).                                                                                                                                                                                                                 |
 | `DECISIONS.md`                            | Why things are the way they are.                                                                                                                                                                                                                                 |
-| `pipeline/`                               | The builds: `markdown.js` (THE markdown contract), `enhance.js`, `templates.js`, `config.js`, `icons.js`/`build-icons.js`, `tokens.js` (THE single reader of `grid-tokens.css` — contrast + icons derive from it), two CLI bins (`grid-preview`, `grid-canvas`). |
+| `pipeline/`                               | The builds: `markdown.js` (THE markdown contract), `enhance.js`, `templates.js`, `config.js`, `icons.js`/`build-icons.js`, `tokens.js` (THE single reader of `grid-tokens.css` — contrast + icons derive from it), `site-build.js` (Pages site: builds `docs/index.html`, copies specimen pages + `/fonts` → `docs/fonts`, rewrites font paths for the docs web root), two CLI bins (`grid-preview`, `grid-canvas`). |
 
 Consumers install this repo as a pnpm git dependency pinned to a release
 tag and put a `grid.config.json` (program/term/course) in their repo root —
@@ -207,12 +209,26 @@ one ad hoc.
   link-row, callout-head, checkpoint) where stacking is an acceptable
   degradation.
 
-## Heading scale (the standard)
+## Type voice and heading scale (the standard)
 
-h2 = 1.625rem, weight 800, hairline rule below — THE section divider.
-h3 = 1.25rem, weight 700. h4 = 1rem, weight 700. Section headings on all
-pages standardize on h2 (the corpus cleanup pass normalizes weeks 1-3).
-Body 1rem/1.6. Nothing below 0.875rem (14px).
+Three self-hosted OFL webfonts, wired through `--font-*` tokens in
+`grid-tokens.css` (faces in `css/grid-fonts.css`, binaries in `/fonts/`,
+woff2 primary + ttf fallback):
+
+- `--font-display` → **Schibsted Grotesk** — `h1.page-title`, `.content h2/h3/h4`.
+- `--font-sans` → **Hanken Grotesk** — body, UI, captions (inherited).
+- `--font-mono` → **Space Mono** — chips, kickers, code, filenames.
+
+Every stack keeps system fallbacks, so Canvas (which drops `@font-face` —
+see CANVAS-NOTES.md) degrades to a sane system font; the fonts are a
+preview/web/site enhancement, never load-bearing.
+
+Scale: h1.page-title `clamp(1.55rem,5vw,2rem)` weight 800. h2 = 1.625rem,
+**weight 700** (recalibrated from 800 for Schibsted's heavier cut — DECISIONS
+"typographic voice"), hairline rule below — THE section divider. h3 = 1.25rem,
+weight 700. h4 = 1rem, weight 700. Section headings standardize on h2. Body
+1rem/1.6. Nothing below 0.875rem (14px). Heading `font:` shorthand carries the
+weight into Canvas (decision-20); only the family falls back there.
 
 ## Verification loop
 
