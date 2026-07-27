@@ -43,7 +43,7 @@ below.
 | `font:` shorthand                                                      | Expanded to longhands on save, **weight included** — the sanctioned way to bold a styled span (term chip proves it) |
 | `text-decoration`                                                      |                                                                                                                     |
 | `max-width`, `width`, `height` on block elements                       |                                                                                                                     |
-| `flex` shorthand (`none`, `0 0 6.5rem`, `1 1 70%`), `flex-wrap`        | The data-list rows and every tile depend on these (2026-07-06)                                                      |
+| `flex` shorthand (`none`, `0 0 6.5rem`, `1 1 70%`, `1 1 100%`), `flex-wrap` | Every tile depends on these; the data-list's stacked rows use `1 1 100%` (2026-07-06)                            |
 
 ### Verified — STRIPPED
 
@@ -101,8 +101,9 @@ preview-only garnish.
   spec), or dt/dd with no dl ancestor, lose their tags and merge into the
   parent's text. Div/span equivalents of the same layout survive verbatim.
   Consequence shipped 2026-07-06: data-list emits dt/dd as direct dl
-  children, rows via flex-wrap, key chip on an inner span (all
-  probe-verified primitives). Assume similarly strict content models for
+  children, key chip on an inner span (all probe-verified primitives).
+  Since 2026-07-27 the layout is stacked — each dt/dd takes `flex: 1 1 100%`
+  rather than sharing a row. Assume similarly strict content models for
   other structured elements (table-adjacent, figure, etc.) until probed.
 - **Empty elements are dropped entirely.** A `<span>` with only a style
   attribute vanishes on save. Every decorative-box element carries
@@ -212,6 +213,19 @@ catch silent property stripping — a stripped property usually fails
 _quietly_ (the letterbox crop became `margin: 0` with no error anywhere).
 
 ## 7. Open questions
+
+- **`min()` in a `max-width` — UNVERIFIED, gates the v1.7.0 tag.** `.content img`
+  ships `max-width: min(100%, 720px)`. If the sanitizer strips the declaration,
+  images lose their cap entirely and render at intrinsic size up to 3416px —
+  worse than before the change, so this fails loudly in the wrong direction.
+  Probe per §6, then record the dated verdict here. Fallback if stripped:
+  `max-width: 85%` (a plain percentage, already verified-safe; never overflows,
+  yields ~719px on the 846px text column and ~587px on a narrow 691px one).
+- **`ch` units in Canvas — PROBABLY FINE, confirm on Windows.** The `--measure:
+  54ch` token resolves against `system-ui` in Canvas, which drops `@font-face`.
+  The `0` advance measured **12.04px on both surfaces** at a 20px root, but on
+  one macOS machine only. Fallback if it diverges: bake the measure to px
+  (54 × 12.04 ≈ 650px).
 
 - Whether the allowlist differs between paste-into-RCE and **imscc import**
   (the eventual delivery path). Re-run the specimen test on the first

@@ -26,6 +26,13 @@ When you have completed this topic you will be able to:
 
 [![Video](https://img.youtube.com/vi/hw7TwIf1rOw/hqdefault.jpg)](https://youtu.be/hw7TwIf1rOw)
 
+### Oversized screenshot
+
+A plain content image wider than the 720px editorial ceiling — this exercises
+the `.content img` cap, which the video poster deliberately opts out of.
+
+![A 1280px-wide frame, capped to 720px by the content image ceiling](https://img.youtube.com/vi/hw7TwIf1rOw/maxresdefault.jpg)
+
 ## Reading
 
 You should choose the reading assignment for the computer(s) you will be
@@ -93,6 +100,19 @@ Add this rule to your stylesheet:
 - **.css** — stylesheet
 - **.jpg, .png** — images (photo, lossless)
 - **.svg** — vector image, scales without blur
+
+:::
+
+### Long keys
+
+Sentence-length keys are the case that shipped a defect once — the data-list is
+regression-tested with them, not only with short extensions.
+
+::: data-list
+
+- **Finish Know Your Files: Liftoff first** — it establishes the folder layout every later module builds on, so skipping it leaves you renaming files mid-assignment.
+- **Turn on filename extensions before you start** — macOS and Windows both hide them by default, which makes the whole exercise invisible.
+- **.svg** — a short key in the same list, to prove both lengths still read correctly
 
 :::
 

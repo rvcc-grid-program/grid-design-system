@@ -480,6 +480,112 @@ ok-soft-ink/ok-soft 7.36, danger-soft-ink/danger-soft 7.75 — matching the desi
 handoff's computed values exactly. Ships as **v1.6.0**; grid-video-studio bumps
 its dependency after the release (its Phase 6c implementation is gated on it).
 
+## Reading measure on text, wrapper as container cap — 2026-07-27
+
+From an idmx-225 handoff (`handoff/canvas-styling-corrections.md`): a shipped
+Canvas page read too narrow, and a `::: data-list` with sentence-length keys
+rendered as tall stacks of centred monospace text with gaps beside them.
+
+**New token `--measure: 54ch`** (light `:root` only, after `--r-pill`). Tokens
+are locked, so this entry is the authorization. `--measure` is a length, so no
+contrast pair changes; the dark blocks carry colors and shadows only, exactly
+like `--r-*` and `--font-*`, so `readTokenBlocks()`'s drift guard is not
+involved.
+
+**The 720px wrapper was the reading measure implemented on the wrong element.**
+Measured on the live Canvas page by counting characters per rendered line box:
+720px wrapper → 666px paragraph → 71–75 characters (textbook); 900px → 846px →
+88–95 characters, past the 80-character ceiling in WCAG 1.4.8 (AAA); 1200px →
+1146px → 133 characters. So the width complaint could not be answered by
+changing one number. The measure moved onto the seven text rules that hold prose
+(`.content h2/h3/h4/p/li`, `.intro`, `.footnote`) and both wrappers became
+container caps at 900px — `.shell` (preview) and `.page-wrap` (the Canvas
+wrapper grid-canvas inlines). Changing only one of those two is the trap.
+
+**Units, because they produced a wrong conclusion once:** `ch` is the advance
+width of `0`, roughly 1.3× the average character, so a 70ch line carries ~92
+characters. The value that delivers ~70 characters is ~54ch — which
+`.intro { max-width: 52ch }` already had approximately right, and which is now
+the token it references.
+
+The measure is deliberately NOT applied per component. `.objectives p`,
+`.checkpoint-body p` and `.callout-body p` declare no `max-width` and so inherit
+from `.content p`; adding rules for them is redundant. It is NOT applied to
+`.link-row` and children, `.video-meta`, or `.video-text` — flex children that
+rely on `flex-grow` to define their row, which a `max-width` removes. `.est-chip`
+is a chip, not prose. `blockquote` has no rule in this repo and the consumer
+corpus contains zero blockquotes; skipped.
+
+**data-list restacked.** The fixed key column is gone: every `dt` and `dd` takes
+`flex: 1 1 100%`, so keys sit above values at any length. `align-items: baseline`
+is removed (nothing to align one-per-row, and it produced the
+value-aligned-to-the-key's-last-line gaps in the report); the border moves to the
+`dd` only, so the rule sits under each value instead of drawing a stub under each
+key; the `dd`'s `padding-left` goes; the chip drops `min-width: 5.5rem` and
+`text-align: center`, which had forced a chip wider than short keys like `.css`.
+The rejected alternative was an auto-width `dt` — it renders wrong, because the
+old rows depended on the `dd` growing to fill its line to force the next `dt` to
+wrap, and the measure on the `dd` removes that growth (observed: key 1 alone on
+row 1, then value 1 sharing row 2 with key 2). The 100% basis on both is what
+makes the chosen version safe. CSS grid would also solve it, but `display: grid`
+is on neither list in CANVAS-NOTES.md; the stacked version needs only
+paste-verified properties. Accepted, consumer-approved costs: short-key lists
+take two lines each and lose the two-column scan, and the separator spans the
+measure (~650px) rather than the plate's full width.
+
+**Content images capped at `min(100%, 720px)`.** An editorial ceiling, not a
+repair — nothing was upscaling (`max-width` only shrinks and the emitted `<img>`
+carries no `width`). A bare `720px` is wrong: `max-width` alone does not shrink
+an image into a narrower container, and a Canvas description measures 691px at a
+~1075px column, so a 3416px screenshot would overflow. 720px is a judgement
+against the consumer's 53 raster images (min 53px, p25 860px, median 1166px, p75
+1848px, max 3416px — retina captures with pixels to spare). Callout/checkpoint
+icons carry `width="16"` and inline style, so the cap cannot reach them.
+
+**The key chip moves from mono to sans.** `.data-key` keeps its tint, radius,
+padding, size and weight, and only swaps `--font-mono` → `--font-sans`. The
+stacked layout is what made sentence-length keys possible, and a sentence set in
+monospace reads as literal text to be typed rather than as a label — mono's job
+in this system is to mark something as code (`.wikilink`, `.est-chip`, `.tag`,
+`code`, filenames), and a sentence is not code. Prompted by `fi` looking crowded
+in "filename" at chip size: Space Mono draws the `f`'s hook into the following
+`i`'s tittle, measurably (ascender-band ink gap at 64px: `fi` 10px vs `ni` 14,
+`ti` 12, `ri` 11, `li` 21). That is glyph design, **not a ligature** —
+`font-variant-ligatures: none` renders pixel-identically, so no CSS lever exists,
+and it would have been invisible to students anyway (Canvas drops `@font-face`,
+so the fragment falls back to Menlo/Consolas). The crowding was the symptom; mono
+on prose was the defect. No contrast pair changes — the
+`accent-soft-ink`/`accent-soft` pairing is untouched.
+
+**Two deviations from the handoff, both found by measuring the built specimen in
+a browser rather than reading the CSS:**
+
+1. **`.video-poster img` opts out of the image cap** (`max-width: 100%`). It sets
+   `width: 100%` and declared no `max-width`, so the new `.content img` ceiling
+   clamped the poster to 720px inside an 846px card and left a gutter down the
+   right of every video plate. The poster is full-bleed card chrome, not a
+   content image — the same category as the `width="16"` callout icons the
+   handoff already carved out, which it simply did not enumerate.
+2. **Image-only paragraphs get `.figure`** (`enhance.js` step 5) and
+   `.content p.figure { max-width: none }`. Markdown wraps a standalone image in
+   a `<p>`, and Phase 3 put the measure on `.content p` — so the measure, not
+   720px, was the effective image cap (measured: a 1280px image rendered 484px
+   at the preview's 16px root). Phase 5 was unreachable as specified. A class
+   rather than `:has()`, because `:has()` is on neither list in CANVAS-NOTES.md
+   while the inliner resolves a class to a plain `max-width: none` on both
+   targets (verified in `specimen.canvas.html`). This adds the one authoring-table
+   row and DOM contract the handoff did not scope; authors change nothing.
+
+The specimen gained a **long-key data-list case** — it previously exercised the
+component only with short extensions, which is why this defect shipped unnoticed —
+and an **oversized content image** (1280px), because the specimen contained no
+plain content image at all, leaving the new cap untested by the regression test.
+
+Two paste tests gate the tag, not the work (see CANVAS-NOTES.md): whether `min()`
+survives the sanitizer (fallback `max-width: 85%`), and whether `ch` resolves the
+same in Canvas, which drops `@font-face` and falls back to `system-ui` (fallback:
+bake to ~650px). Ships as **v1.7.0**.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified

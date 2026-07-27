@@ -7,7 +7,10 @@
       becomes the designed .video-card plate — authors change nothing.
    2. Link rows: ::: link-row divs get a muted URL line derived from href.
    3. Estimated time: a paragraph starting with bold "Estimated time"
-      becomes the .est-chip — again, zero author change. */
+      becomes the .est-chip — again, zero author change.
+   4. data-list: ::: data-list around a markdown list → semantic <dl>.
+   5. Figure paragraphs: a <p> holding nothing but an <img> gets .figure so it
+      opts out of the reading measure — nothing for authors to change. */
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -115,6 +118,22 @@ export async function enhance($) {
       return `<dt><span class="data-key">${keyHtml}</span></dt><dd>${value}</dd>`;
     });
     div.replaceWith(`<dl class="data-list">${rows.join("")}</dl>`);
+  });
+
+  // --- 5. figure paragraphs -----------------------------------------------
+  // Markdown wraps a standalone image in a <p>, which carries the reading
+  // measure (.content p) — that would clamp images to ~650px and make the
+  // 720px editorial ceiling on .content img unreachable. An image-only
+  // paragraph is not prose, so it opts out of the measure via .figure.
+  // A class (not :has(), which is unverified against Canvas's sanitizer) so
+  // the inliner resolves it to a plain max-width on both targets.
+  $("p").each((_, p) => {
+    const el = $(p);
+    if (el.attr("class")) return;
+    if (el.children("img").length !== 1) return;
+    if (el.children().length !== 1) return;
+    if (el.text().trim()) return; // caption text alongside the image → prose
+    el.attr("class", "figure");
   });
 
   return $;

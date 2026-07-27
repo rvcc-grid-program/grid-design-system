@@ -24,6 +24,9 @@ pnpm-debug.log*
 tmp/
 reports/
 
+# incoming change specs from consumer repos (working docs, local only)
+handoff/
+
 # personal Claude Code hooks (local-only verification gate)
 .claude/hooks/
 
