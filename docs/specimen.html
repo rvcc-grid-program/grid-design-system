@@ -77,6 +77,11 @@ try { var m = localStorage.getItem("grid-theme-mode"); if (m === "light" || m ==
   --r-md: 14px;
   --r-lg: 22px;
   --r-pill: 999px;
+  /* reading measure — the max line length for prose, NOT a box width.
+     54ch delivers ~70 characters (ch is the `0` advance, ~1.3x the average
+     character). Light :root only, like --r-* and --font-*; the dark blocks
+     carry colors and shadows only. */
+  --measure: 54ch;
   --shadow-1: 0 1px 2px hsl(220 30% 10% / 0.06), 0 2px 8px hsl(220 30% 10% / 0.06);
   --shadow-2: 0 8px 24px hsl(220 30% 10% / 0.12), 0 2px 8px hsl(220 30% 10% / 0.08);
   /* type — self-hosted webfonts (css/grid-fonts.css), system fallbacks kept
@@ -231,7 +236,7 @@ body {
 }
 
 .shell {
-  width: min(100% - 32px, 720px);
+  width: min(100% - 32px, 900px);
   margin-inline: auto;
   padding-bottom: 56px;
 }
@@ -244,7 +249,10 @@ body {
   background: hsl(var(--paper));
   padding: 24px;
   border-radius: var(--r-lg);
-  max-width: 720px;
+  /* container cap, not the reading measure — the measure lives on the text
+     elements (--measure). content-box here, so this + padding: 24px measures
+     948px on screen. */
+  max-width: 900px;
 }
 
 a {
@@ -408,9 +416,16 @@ h1.page-title {
 
 /* ===================== content typography ======================== */
 /* Scale per decision log: h2 1.625rem with hairline rule, h3 1.25rem,
-   h4 1rem. Section headings standardize on h2 post-cleanup. */
+   h4 1rem. Section headings standardize on h2 post-cleanup.
+   Every text-holding rule carries max-width: var(--measure) — the reading
+   measure belongs on the text, not on the wrapper. Descendants of .content
+   that declare no max-width (.objectives p, .checkpoint-body p,
+   .callout-body p) inherit it from .content p; do not add rules for them.
+   Never put the measure on a flex child that relies on flex-grow to hold its
+   row together (.link-row, .video-meta, .video-text) — it breaks the row. */
 .content h2 {
   margin: 34px 0 14px;
+  max-width: var(--measure);
   padding-bottom: 10px;
   border-bottom: 1px solid hsl(var(--line));
   font: 700 1.625rem/1.25 var(--font-display);
@@ -420,6 +435,7 @@ h1.page-title {
 
 .content h3 {
   margin: 26px 0 10px;
+  max-width: var(--measure);
   font: 700 1.25rem/1.3 var(--font-display);
   letter-spacing: -0.01em;
   color: hsl(var(--ink));
@@ -427,6 +443,7 @@ h1.page-title {
 
 .content h4 {
   margin: 20px 0 8px;
+  max-width: var(--measure);
   font: 700 1rem/1.3 var(--font-display);
   color: hsl(var(--ink));
 }
@@ -438,6 +455,14 @@ h1.page-title {
 
 .content p {
   margin: 0 0 14px;
+  max-width: var(--measure);
+}
+
+/* An image-only paragraph is not prose (enhance.js tags it), so it opts out of
+   the measure — otherwise the measure, not the 720px ceiling on .content img,
+   would be the effective image cap. */
+.content p.figure {
+  max-width: none;
 }
 
 .content ul,
@@ -448,6 +473,7 @@ h1.page-title {
 
 .content li {
   margin-bottom: 7px;
+  max-width: var(--measure);
 }
 
 .content li::marker {
@@ -455,8 +481,13 @@ h1.page-title {
   font-weight: 700;
 }
 
+/* Editorial ceiling, not a repair — nothing upscales (max-width only shrinks
+   and the emitted <img> carries no width attribute). min() not a bare 720px:
+   max-width alone does not shrink an image to a narrower container, and a
+   Canvas description can measure 691px. The callout/checkpoint icons carry
+   width="16" plus inline style, so this cannot touch them. */
 .content img {
-  max-width: 100%;
+  max-width: min(100%, 720px);
   height: auto;
   display: block;
   border-radius: var(--r-md);
@@ -477,12 +508,13 @@ h1.page-title {
 .intro {
   font-size: 1.02rem;
   color: hsl(var(--ink-muted));
-  max-width: 52ch;
+  max-width: var(--measure);
 }
 
 .footnote {
   font-size: 0.875rem;
   color: hsl(var(--ink-muted));
+  max-width: var(--measure);
 }
 
 /* ===================== inline code / kbd / wikilink =============== */
@@ -558,8 +590,12 @@ a.wikilink:hover {
   overflow: hidden;
 }
 
+/* The poster is full-bleed card chrome, not a content image, so it opts out of
+   the .content img 720px editorial ceiling — without this reset the cap leaves
+   a gutter on the right of any card wider than 720px. */
 .video-poster img {
   width: 100%;
+  max-width: 100%;
   display: block;
   border: 0;
   border-radius: 0;
@@ -862,39 +898,55 @@ a.video-title {
 /* ========================== data-list ============================ */
 /* Zero-tables policy: key-value data renders as a semantic <dl>, never a
    <table>. dt/dd are DIRECT children of the dl — Canvas's sanitizer unwraps
-   any wrapper div between them (probe 2026-07-06) — so rows come from
-   flex-wrap: each dd fills the rest of its line, forcing the next dt to
-   wrap. Keys wear the mono chip on an inner .data-key span. */
+   any wrapper div between them (probe 2026-07-06).
+   STACKED, one item per line: every dt and dd takes a 100% flex basis, so the
+   key sits above its value at ANY key length. There is no fixed key column and
+   no leftover space on a line for a following item to occupy.
+   Do NOT "optimise" the dt back to an auto width (flex: 0 1 auto): the old
+   rows only worked because the dd GREW to fill its line, which is what forced
+   the next dt to wrap. The dd carries max-width: var(--measure), which removes
+   that growth — so an auto-width dt lets the next key slot in beside the
+   previous value and key/value pairing visibly breaks.
+   CSS grid would also solve this, but display: grid is on neither list in
+   CANVAS-NOTES.md; this version uses only paste-verified properties.
+   Keys wear the tinted sans chip on an inner .data-key span. */
 dl.data-list {
   margin: 0 0 16px;
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
 }
 
 .data-list dt {
-  flex: 0 0 6.5rem;
-  padding: 7px 0;
-  border-bottom: 1px solid hsl(var(--line));
+  flex: 1 1 100%;
+  padding: 9px 0 0;
 }
 
 .data-list dd {
-  flex: 1 1 70%;
+  flex: 1 1 100%;
   margin: 0;
-  padding: 7px 0 7px 12px;
+  padding: 0 0 9px;
+  max-width: var(--measure);
+  /* separator under the VALUE only — a border on the dt would draw a stub
+     under each key. */
   border-bottom: 1px solid hsl(var(--line));
 }
 
-.data-list dt:last-of-type,
 .data-list dd:last-of-type {
   border-bottom: 0;
 }
 
+/* The chip hugs its text: no min-width (it forced a chip wider than short keys
+   like .css) and no centring — both tidied a fixed column that no longer
+   exists.
+   SANS, not mono: keys can now be sentence-length (the stacked layout allows
+   it), and monospace on a sentence reads as literal text to be typed rather
+   than as a label. Mono stays a signal that something is code. Space Mono also
+   draws its `f` hook into the following `i`'s tittle, so `fi` looked crowded at
+   chip size — but that is the symptom, not the reason. Tint, radius, padding,
+   size and weight are unchanged. */
 .data-list .data-key {
   display: inline-block;
-  min-width: 5.5rem;
-  text-align: center;
-  font: 600 0.875rem/1.6 var(--font-mono);
+  font: 600 0.875rem/1.6 var(--font-sans);
   color: hsl(var(--accent-soft-ink));
   background: hsl(var(--accent-soft));
   border-radius: var(--r-sm);
@@ -1063,6 +1115,10 @@ outputs. The text mimics real course content on purpose.</p>
 <h2 id="watching" tabindex="-1">Watching</h2>
 <h3 id="video-1%3A-file-system-basics-(~15min)" tabindex="-1">Video 1: File System Basics (~15min)</h3>
 <div class="video-card"><a class="video-poster" href="https://youtu.be/hw7TwIf1rOw"><img class="letterboxed" src="https://img.youtube.com/vi/hw7TwIf1rOw/hqdefault.jpg" alt="Video"></a><div class="video-meta"><span class="play-tile" aria-hidden="true"><svg class="gi gi-play" data-gi="play-tile" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg></span><div class="video-text"><span class="video-kicker">Video · YouTube</span><a class="video-title" href="https://youtu.be/hw7TwIf1rOw">Watch on YouTube</a></div></div></div>
+<h3 id="oversized-screenshot" tabindex="-1">Oversized screenshot</h3>
+<p>A plain content image wider than the 720px editorial ceiling — this exercises
+the <code>.content img</code> cap, which the video poster deliberately opts out of.</p>
+<p class="figure"><img src="https://img.youtube.com/vi/hw7TwIf1rOw/maxresdefault.jpg" alt="A 1280px-wide frame, capped to 720px by the content image ceiling"></p>
 <h2 id="reading" tabindex="-1">Reading</h2>
 <p>You should choose the reading assignment for the computer(s) you will be
 using for your web development assignments this semester.</p>
@@ -1109,6 +1165,10 @@ and push, or your local copy and the repo will fall out of sync.</p>
 </code></pre>
 <h3 id="common-file-extensions" tabindex="-1">Common file extensions</h3>
 <dl class="data-list"><dt><span class="data-key">.html</span></dt><dd>HTML document, the page itself</dd><dt><span class="data-key">.css</span></dt><dd>stylesheet</dd><dt><span class="data-key">.jpg, .png</span></dt><dd>images (photo, lossless)</dd><dt><span class="data-key">.svg</span></dt><dd>vector image, scales without blur</dd></dl>
+<h3 id="long-keys" tabindex="-1">Long keys</h3>
+<p>Sentence-length keys are the case that shipped a defect once — the data-list is
+regression-tested with them, not only with short extensions.</p>
+<dl class="data-list"><dt><span class="data-key">Finish Know Your Files: Liftoff first</span></dt><dd>it establishes the folder layout every later module builds on, so skipping it leaves you renaming files mid-assignment.</dd><dt><span class="data-key">Turn on filename extensions before you start</span></dt><dd>macOS and Windows both hide them by default, which makes the whole exercise invisible.</dd><dt><span class="data-key">.svg</span></dt><dd>a short key in the same list, to prove both lengths still read correctly</dd></dl>
 <div class="checkpoint"><span class="checkpoint-mark" aria-hidden="true"><svg class="gi gi-check" data-gi="checkpoint-mark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><div class="checkpoint-body"><span class="checkpoint-title">Checkpoint</span>
 <p>You can rename a file, show filename extensions, and zip a folder. If any of
 those feel shaky, rewatch Video 1 before starting the assignment.</p>

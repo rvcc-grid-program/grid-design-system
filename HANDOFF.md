@@ -54,10 +54,11 @@ Plain markdown everywhere, plus exactly these constructs:
 | Note callout        | `::: callout-note` around text                                                                                   | `.callout` with head row (info icon + NOTE)                                                                                                                                 |
 | Checkpoint          | `::: checkpoint` around text                                                                                     | `.checkpoint` row (check icon + CHECKPOINT label)                                                                                                                           |
 | Featured link       | `::: link-row` around ONE markdown link                                                                          | row with arrow-up-right tile, bold link, auto URL line                                                                                                                      |
+| Content image       | plain markdown image on its own line: `![alt](url)`                                                              | `<p class="figure">` — opts the image-only paragraph out of the reading measure so `.content img` caps it at 720px instead; add a caption on the same line and it stays prose. Zero migration |
 | Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                                                                                                                          |
 | Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                                                                                                                                  |
 | Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                                                                                                                         |
-| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), rows via flex-wrap — NEVER a `<table>` (zero-tables policy) |
+| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with tinted sans chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), stacked one-per-line so keys of any length are safe — NEVER a `<table>` (zero-tables policy) |
 | Prose highlight     | `[key phrase]{.hl}` (or `.hl-highlighter`)                                                                       | `.hl` amber wash behind ink text — loudest in-sentence emphasis; `.hl` and `.hl-highlighter` are identical                                                                  |
 | Soft-pill highlight | `[key phrase]{.hl-pill}`                                                                                         | `.hl-pill` rounded amber-soft tint + deep-amber ink — quieter inline emphasis for a value or term                                                                           |
 | Label pill          | `<span class="tag">NEW</span>` (inline HTML)                                                                     | `.tag` uppercase mono pill (NEW / BETA / DUE SOON)                                                                                                                          |
@@ -126,10 +127,19 @@ reproduce it exactly.
   </ul>
 </div>
 
+<!-- content image (enhance.js tags the paragraph). Markdown wraps a standalone
+     image in a <p>, which carries the reading measure — .figure removes that
+     cap so .content img's 720px editorial ceiling is the binding one. Only a
+     <p> whose sole child is an <img> and which has no text qualifies. -->
+<p class="figure"><img src="…" alt="…"></p>
+
 <!-- data-list (enhance.js, from the ::: data-list markdown list).
      dt/dd MUST be direct children of the dl — Canvas unwraps any wrapper
-     div (DECISIONS.md 19). Rows come from CSS flex-wrap; the chip is the
-     inner .data-key span, never the dt itself. -->
+     div (DECISIONS.md 19). The layout is STACKED — each dt and dd takes a
+     full-width flex basis, so the key sits above its value at any key length;
+     the separator rule sits under the dd. The chip is the inner .data-key
+     span (sans, not mono — keys can be sentence-length), never the dt
+     itself. -->
 <dl class="data-list">
   <dt><span class="data-key">A</span></dt>
   <dd>90–100</dd>
@@ -216,8 +226,11 @@ Three self-hosted OFL webfonts, wired through `--font-*` tokens in
 woff2 primary + ttf fallback):
 
 - `--font-display` → **Schibsted Grotesk** — `h1.page-title`, `.content h2/h3/h4`.
-- `--font-sans` → **Hanken Grotesk** — body, UI, captions (inherited).
-- `--font-mono` → **Space Mono** — chips, kickers, code, filenames.
+- `--font-sans` → **Hanken Grotesk** — body, UI, captions (inherited), plus the
+  `.data-key` chip, whose keys can be sentence-length.
+- `--font-mono` → **Space Mono** — code, filenames, kickers, and chips that
+  stand for code (`.wikilink`, `.est-chip`, `.tag`). Mono is a signal that
+  something is literal text; never set a sentence in it.
 
 Every stack keeps system fallbacks, so Canvas (which drops `@font-face` —
 see CANVAS-NOTES.md) degrades to a sane system font; the fonts are a
