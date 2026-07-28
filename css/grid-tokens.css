@@ -11,10 +11,16 @@
   --r-lg: 22px;
   --r-pill: 999px;
   /* reading measure — the max line length for prose, NOT a box width.
-     54ch delivers ~70 characters (ch is the `0` advance, ~1.3x the average
-     character). Light :root only, like --r-* and --font-*; the dark blocks
-     carry colors and shadows only. */
-  --measure: 54ch;
+     CALIBRATED FROM RENDERED OUTPUT, NOT ARITHMETIC (v1.7.1). Do not recompute
+     this from the `0` advance: 54ch was derived that way and shipped ~8% too
+     loose (median 74, max 83 characters over 27 lines on a live Canvas page,
+     past the 80-char WCAG 1.4.8 AAA ceiling). A probe inside those very
+     paragraphs measured 12.041px per ch while the rule computed 674.291px,
+     i.e. 12.487px — the two disagree on the same element. Trust the counted
+     characters per rendered line box. 50ch measures ~624px, median ~69, max
+     ~77. Light :root only, like --r-* and --font-*; the dark blocks carry
+     colors and shadows only. */
+  --measure: 50ch;
   --shadow-1: 0 1px 2px hsl(220 30% 10% / 0.06), 0 2px 8px hsl(220 30% 10% / 0.06);
   --shadow-2: 0 8px 24px hsl(220 30% 10% / 0.12), 0 2px 8px hsl(220 30% 10% / 0.08);
   /* type — self-hosted webfonts (css/grid-fonts.css), system fallbacks kept

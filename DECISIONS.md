@@ -504,9 +504,11 @@ wrapper grid-canvas inlines). Changing only one of those two is the trap.
 
 **Units, because they produced a wrong conclusion once:** `ch` is the advance
 width of `0`, roughly 1.3× the average character, so a 70ch line carries ~92
-characters. The value that delivers ~70 characters is ~54ch — which
-`.intro { max-width: 52ch }` already had approximately right, and which is now
-the token it references.
+characters — far more than the accessibility target counts. `.intro`'s existing
+`max-width: 52ch` was the one place in the repo already in the right
+neighbourhood, and the token replaced it. **The 54ch shipped here was still too
+loose; corrected to 50ch in v1.7.1 below — read that before touching the
+value.**
 
 The measure is deliberately NOT applied per component. `.objectives p`,
 `.checkpoint-body p` and `.callout-body p` declare no `max-width` and so inherit
@@ -593,6 +595,46 @@ open: whether `54ch` *resolves* to the same pixel width in Canvas, which drops
 still rests on a single macOS measurement (12.04px `0` advance on both surfaces),
 so it wants a Windows check. Fallback if it ever diverges: bake to ~650px. Ships
 as **v1.7.0**.
+
+## Measure calibrated to 50ch — 2026-07-27
+
+`--measure: 54ch` → **`50ch`**. One token value; nothing else changes. From an
+idmx-225 addendum (`handoff/addendum-01-measure-calibration.md`) written after
+test-shipping v1.7.0 to sandbox course 3872257 — import migration clean, all nine
+structural probes surviving, and **both original defects confirmed fixed**: the
+wrapper renders 948px as predicted, the data-list is stacked with unambiguous
+pairing (`dt` 846px, `dd` 674px), and three content images of intrinsic width
+1546/1502/2000px all render at 722px (720 + border) with no overflow. The
+`.content p.figure { max-width: none }` addition made here was confirmed
+necessary — without it the paragraph's measure would have clamped images to 674px
+before the 720px ceiling could bind.
+
+**Why 54ch was wrong.** Counting characters per rendered line box across 27 lines
+of real prose on the shipped page: min 52, **median 74, max 83**, with 10 of 27
+lines over 75 and one past the 80-character WCAG 1.4.8 (AAA) ceiling this change
+set out to respect. Not one outlier — the top quartile genuinely ran 76–83. 50ch
+computes to ~624px for a median of ~69 and a max of ~77, inside the 65–75 band
+with headroom. (49ch would satisfy 65–75 strictly on every line; 50ch was chosen
+because 76–77 is ordinary typographic tolerance.)
+
+**Do not recompute this from a font metric — this is the trap that produced the
+bad value.** 54ch came from a probe measuring the `0` advance at 12.041px and
+expecting ~650px. The rule actually computed **674.291px**, implying 12.487px per
+`ch`; a probe span placed *inside* those same paragraphs on the shipped Canvas
+page still reported 12.041px. `getComputedStyle().maxWidth` and a rendered-text
+probe disagree about what a `ch` is **on the same element** — presumably a
+webfont-fallback timing artifact in when the `ch` was resolved. The acceptance
+criterion says count characters per rendered line box precisely because
+arithmetic here is untrustworthy, and counting is what caught it.
+
+**Verification gotcha, recorded for the next person:** Canvas adds
+`loading="lazy"` to content images. Measured immediately after load they report
+`naturalWidth: 0` and a rendered width of 2px — the border box of an unloaded
+image, which reads exactly like a broken image. Scroll them into view, wait, then
+measure.
+
+No `CANVAS-NOTES.md` change: no new sanitizer behaviour. No contrast change: a
+length token touches no pair. Ships as **v1.7.1** (patch).
 
 ## Still open
 
