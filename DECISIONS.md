@@ -581,10 +581,18 @@ component only with short extensions, which is why this defect shipped unnoticed
 and an **oversized content image** (1280px), because the specimen contained no
 plain content image at all, leaving the new cap untested by the regression test.
 
-Two paste tests gate the tag, not the work (see CANVAS-NOTES.md): whether `min()`
-survives the sanitizer (fallback `max-width: 85%`), and whether `ch` resolves the
-same in Canvas, which drops `@font-face` and falls back to `system-ui` (fallback:
-bake to ~650px). Ships as **v1.7.0**.
+**Paste-tested 2026-07-27, before the tag** (verdict table in CANVAS-NOTES.md
+§6). Every declaration this release depends on survives the sanitizer verbatim —
+`min(100%, 720px)`, `max-width: 900px`, `54ch` (42 occurrences), `max-width: none`
+on `.figure`, the poster's `100%` opt-out, and `flex: 1 1 100%` on all 14 dt/dd,
+still alternating as direct `dl` children. **The `max-width: 85%` fallback was
+never needed** — a stripped `min()` was the gating risk, since it would have left
+images with no cap at all. One thing the saved-DOM method cannot settle stays
+open: whether `54ch` *resolves* to the same pixel width in Canvas, which drops
+`@font-face` and falls back to `system-ui`. Survival is proven; resolution parity
+still rests on a single macOS measurement (12.04px `0` advance on both surfaces),
+so it wants a Windows check. Fallback if it ever diverges: bake to ~650px. Ships
+as **v1.7.0**.
 
 ## Still open
 

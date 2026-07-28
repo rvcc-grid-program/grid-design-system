@@ -15,8 +15,8 @@ host page you don't control.
 ## 1. The CSS property allowlist
 
 Canvas keeps the `style` attribute but filters it property-by-property.
-Verdicts below are from paste tests on 2026-06-11/12, 2026-07-06, and
-2026-07-07.
+Verdicts below are from paste tests on 2026-06-11/12, 2026-07-06, 2026-07-07,
+and 2026-07-27.
 
 **Amber highlight utilities — Verified 2026-07-07** (Accent v2 paste test,
 instructor-confirmed). `.hl` / `.hl-highlighter` (amber wash: `hsl()` alpha
@@ -43,6 +43,9 @@ below.
 | `font:` shorthand                                                      | Expanded to longhands on save, **weight included** — the sanctioned way to bold a styled span (term chip proves it) |
 | `text-decoration`                                                      |                                                                                                                     |
 | `max-width`, `width`, `height` on block elements                       |                                                                                                                     |
+| **`min()` inside `max-width`** — `max-width: min(100%, 720px)`         | Survives verbatim; the `.content img` 720px ceiling depends on it (2026-07-27)                                       |
+| **`ch` units** in `max-width` — `max-width: 54ch`                      | Survives verbatim, 42 occurrences, on prose and the data-list `dd` (2026-07-27). Survival ≠ identical resolution — see Open questions |
+| `max-width: none`                                                      | The `.figure` opt-out from the reading measure depends on it (2026-07-27)                                            |
 | `flex` shorthand (`none`, `0 0 6.5rem`, `1 1 70%`, `1 1 100%`), `flex-wrap` | Every tile depends on these; the data-list's stacked rows use `1 1 100%` (2026-07-06)                            |
 
 ### Verified — STRIPPED
@@ -212,20 +215,38 @@ Screenshots catch layout failures; only saved-HTML/computed-style checks
 catch silent property stripping — a stripped property usually fails
 _quietly_ (the letterbox crop became `margin: 0` with no error anywhere).
 
+### Verdict — v1.7.0 measure, data-list restack, image cap (2026-07-27)
+
+Paste → save → reopen-editor → copy, per the steps above; saved DOM captured at
+`tmp/specimen-canvas.html` (gitignored, local). Every declaration this release
+depends on came back **verbatim**:
+
+| Checked                                                    | Verdict                                       |
+| ---------------------------------------------------------- | --------------------------------------------- |
+| `.content img` → `max-width: min(100%, 720px)`             | SURVIVES — no fallback needed                 |
+| `.page-wrap` → `max-width: 900px`                          | SURVIVES                                      |
+| `--measure` resolved to `max-width: 54ch`, 42 occurrences  | SURVIVES on prose, headings, and data-list `dd` |
+| `.figure` paragraph → `max-width: none`                    | SURVIVES                                      |
+| `.video-poster img` → `max-width: 100%` (cap opt-out)      | SURVIVES                                      |
+| data-list `dt`/`dd` → `flex: 1 1 100%`, 14 occurrences     | SURVIVES; dt/dd still alternate as direct `dl` children |
+| `dd` separator + `border-bottom: 0` on the last            | SURVIVES                                      |
+| `.data-key` → `font:` shorthand with `--font-sans`         | SURVIVES, expanded to longhands, weight 600 kept |
+
+So the **`min()` fallback (`max-width: 85%`) was never needed** — that was the
+gating risk, since a stripped `min()` would have left images with no cap at all.
+Canvas normalized the chip's `hsl()` to hex (`#5430b5` on `#ede8fd`) and expanded
+the `font:` shorthand, both expected. What this method CANNOT show is whether
+`54ch` *resolves* to the same pixel width as in preview — saved HTML proves
+survival, not computed value; that stays open below.
+
 ## 7. Open questions
 
-- **`min()` in a `max-width` — UNVERIFIED, gates the v1.7.0 tag.** `.content img`
-  ships `max-width: min(100%, 720px)`. If the sanitizer strips the declaration,
-  images lose their cap entirely and render at intrinsic size up to 3416px —
-  worse than before the change, so this fails loudly in the wrong direction.
-  Probe per §6, then record the dated verdict here. Fallback if stripped:
-  `max-width: 85%` (a plain percentage, already verified-safe; never overflows,
-  yields ~719px on the 846px text column and ~587px on a narrow 691px one).
-- **`ch` units in Canvas — PROBABLY FINE, confirm on Windows.** The `--measure:
-  54ch` token resolves against `system-ui` in Canvas, which drops `@font-face`.
-  The `0` advance measured **12.04px on both surfaces** at a 20px root, but on
-  one macOS machine only. Fallback if it diverges: bake the measure to px
-  (54 × 12.04 ≈ 650px).
+- Whether **`ch` resolves identically** in Canvas, not merely survives. The
+  declaration is verified-safe (2026-07-27 below), but Canvas drops
+  `@font-face`, so `54ch` resolves against `system-ui`. The `0` advance measured
+  **12.04px on both surfaces** at a 20px root — one macOS machine only. Confirm
+  on Windows before assuming parity. Fallback if it diverges: bake the measure to
+  px (54 × 12.04 ≈ 650px).
 
 - Whether the allowlist differs between paste-into-RCE and **imscc import**
   (the eventual delivery path). Re-run the specimen test on the first
