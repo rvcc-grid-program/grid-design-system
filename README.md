@@ -92,6 +92,7 @@ pnpm run canvas <page.md>    # Canvas-ready inline-styled fragment (regenerates 
 pnpm run build:icons         # regenerate docs/icons/generated/ content-icon PNGs
 pnpm run contrast            # regenerate CONTRAST.md (must stay 0 failures)
 pnpm run site                # rebuild the Pages site in docs/
+pnpm test                    # node --test regression tests in tests/
 ```
 
 ## How design truth flows
@@ -115,9 +116,10 @@ test. Then:
 ## The verification loop
 
 1. `pnpm run contrast` — must report 0 failures
-2. Rebuild `specimen/specimen.md` both ways; view the preview in light and
+2. `pnpm test` — must be green
+3. Rebuild `specimen/specimen.md` both ways; view the preview in light and
    dark
-3. Paste `specimen/specimen.canvas.html` into the Canvas sandbox page, save,
+4. Paste `specimen/specimen.canvas.html` into the Canvas sandbox page, save,
    reopen the HTML editor, and check the probe list in `DECISIONS.md`
 
 ## Beginner's guide

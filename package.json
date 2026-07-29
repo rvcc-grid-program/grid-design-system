@@ -1,6 +1,6 @@
 {
   "name": "grid-design-system",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "private": true,
   "type": "module",
   "description": "GRID program design system — Console tokens + course-content components, with the wiki→Canvas build pipeline",
@@ -20,7 +20,8 @@
     "preview": "node pipeline/preview-build.js",
     "build:icons": "node pipeline/build-icons.js",
     "canvas": "pnpm run build:icons && node pipeline/canvas-build.js",
-    "site": "node pipeline/site-build.js"
+    "site": "node pipeline/site-build.js",
+    "test": "node --test \"tests/*.test.js\""
   },
   "dependencies": {
     "cheerio": "^1.2.0",
