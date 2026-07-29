@@ -58,7 +58,7 @@ Plain markdown everywhere, plus exactly these constructs:
 | Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                                                                                                                          |
 | Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                                                                                                                                  |
 | Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                                                                                                                         |
-| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`)                           | semantic `<dl>` with tinted sans chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), stacked one-per-line so keys of any length are safe — NEVER a `<table>` (zero-tables policy) |
+| Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`). The separator after `**key**` may be an em dash, en dash, hyphen, or colon — or omitted entirely; the pipeline consumes it and it never renders, so `- **key** - value` is equally legal and byte-identical | semantic `<dl>` with tinted sans chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), stacked one-per-line so keys of any length are safe — NEVER a `<table>` (zero-tables policy) |
 | Prose highlight     | `[key phrase]{.hl}` (or `.hl-highlighter`)                                                                       | `.hl` amber wash behind ink text — loudest in-sentence emphasis; `.hl` and `.hl-highlighter` are identical                                                                  |
 | Soft-pill highlight | `[key phrase]{.hl-pill}`                                                                                         | `.hl-pill` rounded amber-soft tint + deep-amber ink — quieter inline emphasis for a value or term                                                                           |
 | Label pill          | `<span class="tag">NEW</span>` (inline HTML)                                                                     | `.tag` uppercase mono pill (NEW / BETA / DUE SOON)                                                                                                                          |
@@ -139,7 +139,9 @@ reproduce it exactly.
      full-width flex basis, so the key sits above its value at any key length;
      the separator rule sits under the dd. The chip is the inner .data-key
      span (sans, not mono — keys can be sentence-length), never the dt
-     itself. -->
+     itself. ONE leading em dash, en dash, hyphen, or colon is stripped off
+     the value (all optional, all equivalent) — pinned by
+     tests/data-list-separator.test.js. -->
 <dl class="data-list">
   <dt><span class="data-key">A</span></dt>
   <dd>90–100</dd>

@@ -636,6 +636,48 @@ measure.
 No `CANVAS-NOTES.md` change: no new sanitizer behaviour. No contrast change: a
 length token touches no pair. Ships as **v1.7.1** (patch).
 
+## data-list separator tolerance, pinned by a test — 2026-07-29
+
+**The decision:** the separator between a data-list key and its value is
+author-facing sugar, not syntax anyone reads. `**key**` becomes the `<dt>`;
+one optional leading em dash, en dash, hyphen, or colon is consumed off the
+value and never renders. The pipeline accepts all four (and none) rather than
+policing one, so a human writing the natural `- **key** - value` gets output
+byte-identical to the machine-written `- **key** — value`.
+
+The behavior already shipped — `enhance.js` has stripped
+`/^\s*(—|–|-|:)?\s*/` since the v1.1.0 component. What changed is that it is
+now *documented* (the `HANDOFF.md` authoring row said em dash only, so a
+consumer reading the contract strictly believed the hyphen was unsupported)
+and *pinned*. Raised by idmx-225, the first consumer, whose data-list items
+move from machine-written to human-authored this term
+(`handoff/data-list-separator-tolerance.md`).
+
+**Why a test and not just prose.** An undocumented tolerance is an
+implementation detail, and a refactor tightening that regex would break
+consumer pages with nothing failing. `tests/data-list-separator.test.js`
+renders a data-list through `md` + `enhance` with all four separators plus a
+no-separator item and asserts every `<dd>` starts at the value; it also pins
+that only ONE separator is consumed (a value legitimately opening with a dash
+keeps it) and that dt/dd stay direct children of the dl (decision 19).
+Mutation-checked: tightening the group to `(—)?` fails the suite.
+
+**No output change and no new dependency.** The optional group stays optional
+(consumer pages already have items whose value begins right after the bold
+key), the `<dl>` structure and `.data-key` chip are untouched, and no paste
+test is needed — nothing about the emitted HTML moved.
+
+**This repo now has a test runner:** `pnpm test` → `node --test tests/*.test.js`,
+Node's built-in, zero dependencies added. It joins the verification loop as
+step 2 in `README.md`, `CLAUDE.md`, and this file. The pre-existing
+`pipeline/raw-html-guard.fixture.md` stays a manual fixture for now; folding it
+into `tests/` is a later, separate cleanup.
+
+No `CANVAS-NOTES.md` change and no paste test: the emitted HTML is unchanged,
+so no sanitizer behaviour is in play. No contrast change. Ships as **v1.7.2**
+(patch) — documentation and a test pin only, no consumer-visible output
+difference; idmx-225 bumps its pinned tag to pick up the documented contract.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified

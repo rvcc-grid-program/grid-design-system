@@ -20,6 +20,8 @@ the same commit, update every item in this list that mentions what changed:
   template, or landing-page changes; it deploys on push
 - `runbooks/` — executable probe/verification procedures; update any
   runbook whose steps, paths, or Expect lines the change made stale
+- `tests/` — `node --test` regression pins (`pnpm test`, no deps); a change
+  that alters a pinned pipeline behavior updates the test in the same commit
 - this file
 
 Before any commit: grep the doc set for paths, commands, names, and claims
@@ -28,10 +30,11 @@ the change made stale.
 ## Verification loop (run before declaring anything done)
 
 1. `pnpm run contrast` — must report 0 failures
-2. `pnpm run preview specimen/specimen.md` + `pnpm run canvas specimen/specimen.md`
+2. `pnpm test` — the `node --test` regression suite in `tests/` must be green
+3. `pnpm run preview specimen/specimen.md` + `pnpm run canvas specimen/specimen.md`
    — the specimen is THE regression test; eyeball the preview light AND dark
-3. `pnpm run site` if css/templates/docs changed
-4. Anything touching Canvas output behavior needs a real paste test
+4. `pnpm run site` if css/templates/docs changed
+5. Anything touching Canvas output behavior needs a real paste test
    (methodology in CANVAS-NOTES.md §6); record verdicts with dates
 
 ## Rules that aren't obvious from the code
