@@ -573,6 +573,16 @@ a.wikilink {
   border: 1px solid hsl(var(--line));
 }
 
+/* Aliased [[slug|label]] — the label is prose, and mono's job here is to mark
+   code (see .data-key in DECISIONS.md). Sans also runs narrower, so the pill
+   fits a line more often. overflow-wrap undoes the bare-URL `anywhere` the
+   base `a` rule sets: a prose label may break at a space, never mid-word. */
+a.wikilink-labeled {
+  font-family: var(--font-sans);
+  font-size: 1em;
+  overflow-wrap: normal;
+}
+
 a.wikilink:hover {
   border-color: hsl(var(--accent));
 }

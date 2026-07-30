@@ -248,6 +248,18 @@ survival, not computed value; that stays open below.
   on Windows before assuming parity. Fallback if it diverges: bake the measure to
   px (54 × 12.04 ≈ 650px).
 
+- Whether **`overflow-wrap`** survives, in either direction. No paste test has
+  ever exercised it, despite the base `a` rule setting `overflow-wrap: anywhere`
+  for bare URLs since v1. It matters now because `.wikilink-labeled` sets
+  `overflow-wrap: normal` to opt a prose label out of mid-word breaking
+  (DECISIONS.md, 2026-07-30); if the sanitizer strips it, labeled chips break
+  mid-word in Canvas exactly as they did before, so nothing regresses — but the
+  fix is preview-only until this is settled. Same test should settle
+  **`white-space`**, which nothing in the system uses today and which was
+  explicitly declined for the wikilink pill pending this verdict. **Owner:**
+  idmx-225, testing against v1.8.0 as part of its own pin bump; the verdict
+  comes back here dated.
+
 - Whether the allowlist differs between paste-into-RCE and **imscc import**
   (the eventual delivery path). Re-run the specimen test on the first
   imported package before trusting parity.

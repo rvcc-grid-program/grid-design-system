@@ -56,7 +56,8 @@ Plain markdown everywhere, plus exactly these constructs:
 | Featured link       | `::: link-row` around ONE markdown link                                                                          | row with arrow-up-right tile, bold link, auto URL line                                                                                                                      |
 | Content image       | plain markdown image on its own line: `![alt](url)`                                                              | `<p class="figure">` — opts the image-only paragraph out of the reading measure so `.content img` caps it at 720px instead; add a caption on the same line and it stays prose. Zero migration |
 | Other links         | plain markdown list                                                                                              | plain list (bullets get accent markers in preview)                                                                                                                          |
-| Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip                                                                                                                                                  |
+| Internal link       | `[[page-slug]]`                                                                                                  | `.wikilink` monospace chip showing the raw slug                                                                                                                             |
+| Internal link, labeled | `[[page-slug\|Readable Label]]`                                                                               | `.wikilink.wikilink-labeled` — same chip, set in sans at body size because the label is prose, not code (DECISIONS.md). Prefer this whenever the slug isn't itself the thing you mean to show. Keep labels short: the chip is inline and a long label wraps at spaces, leaving each half bordered |
 | Steps               | `### Steps` heading + ordered list                                                                               | styled ordered list                                                                                                                                                         |
 | Key-value data      | `::: data-list` around `- **key** — value` items (blank line before the closing `:::`). The separator after `**key**` may be an em dash, en dash, hyphen, or colon — or omitted entirely; the pipeline consumes it and it never renders, so `- **key** - value` is equally legal and byte-identical | semantic `<dl>` with tinted sans chip keys, dt/dd as DIRECT dl children (Canvas unwraps any wrapper div — DECISIONS.md 19), stacked one-per-line so keys of any length are safe — NEVER a `<table>` (zero-tables policy) |
 | Prose highlight     | `[key phrase]{.hl}` (or `.hl-highlighter`)                                                                       | `.hl` amber wash behind ink text — loudest in-sentence emphasis; `.hl` and `.hl-highlighter` are identical                                                                  |
@@ -164,6 +165,13 @@ reproduce it exactly.
 <span class="hl-pill">my-file.html</span>
 <span class="tag">NEW</span>
 
+<!-- wikilinks (markdown.js inline rule). The href is the raw slug; consumers
+     rewrite it to their own URL space and must not touch the link text.
+     The alias form adds wikilink-labeled — a label is prose, so CSS sets it
+     in sans; a bare slug is literal text and stays mono. -->
+<a href="page-slug" class="wikilink">page-slug</a>
+<a href="page-slug" class="wikilink wikilink-labeled">Readable Label</a>
+
 <!-- masthead (templates.js; module label from frontmatter module_title,
      program/term/course from the consumer's grid.config.json) -->
 <div class="brand">
@@ -214,6 +222,13 @@ one ad hoc.
   survive Canvas inlining. `.tag`'s `letter-spacing` and `text-transform`
   are stripped/baked (the label still reads uppercase); no `box-shadow` or
   `opacity` on any of them, so the amber wash and pill tints carry through.
+- **Wikilink chips**: built from `font-family` + `font-size` + solid `hsl()`
+  + `border` + `border-radius` — all Canvas-survivable. Canvas drops
+  `@font-face`, so `.wikilink-labeled` falls back to a system sans and the
+  bare chip to a system mono; the sans/mono distinction survives, the
+  specific faces don't. `overflow-wrap` is UNVERIFIED — no paste test yet
+  (CANVAS-NOTES.md); if it's stripped, a labeled chip can break mid-word in
+  Canvas, which is the pre-existing behavior, not a regression.
 - **Shadows**: stripped in Canvas — only ever decorative; borders carry
   the structure everywhere.
 - **Spacing is margin-based** by design: if flex were ever stripped, content
@@ -229,10 +244,12 @@ woff2 primary + ttf fallback):
 
 - `--font-display` → **Schibsted Grotesk** — `h1.page-title`, `.content h2/h3/h4`.
 - `--font-sans` → **Hanken Grotesk** — body, UI, captions (inherited), plus the
-  `.data-key` chip, whose keys can be sentence-length.
+  `.data-key` chip, whose keys can be sentence-length, and the
+  `.wikilink-labeled` chip, whose label is an author's prose.
 - `--font-mono` → **Space Mono** — code, filenames, kickers, and chips that
-  stand for code (`.wikilink`, `.est-chip`, `.tag`). Mono is a signal that
-  something is literal text; never set a sentence in it.
+  stand for code (bare `.wikilink`, `.est-chip`, `.tag`). Mono is a signal that
+  something is literal text; never set a sentence in it. A bare `[[slug]]` IS
+  literal text, which is why it keeps mono while `.wikilink-labeled` does not.
 
 Every stack keeps system fallbacks, so Canvas (which drops `@font-face` —
 see CANVAS-NOTES.md) degrades to a sane system font; the fonts are a

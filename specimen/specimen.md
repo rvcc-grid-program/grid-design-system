@@ -64,7 +64,9 @@ Optional extras if you want to go deeper:
 - [MDN — Dealing with files](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/Dealing_with_files)
 
 Read the page [[web-dev-file-naming-rules-2]] and be ready to be tested on
-its content.
+its content. The same page under a readable label is
+[[web-dev-file-naming-rules-2|File Naming Rules for the Web]], which sets the
+chip in sans instead of mono.
 
 ## Doing
 
