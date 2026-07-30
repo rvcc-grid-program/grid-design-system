@@ -737,10 +737,69 @@ wikilink beside the bare one so the regression surface covers both.
 Ships as **v1.8.0** (minor) — a new authoring construct is documented and the
 emitted HTML for the alias form changes.
 
+### Amended same day — the pill goes too (v1.8.1)
+
+v1.8.0 was pinned in idmx-225 and **the chip still broke mid-pill**: "Welcome
+to the / Class", each half carrying its own border and tint. Sans bought
+margin, not a fix — exactly what the paragraph above predicted ("fits a line
+more often"). *More often* was the operative phrase, and the only remaining
+guard was an authoring instruction to keep labels short that nothing enforced.
+
+**The reframe: a wrapping link is not a defect, a wrapping pill is.** An
+ordinary link that breaks across two lines is unremarkable — plenty do, and
+nobody notices. What made the labeled chip look damaged was the `background` +
+`border` turning one line break into two visible fragments. The wrapping was
+never the root cause. The pill was.
+
+**So v1.8.0 went halfway on its own reasoning.** It decided a label is prose,
+not code, then acted on that by changing only the font while keeping the tint,
+border, radius, and padding. But a bordered tinted pill *is* code-chip styling
+here — it is precisely what `.est-chip`, `.tag`, and the bare `.wikilink` use
+to say "this is literal text." Changing mono→sans while keeping the chrome said
+prose and code in the same breath. Finishing the thought: a labeled wikilink
+looks like what it is, a link. Resets plus `color: hsl(var(--link))` and
+`text-decoration: underline`. `a.wikilink:hover` is scoped to
+`:not(.wikilink-labeled)` — there is no border left to recolor.
+
+Bare `[[slug]]` is untouched. A raw slug IS literal text and correctly keeps
+the mono pill.
+
+**Also rejected, recorded so they stay rejected:** a dotted accent underline
+marking internal links (prototyped, declined on the merits — whether a link
+leaves the site is artificial to most readers; also `text-decoration-style` and
+`-color` are unverified for Canvas and would need the shorthand, mirroring the
+`font:` workaround for `font-weight`), and an icon cue (`::before`/`::after`
+are impossible by nature in Canvas, so it would mean emitting a real character
+from the pipeline — a much larger change for a cue nobody asked for). **Losing
+the internal-vs-external cue is a deliberate human call, not an oversight; do
+not reintroduce a cue to "fix" it.**
+
+**This de-escalates the `overflow-wrap` open question** rather than adding one.
+With no pill, `overflow-wrap` stops being load-bearing — it stays as a nicety,
+and its failure mode is now invisible instead of visibly broken. The item stays
+open below because it is still genuinely unverified, but it no longer blocks
+closing this decision. **It also deletes an unenforceable authoring contract:**
+"keep labels short" was guidance no checker could hold anyone to, and it would
+have broken the first time someone linked a page with a long title.
+
+CSS-only — no `markdown.js` change, no new class, no new construct, and
+`tests/wikilink-labeled.test.js` is unaffected (it pins the class/href/text
+contract, none of which moved). **No new contrast pair:** the labeled link
+stops using `accent-soft-ink` on `accent-soft` and starts using the link color
+on the card, already covered by the `["Links on content card", "link",
+"surface"]` pair. Every property used is in the CANVAS-NOTES verified-survives
+table, so no new Canvas risk.
+
+Ships as **v1.8.1** (patch) — CSS only, no emitted HTML change, no construct
+added. The rendered appearance of an existing construct does change visibly,
+which argued for a minor; the human called it a patch.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
   2026-07-06 (survives, Route A); import parity untested.
 - `overflow-wrap` / `white-space` through the Canvas sanitizer — no verdict in
-  either direction. Needed to close out the labeled-wikilink decision above
-  (2026-07-30) and before anyone reaches for `nowrap` on an inline chip.
+  either direction. **No longer blocking:** v1.8.1 dropped the labeled-wikilink
+  pill, so `overflow-wrap` is a nicety rather than load-bearing and nothing
+  looks broken if it's stripped. Still worth settling before anyone reaches for
+  `nowrap` on an inline chip, or relies on either property structurally.

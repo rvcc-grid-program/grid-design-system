@@ -573,17 +573,29 @@ a.wikilink {
   border: 1px solid hsl(var(--line));
 }
 
-/* Aliased [[slug|label]] — the label is prose, and mono's job here is to mark
-   code (see .data-key in DECISIONS.md). Sans also runs narrower, so the pill
-   fits a line more often. overflow-wrap undoes the bare-URL `anywhere` the
-   base `a` rule sets: a prose label may break at a space, never mid-word. */
+/* Aliased [[slug|label]] — a label is prose, so it renders as a prose link:
+   no tint, no border, no padding, just the standard link color and underline.
+   The pill is code-chip styling in this system (.est-chip, .tag, the bare
+   .wikilink all use it to say "literal text"), so keeping it on a sentence
+   said prose and code in the same breath — v1.8.0 changed only the font and
+   went halfway. Dropping the pill is also what stops a wrapped label from
+   looking damaged: a link that breaks across two lines is unremarkable, two
+   bordered pill fragments are not. overflow-wrap stays as a nicety (a prose
+   label breaks at a space, not mid-word), but nothing depends on it now. */
 a.wikilink-labeled {
   font-family: var(--font-sans);
   font-size: 1em;
   overflow-wrap: normal;
+  background: none;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  color: hsl(var(--link));
+  text-decoration: underline;
 }
 
-a.wikilink:hover {
+/* Scoped off the labeled form, which has no border to recolor. */
+a.wikilink:not(.wikilink-labeled):hover {
   border-color: hsl(var(--accent));
 }
 
