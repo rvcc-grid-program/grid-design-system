@@ -9,6 +9,7 @@
    - ### Heading {.class}  attributes on blocks (markdown-it-attrs)
    - [text]{.class}  classed inline spans (markdown-it-bracketed-spans)
    - [[slug]] / [[slug|label]]  wikilinks → <a class="wikilink" href="slug">
+     (the aliased form adds `wikilink-labeled` — a label is prose, not code)
    - auto heading ids (markdown-it-anchor)
    - typographer quotes/dashes (parity with pandoc smart punctuation)
 
@@ -25,7 +26,12 @@ import { readFileSync } from "node:fs";
 import { iconFor } from "./icons.js";
 
 /* [[slug]] / [[slug|label]] — small inline rule instead of a dependency so
-   the Canvas build can later resolve slugs against the wiki itself. */
+   the Canvas build can later resolve slugs against the wiki itself.
+
+   A bare slug is code-like and keeps the mono chip. An aliased label is prose,
+   so it gets `wikilink-labeled` and CSS sets it in sans — same reasoning that
+   moved `.data-key` off mono (DECISIONS.md). CSS can't tell the two apart on
+   its own, which is why the distinction is emitted here. */
 function wikilinks(md) {
   md.inline.ruler.before("link", "wikilink", (state, silent) => {
     const src = state.src;
@@ -37,13 +43,14 @@ function wikilinks(md) {
     if (!inner || /[\[\]\n]/.test(inner)) return false;
     if (!silent) {
       const [slug, label] = inner.split("|");
+      const labeled = label !== undefined && label.trim() !== "";
       let token = state.push("link_open", "a", 1);
       token.attrs = [
         ["href", slug.trim()],
-        ["class", "wikilink"],
+        ["class", labeled ? "wikilink wikilink-labeled" : "wikilink"],
       ];
       token = state.push("text", "", 0);
-      token.content = (label ?? slug).trim();
+      token.content = labeled ? label.trim() : slug.trim();
       state.push("link_close", "a", -1);
     }
     state.pos = end + 2;

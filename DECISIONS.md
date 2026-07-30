@@ -678,7 +678,69 @@ so no sanitizer behaviour is in play. No contrast change. Ships as **v1.7.2**
 (patch) — documentation and a test pin only, no consumer-visible output
 difference; idmx-225 bumps its pinned tag to pick up the documented contract.
 
+## Labeled wikilinks are sans, bare wikilinks stay mono — 2026-07-30
+
+`[[slug|Label]]` has worked in `pipeline/markdown.js` since the inline rule was
+written, but it was never documented and emitted the same `class="wikilink"` as
+a bare slug. idmx-225 reached for it while converting a Quick Links block to
+`::: data-list` and got a monospace pill reading "Welcome to the Class" that
+wrapped mid-pill, each half carrying its own border.
+
+**The wrapping was the symptom; mono on prose was the defect** — the same defect
+`.data-key` had (decision above, 2026-07-27), arriving through a different door.
+Mono's job in this system is to mark something as code, and a sentence is not
+code. A bare `[[slug]]` genuinely IS literal text — it's the raw slug, the thing
+an author would type — so it keeps the mono chip. An aliased label is the
+author's prose and gets `--font-sans` at `1em`.
+
+CSS cannot separate the two cases (same class, same element), so the
+distinction is emitted in the pipeline: the alias form now adds a
+`wikilink-labeled` modifier. Everything else about the chip — tint, border,
+radius, padding, the `accent-soft-ink`/`accent-soft` pairing — is untouched, so
+**no contrast pair changes**.
+
+**`overflow-wrap: normal` on the labeled rule** undoes the `anywhere` the base
+`a` rule sets. That `anywhere` is there for bare URLs, and every wikilink
+inherited it by accident; a prose label should break at spaces if it must, never
+mid-word.
+
+**Rejected: `white-space: nowrap` to make the pill atomic.** It converts "breaks
+awkwardly" into "cannot break at all," so a long label overflows a narrow Canvas
+column instead — and it would make short labels an implicit authoring contract
+enforced by nothing. Sans runs narrower than Space Mono, which dissolves most of
+the original complaint on its own; the residual risk is documented as authoring
+guidance in the HANDOFF.md row instead of enforced in CSS. If real pages still
+wrap badly, revisit with a paste test first.
+
+**Canvas: no paste test needed for this change, and one still owed.** Canvas
+drops `@font-face` either way, so the labeled chip falls back to a system sans
+and the bare chip to a system mono — the distinction survives, the specific
+faces don't. `font-family` and `font-size` are already Canvas-verified.
+`overflow-wrap` has no CANVAS-NOTES.md verdict in either direction; if the
+sanitizer strips it, a labeled chip can still break mid-word there, which is the
+pre-existing behavior and not a regression — so the improvement is
+preview-and-site-certain, Canvas-partial. Logged as an open item below.
+
+**Shipped ahead of that paste test, deliberately.** The gating question is
+whether an already-broken chip stays broken in Canvas, not whether anything
+regresses there, so the tag does not wait on it. idmx-225 owns the test and will
+run it against this version as part of its own work; the verdict comes back here
+as a dated CANVAS-NOTES.md entry. If `overflow-wrap` turns out to be stripped,
+the fix is a follow-up patch, not a revert — the sans/mono correction stands on
+its own regardless of the wrapping verdict.
+
+Pinned by `tests/wikilink-labeled.test.js` (class contract, href/text split,
+trimming, and the `[[slug|]]` empty-label fallback to the bare form — an empty
+chip would be silent content loss). `specimen/specimen.md` gains an aliased
+wikilink beside the bare one so the regression surface covers both.
+
+Ships as **v1.8.0** (minor) — a new authoring construct is documented and the
+emitted HTML for the alias form changes.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
   2026-07-06 (survives, Route A); import parity untested.
+- `overflow-wrap` / `white-space` through the Canvas sanitizer — no verdict in
+  either direction. Needed to close out the labeled-wikilink decision above
+  (2026-07-30) and before anyone reaches for `nowrap` on an inline chip.

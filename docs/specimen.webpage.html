@@ -573,6 +573,16 @@ a.wikilink {
   border: 1px solid hsl(var(--line));
 }
 
+/* Aliased [[slug|label]] — the label is prose, and mono's job here is to mark
+   code (see .data-key in DECISIONS.md). Sans also runs narrower, so the pill
+   fits a line more often. overflow-wrap undoes the bare-URL `anywhere` the
+   base `a` rule sets: a prose label may break at a space, never mid-word. */
+a.wikilink-labeled {
+  font-family: var(--font-sans);
+  font-size: 1em;
+  overflow-wrap: normal;
+}
+
 a.wikilink:hover {
   border-color: hsl(var(--accent));
 }
@@ -1148,7 +1158,9 @@ files. When in doubt, <span class="hl-highlighter">lowercase everything</span>.
 <li><a href="https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/Dealing_with_files">MDN — Dealing with files</a></li>
 </ul>
 <p>Read the page <a href="web-dev-file-naming-rules-2" class="wikilink">web-dev-file-naming-rules-2</a> and be ready to be tested on
-its content.</p>
+its content. The same page under a readable label is
+<a href="web-dev-file-naming-rules-2" class="wikilink wikilink-labeled">File Naming Rules for the Web</a>, which sets the
+chip in sans instead of mono.</p>
 <h2 id="doing" tabindex="-1">Doing</h2>
 <p>Work through these steps in order:</p>
 <ol>
