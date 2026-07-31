@@ -794,6 +794,77 @@ Ships as **v1.8.1** (patch) — CSS only, no emitted HTML change, no construct
 added. The rendered appearance of an existing construct does change visibly,
 which argued for a minor; the human called it a patch.
 
+## The video poster is decorative — the title anchor carries the name, 2026-07-31
+
+Filed by idmx-225 (`handoff/video-card-poster-accessible-name.md`), verified
+against v1.8.1 and 63 real built Canvas fragments. **One defect in this repo's
+markup accounted for 57% of every error-level finding in that corpus — 63 of
+111, across 35 of 77 pages** — and no edit in that repo could fix it, because
+the markup is generated here.
+
+The card emits two anchors to the same href. The poster one contains nothing
+but the image, so **the image's alt was the link's entire accessible name**,
+and that alt was the word `Video` on every card in the corpus. A link list on a
+six-video page read "Video, Watch on YouTube, Video, Watch on YouTube…".
+Fails 1.1.1 (the alt names the medium, not the content) and 2.4.4 (the name
+doesn't distinguish the link from any other video link on the page).
+
+**Canvas's own checker never saw it.** Its 13 rules include no link-text rule
+at all, and its `img-alt` rule tests only that the attribute exists — so the
+in-editor panel showed these pages clean. WCAG tier, not Canvas-parity tier;
+that's exactly why it needs fixing here rather than waiting for Canvas.
+
+**`enhance.js:61` had already reached this conclusion halfway.** It refuses to
+use `Video` as the card title (`alt.toLowerCase() !== "video"`), then handed
+the same string to the poster image on the very next line, where it became a
+link name. The fix finishes that thought.
+
+**The poster is decorative and says so:** `alt=""`, `aria-hidden="true"`,
+`tabindex="-1"`. This is the repo's existing pattern, not a new one —
+HANDOFF.md already states it ("always `aria-hidden` tile + empty `alt`, next to
+a real text label") and the card's own `play-tile` is built that way. The
+poster is the same kind of thing: a picture beside a real text label that
+already links to the same place. One change fixes all 63 instances, and **no
+consumer can reintroduce it by writing careless alt text.**
+
+**`tabindex="-1"` is load-bearing, not decoration.** `aria-hidden` on a
+still-focusable element is itself a violation — axe's `aria-hidden-focus`: a
+keyboard user lands on a control screen readers say nothing about. An anchor
+with an href is focusable by default, so hiding it without removing it from the
+tab order would trade one defect for another. It's also right on its own terms:
+poster and title go to the same place, so there is no reason to stop at both.
+
+**Rejected: naming the poster instead** (keeping it focusable with an
+`aria-label` derived from the title). It solves the same problem and the
+consumer would have taken it, but it leaves two tab stops to the same href and
+puts the whole fix on an ARIA attribute rather than on the standard empty-alt
+convention.
+
+**Duplicate "Watch on YouTube" titles are not a new failure.** After this, a
+seven-video page has seven links reading "Watch on YouTube". 2.4.4 is link
+purpose *in context*, and each card sits under its own `### Video N: <title>`
+heading; idmx-225 carries an explicit exemption for `data-class~="video-title"`
+for this reason and chose it over asking us to make each title unique.
+
+**Canvas: paste test owed, not blocking.** No CANVAS-NOTES verdict exists for
+`aria-hidden` or `tabindex` through the sanitizer in either direction. The
+failure modes if it strips them: strip both → today's behavior minus the alt
+string; strip `tabindex` only → `aria-hidden-focus` in Canvas. Preview and the
+Pages site are certain; Canvas is unverified. Logged open below, and idmx-225
+re-runs its audit against this release either way.
+
+**Structure did not move**, deliberately. The poster stays a direct child of
+`.video-card` and the title stays inside `.video-meta > .video-text`, so the
+two anchors are not siblings and Canvas's `adjacent-links` rule still fires
+zero times on a card — confirmed by the consumer across all 63. No class name
+changed, so consumer selectors (`[data-class~="video-title"]`) are untouched.
+Pinned by `tests/video-poster-a11y.test.js`, which asserts the non-sibling
+structure alongside the alt/aria/tabindex contract, so a future flattening
+refactor fails the suite instead of shipping.
+
+Ships as **v1.9.0** (minor) — the emitted HTML for an existing construct
+changes.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
@@ -803,3 +874,18 @@ which argued for a minor; the human called it a patch.
   pill, so `overflow-wrap` is a nicety rather than load-bearing and nothing
   looks broken if it's stripped. Still worth settling before anyone reaches for
   `nowrap` on an inline chip, or relies on either property structurally.
+- `aria-hidden` and `tabindex` through the Canvas sanitizer — no verdict in
+  either direction. v1.9.0's decorative video poster relies on both. **Not
+  blocking:** stripping both lands on the pre-v1.9.0 behavior minus the useless
+  alt string, which is not a regression. Stripping `tabindex` alone would leave
+  a focusable `aria-hidden` anchor in Canvas (`aria-hidden-focus`) — that one
+  needs a follow-up patch, so settle it at the next paste test.
+- `text-transform: uppercase` baked into text nodes (`canvas-build.js:78-79`)
+  reaches Canvas as literal all-caps: `ESTIMATED TIME: 25-30 MINUTES.`,
+  `WARNING`, `NOTE`, `CHECKPOINT`, `VIDEO · YOUTUBE`. Several screen readers
+  spell all-caps letter by letter. Raised by idmx-225, 2026-07-31, explicitly
+  as non-blocking: readability guidance, **not** a testable WCAG 2.1 AA
+  criterion, and Canvas's checker has no letter-case rule. Single words are low
+  risk; the est-chip sentence is the exposed case. If revisited, the options
+  are sentence case in the text (losing the visual uppercase in Canvas) or
+  reserving the bake for single-word labels. Cynthia's call.

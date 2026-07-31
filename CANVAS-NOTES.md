@@ -120,6 +120,13 @@ preview-only garnish.
 - **`data-*` attributes survive** — the foundation of our `data-class`
   round-trip scheme (§3).
 - **`id` attributes survive** (heading anchors work).
+- **`aria-hidden` and `tabindex`: NO VERDICT either way.** Both have shipped in
+  pasted pages (the `play-tile` span has always carried `aria-hidden`), but no
+  probe has re-inspected a saved DOM for them, so neither is verified. Since
+  v1.9.0 the decorative video poster relies on both together (DECISIONS 27) —
+  and the half-stripped case (`tabindex` gone, `aria-hidden` kept) would be a
+  focusable element hidden from the a11y tree. Settle both at the next paste
+  test; open question in §7.
 - **Attribute order is rewritten on save**: Canvas serializes `style`
   first and `class` after it. The build emits the same order so sent vs
   saved HTML diffs cleanly.
@@ -259,6 +266,14 @@ survival, not computed value; that stays open below.
   settle **`white-space`**, which nothing in the system uses today and which
   was twice declined for the wikilink pill. **Owner:** idmx-225, testing as
   part of its own pin bump; the verdict comes back here dated.
+
+- Whether **`aria-hidden` and `tabindex`** survive (§2). v1.9.0's decorative
+  video poster needs both: `aria-hidden="true" tabindex="-1"` on the poster
+  anchor, `alt=""` on its image. Losing both is benign (pre-v1.9.0 behavior
+  minus the useless alt string); losing `tabindex` alone strands a keyboard
+  user on an element hidden from the a11y tree and needs a follow-up patch.
+  The specimen's video card is the test case — check the saved DOM for both
+  attributes on `[data-class="video-poster"]`. **Owner:** next paste test.
 
 - Whether the allowlist differs between paste-into-RCE and **imscc import**
   (the eventual delivery path). Re-run the specimen test on the first
