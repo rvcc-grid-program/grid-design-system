@@ -47,7 +47,7 @@ Plain markdown everywhere, plus exactly these constructs:
 
 | Component           | Author writes                                                                                                    | Pipeline produces                                                                                                                                                           |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration                                                                                                        |
+| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration. The alt text names the card's title link when it says anything other than `Video`; the poster image itself is always decorative (`alt=""`)                                                                                                    |
 | Estimated time      | The existing bold line: `**Estimated time: 25-30 minutes.**`                                                     | `.est-chip` pill — zero migration                                                                                                                                           |
 | Learning objectives | `::: objectives` around stem + list                                                                              | `.objectives` wrapper with kicker                                                                                                                                           |
 | Warning callout     | `::: callout-warning` around text                                                                                | `.callout` with head row (triangle-alert icon + WARNING)                                                                                                                    |
@@ -87,7 +87,10 @@ reproduce it exactly.
 ```html
 <!-- video block (enhance.js, from the thumbnail-link markdown) -->
 <div class="video-card">
-  <a class="video-poster" href="https://youtu.be/ID"><img src="…hqdefault.jpg" alt="…" /></a>
+  <!-- poster is decorative: aria-hidden + tabindex="-1" + empty alt; the
+       title anchor below carries the accessible name for the same href -->
+  <a class="video-poster" href="https://youtu.be/ID" aria-hidden="true" tabindex="-1"
+    ><img src="…hqdefault.jpg" alt="" /></a>
   <div class="video-meta">
     <span class="play-tile" aria-hidden="true"><svg class="gi" data-gi="play-tile">…</svg></span>
     <div class="video-text">

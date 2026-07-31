@@ -63,8 +63,13 @@ export async function enhance($) {
     const thumb = videoId ? await bestThumb(videoId, src) : { src, letterboxed: true };
     p.replaceWith(
       `<div class="video-card">` +
-        `<a class="video-poster" href="${href}">` +
-        `<img${thumb.letterboxed ? ' class="letterboxed"' : ""} src="${thumb.src}" alt="${alt || "Video thumbnail"}"></a>` +
+        // The poster is decorative: it duplicates the title anchor's href, and
+        // the author's alt (`Video` in practice) would otherwise become the
+        // link's whole accessible name. aria-hidden needs tabindex="-1" too —
+        // a focusable element hidden from the a11y tree is its own defect
+        // (axe: aria-hidden-focus). DECISIONS.md 27.
+        `<a class="video-poster" href="${href}" aria-hidden="true" tabindex="-1">` +
+        `<img${thumb.letterboxed ? ' class="letterboxed"' : ""} src="${thumb.src}" alt=""></a>` +
         `<div class="video-meta">` +
         `<span class="play-tile" aria-hidden="true">${iconFor("play-tile")}</span>` +
         `<div class="video-text">` +
