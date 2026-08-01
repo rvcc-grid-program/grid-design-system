@@ -70,7 +70,14 @@ export async function enhance($) {
         // element missing from the a11y tree. No attribute here can be stripped
         // into a defect. CSS stretches the title link over the plate so the
         // poster stays clickable wherever ::after works. DECISIONS.md 28.
-        `<img class="video-poster${thumb.letterboxed ? " letterboxed" : ""}" src="${thumb.src}" alt="">` +
+        //
+        // role="presentation" is redundant for screen readers (alt="" already
+        // says decorative) and is here for Ally, which cannot tell a deliberate
+        // empty alt from a forgotten one and flags every poster until a human
+        // confirms. Confirming in Ally's UI writes this same attribute into the
+        // stored body — where the next ship overwrites it. Emitting it makes
+        // the answer survive. DECISIONS.md 29.
+        `<img class="video-poster${thumb.letterboxed ? " letterboxed" : ""}" src="${thumb.src}" alt="" role="presentation">` +
         `<div class="video-meta">` +
         `<span class="play-tile" aria-hidden="true">${iconFor("play-tile")}</span>` +
         `<div class="video-text">` +

@@ -958,6 +958,43 @@ the API — 3 cards, zero poster anchors, one link each, one focusable element
 each, `alt=""` intact, no `tabindex` anywhere on the page. Dated verdict table
 in CANVAS-NOTES §6.
 
+## The poster says `role="presentation"` so Ally stops asking, 2026-07-31
+
+Ally (Anthology's checker, LTI-embedded in Canvas — not Instructure's own) flags
+every video poster as an image without a description, **even though `alt=""` has
+shipped since v1.9.0 and survives the sanitizer intact.** That is not Ally being
+wrong: an empty alt is genuinely ambiguous, because a forgotten alt and a
+deliberate one look identical in the markup. Ally resolves the ambiguity by
+asking a human, and it records the answer as `role="presentation"` on the image.
+
+**Measured, not assumed.** Marking one page's seven posters decorative in Ally's
+UI and diffing the stored body against the fragment we sent showed exactly one
+change: `role="presentation"` added to the 7 `img[data-class~="video-poster"]`,
+with the play-tile icons and the real content image untouched. That also settles
+`role` for CANVAS-NOTES §2 — it survives.
+
+**Why emit it rather than let the human keep clicking: Ally's answer lives in
+the page body, and the next ship overwrites the page body.** Clearing pages by
+hand is work that gets erased by the next release, and in the meantime the edit
+registers as drift in idmx-225's ledger, so the ship refuses until forced.
+Emitting the attribute makes the answer part of the artifact instead of a
+per-page annotation on top of it. One line covers all 62 cards.
+
+**It is redundant for screen readers and that is fine.** `alt=""` already
+removes the image from the accessibility tree; `role="presentation"` on an image
+that is genuinely decorative changes nothing for AT and is not a lie about the
+content. The cost is one attribute; the benefit is that a checker the college
+actually looks at stops reporting 34 findings that were never real.
+
+**What this does NOT fix**, from the same report (course score 88%): videos
+without captions (14 — YouTube's captions, a content decision), images without
+descriptions in course Files (3 — not HTML), one broken link (the known quiz
+wikilink), and **"heading structure does not start at the right level" (19)**,
+which is structural, plausibly ours, and the natural next investigation.
+
+Ships as **v1.10.1** (patch) — one attribute added to an existing construct; no
+new construct, no CSS change, no visual change, no contrast pair.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
@@ -982,3 +1019,8 @@ in CANVAS-NOTES §6.
   risk; the est-chip sentence is the exposed case. If revisited, the options
   are sentence case in the text (losing the visual uppercase in Canvas) or
   reserving the bake for single-word labels. Cynthia's call.
+- **Ally: "The HTML's heading structure does not start at the right level" — 19
+  items** (sandbox 3872257, 2026-07-31). Our pages open at `<h3>`; whether the
+  fix belongs in the markdown authoring or in the pipeline is unexamined. The
+  largest remaining Ally issue after the poster fix, and the only one of the
+  six that is plausibly ours.
