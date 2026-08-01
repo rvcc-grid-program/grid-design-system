@@ -92,7 +92,7 @@ reproduce it exactly.
        only — Canvas strips ::after, where the poster is simply inert). Never
        reintroduce a poster anchor: Canvas strips tabindex but keeps
        aria-hidden, so a hidden poster link becomes a silent tab stop. -->
-  <img class="video-poster" src="…hqdefault.jpg" alt="" />
+  <img class="video-poster" src="…hqdefault.jpg" alt="" role="presentation" />
   <div class="video-meta">
     <span class="play-tile" aria-hidden="true"><svg class="gi" data-gi="play-tile">…</svg></span>
     <div class="video-text">

@@ -56,6 +56,16 @@ test("the poster is a bare decorative image, not a link", async () => {
   assert.equal(poster.closest("a").length, 0);
 });
 
+test("the poster carries role=presentation for Ally", async () => {
+  /* Redundant for screen readers, load-bearing for Ally: an empty alt reads to
+     Ally as "might be a forgotten alt", so it flags every poster until a human
+     confirms — and confirming writes this attribute into the STORED body,
+     which the next ship overwrites. Emitting it is what makes the answer
+     stick. Canvas keeps `role` (verified on the stored body). DECISIONS 29. */
+  const $ = await card("Video");
+  assert.equal($("img.video-poster").attr("role"), "presentation");
+});
+
 test("nothing in the card relies on an attribute Canvas strips", async () => {
   /* Canvas keeps aria-hidden and strips tabindex (measured 2026-07-31).
      The poster must not carry either: aria-hidden on a focusable element is

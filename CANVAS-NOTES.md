@@ -151,6 +151,11 @@ preview-only garnish.
   pre-existing since v1 — recorded because it was invisible until the
   `tabindex` verdict above, and because any future in-page-navigation feature
   must not assume the focus move happens in Canvas.
+- **`role` SURVIVES.** Verified 2026-07-31 on a stored body, by an unusual
+  route: Ally's "mark as decorative" flow wrote `role="presentation"` onto the
+  seven video posters of a shipped page, and the attribute was still there when
+  the body was read back. Since v1.10.1 the pipeline emits it itself (DECISIONS
+  29). idmx-225's `probe role-attr` watches it on every ship.
 - **Attribute order is rewritten on save**: Canvas serializes `style`
   first and `class` after it. The build emits the same order so sent vs
   saved HTML diffs cleanly.
