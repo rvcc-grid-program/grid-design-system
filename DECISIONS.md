@@ -995,6 +995,21 @@ which is structural, plausibly ours, and the natural next investigation.
 Ships as **v1.10.1** (patch) — one attribute added to an existing construct; no
 new construct, no CSS change, no visual change, no contrast pair.
 
+**Outcome, measured 2026-08-01 after re-shipping all 15 modules to sandbox
+3872257: the course Ally score went 88% → 98%, and "The HTML content contains
+images without a description" went 34 items → 4.** Every poster in the stored
+bodies (65 across pages, assignments and discussions) carries `alt=""` +
+`role="presentation"`; the 76 icon images are `alt=""` inside `aria-hidden`
+wrappers and Ally never flagged them. The residue is content, not markup: one
+genuinely unlabelled decorative image on idmx-225's `resource-links-html`. (Only
+1 of Ally's 4 is accounted for; the rest is unexplained and may be report lag.)
+
+**This also settled an open question about the toolchain: a Common Cartridge
+import triggers Ally reprocessing**, the same as a human saving in the RCE. Our
+pages are never touched by hand, so if imports had been invisible to Ally, no
+pipeline fix could ever have moved the score. Now verified by observation rather
+than assumed.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified
