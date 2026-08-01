@@ -119,7 +119,8 @@ preview-only garnish.
   showed HTML5 sectioning elements are riskier.
 - **`data-*` attributes survive** — the foundation of our `data-class`
   round-trip scheme (§3).
-- **`id` attributes survive** (heading anchors work).
+- **`id` attributes survive** (heading anchors work) — but see the heading
+  `tabindex` consequence two bullets down: the anchor lands, the focus doesn't.
 - **`aria-hidden` SURVIVES, `tabindex` is STRIPPED.** Verified 2026-07-31 by
   idmx-225 against a real Canvas sandbox (course 3872257, migration 34119757,
   module `11-embedded-media`), reading the stored page body back through the
@@ -136,6 +137,20 @@ preview-only garnish.
   there, it must not be an `<a href>` or a control in the first place — that is
   what v1.10.0 does (DECISIONS 28). `aria-hidden` on genuinely non-focusable
   decoration (the `play-tile` span, icon `<img>`s) is fine and always was.
+
+  **Consequence we already ship, measured 2026-07-31 across the idmx-225
+  corpus: every heading loses its `tabindex`.** `markdown-it-anchor` (used with
+  defaults in `pipeline/markdown.js`) sets `tabindex="-1"` on every heading it
+  gives an `id` — 403 of them across that corpus, all stripped by Canvas. The
+  `id` survives, so in-page anchor links still *scroll* to the right heading;
+  what's lost is the focus move, because a heading without `tabindex="-1"` is
+  not a programmatic focus target. In Canvas a keyboard user who follows an
+  in-page link scrolls to the heading but keeps focus where it was, so the next
+  Tab continues from the old position. **Not a violation** (a `-1` heading was
+  never in the tab order, and nothing hides it from the a11y tree) and
+  pre-existing since v1 — recorded because it was invisible until the
+  `tabindex` verdict above, and because any future in-page-navigation feature
+  must not assume the focus move happens in Canvas.
 - **Attribute order is rewritten on save**: Canvas serializes `style`
   first and `class` after it. The build emits the same order so sent vs
   saved HTML diffs cleanly.
