@@ -63,13 +63,14 @@ export async function enhance($) {
     const thumb = videoId ? await bestThumb(videoId, src) : { src, letterboxed: true };
     p.replaceWith(
       `<div class="video-card">` +
-        // The poster is decorative: it duplicates the title anchor's href, and
-        // the author's alt (`Video` in practice) would otherwise become the
-        // link's whole accessible name. aria-hidden needs tabindex="-1" too —
-        // a focusable element hidden from the a11y tree is its own defect
-        // (axe: aria-hidden-focus). DECISIONS.md 27.
-        `<a class="video-poster" href="${href}" aria-hidden="true" tabindex="-1">` +
-        `<img${thumb.letterboxed ? ' class="letterboxed"' : ""} src="${thumb.src}" alt=""></a>` +
+        // The poster is a decorative image, NOT a link — one link per card, so
+        // there is no second tab stop to name or to hide. v1.9.0 hid a poster
+        // anchor with aria-hidden + tabindex="-1"; Canvas keeps aria-hidden and
+        // STRIPS tabindex (measured, CANVAS-NOTES §2), which left a focusable
+        // element missing from the a11y tree. No attribute here can be stripped
+        // into a defect. CSS stretches the title link over the plate so the
+        // poster stays clickable wherever ::after works. DECISIONS.md 28.
+        `<img class="video-poster${thumb.letterboxed ? " letterboxed" : ""}" src="${thumb.src}" alt="">` +
         `<div class="video-meta">` +
         `<span class="play-tile" aria-hidden="true">${iconFor("play-tile")}</span>` +
         `<div class="video-text">` +

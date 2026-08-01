@@ -47,7 +47,7 @@ Plain markdown everywhere, plus exactly these constructs:
 
 | Component           | Author writes                                                                                                    | Pipeline produces                                                                                                                                                           |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration. The alt text names the card's title link when it says anything other than `Video`; the poster image itself is always decorative (`alt=""`)                                                                                                    |
+| Video block         | The existing thumbnail-link line: `[![Video](https://img.youtube.com/vi/ID/hqdefault.jpg)](https://youtu.be/ID)` | `.video-card` plate (poster + play tile + meta bar) — zero migration. The alt text names the card's title link when it says anything other than `Video`; the poster image itself is always decorative (`alt=""`) and is not a link — the title is the card's only link, with its hit area stretched over the whole card outside Canvas                                                                                                    |
 | Estimated time      | The existing bold line: `**Estimated time: 25-30 minutes.**`                                                     | `.est-chip` pill — zero migration                                                                                                                                           |
 | Learning objectives | `::: objectives` around stem + list                                                                              | `.objectives` wrapper with kicker                                                                                                                                           |
 | Warning callout     | `::: callout-warning` around text                                                                                | `.callout` with head row (triangle-alert icon + WARNING)                                                                                                                    |
@@ -87,10 +87,12 @@ reproduce it exactly.
 ```html
 <!-- video block (enhance.js, from the thumbnail-link markdown) -->
 <div class="video-card">
-  <!-- poster is decorative: aria-hidden + tabindex="-1" + empty alt; the
-       title anchor below carries the accessible name for the same href -->
-  <a class="video-poster" href="https://youtu.be/ID" aria-hidden="true" tabindex="-1"
-    ><img src="…hqdefault.jpg" alt="" /></a>
+  <!-- poster is a decorative image, NOT a link: the title anchor below is the
+       card's only link. CSS stretches it over the whole plate (preview/site
+       only — Canvas strips ::after, where the poster is simply inert). Never
+       reintroduce a poster anchor: Canvas strips tabindex but keeps
+       aria-hidden, so a hidden poster link becomes a silent tab stop. -->
+  <img class="video-poster" src="…hqdefault.jpg" alt="" />
   <div class="video-meta">
     <span class="play-tile" aria-hidden="true"><svg class="gi" data-gi="play-tile">…</svg></span>
     <div class="video-text">
@@ -216,8 +218,13 @@ one ad hoc.
 - **Video card**: the build HEAD-checks YouTube's true-16:9
   `maxresdefault.jpg` per video; the `hqdefault` fallback gets
   `.letterboxed` (negative-margin crop — preview/print only; Canvas shows
-  that fallback's bars). Both links get Canvas's `inline_disabled` class to
-  suppress its auto-player (confirmed working).
+  that fallback's bars). The title link gets Canvas's `inline_disabled` class
+  to suppress its auto-player (confirmed working). **The poster's clickability
+  is preview/site-only** — it comes from a stretched-link `::after` on the
+  title, and Canvas strips pseudo-elements, so a Canvas card is an inert
+  picture beside a working title link. Deliberate: the alternative mechanisms
+  all depend on attributes Canvas can strip (see `aria-hidden`/`tabindex` in
+  CANVAS-NOTES §2).
 - **Brand mark**: dot spans contain `&nbsp;` (Canvas drops empty elements);
   the `.dim` dots use an alpha background color, not `opacity` — alpha
   survives, opacity doesn't.

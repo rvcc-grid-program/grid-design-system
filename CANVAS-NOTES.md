@@ -120,13 +120,22 @@ preview-only garnish.
 - **`data-*` attributes survive** — the foundation of our `data-class`
   round-trip scheme (§3).
 - **`id` attributes survive** (heading anchors work).
-- **`aria-hidden` and `tabindex`: NO VERDICT either way.** Both have shipped in
-  pasted pages (the `play-tile` span has always carried `aria-hidden`), but no
-  probe has re-inspected a saved DOM for them, so neither is verified. Since
-  v1.9.0 the decorative video poster relies on both together (DECISIONS 27) —
-  and the half-stripped case (`tabindex` gone, `aria-hidden` kept) would be a
-  focusable element hidden from the a11y tree. Settle both at the next paste
-  test; open question in §7.
+- **`aria-hidden` SURVIVES, `tabindex` is STRIPPED.** Verified 2026-07-31 by
+  idmx-225 against a real Canvas sandbox (course 3872257, migration 34119757,
+  module `11-embedded-media`), reading the stored page body back through the
+  Canvas API: 10 `tabindex="-1"` occurrences sent, **zero** stored;
+  `aria-hidden="true"` and `alt=""` both intact. This is the sanitizer, not our
+  pipeline.
+
+  **This exact combination is a trap**, and v1.9.0 fell into it: hiding a
+  focusable element with `aria-hidden` and protecting it with `tabindex="-1"`
+  works everywhere except the one surface students read, where Canvas keeps the
+  hiding and removes the protection — leaving a focusable element absent from
+  the accessibility tree (axe's `aria-hidden-focus`). **Never pair the two as a
+  mechanism for Canvas-bound markup.** If an element must not be focusable
+  there, it must not be an `<a href>` or a control in the first place — that is
+  what v1.10.0 does (DECISIONS 28). `aria-hidden` on genuinely non-focusable
+  decoration (the `play-tile` span, icon `<img>`s) is fine and always was.
 - **Attribute order is rewritten on save**: Canvas serializes `style`
   first and `class` after it. The build emits the same order so sent vs
   saved HTML diffs cleanly.
@@ -222,6 +231,15 @@ Screenshots catch layout failures; only saved-HTML/computed-style checks
 catch silent property stripping — a stripped property usually fails
 _quietly_ (the letterbox crop became `margin: 0` with no error anywhere).
 
+**Probe attributes, not just properties, and diff the STORED bytes.** The
+`tabindex` verdict above (§2) was missed by every automated check on both sides
+of the handoff, because a checker that reads the fragment we _build_ can never
+see what Canvas _stores_. idmx-225 now runs an attribute-level sanitizer-parity
+probe in its `verify-import.js` on every ship (`probe tabindex: STRIPPED in 1/1
+pages`), which is the right shape: sent bytes vs. stored bytes, per attribute,
+mechanically. An accessibility guarantee asserted against pre-sanitizer markup
+is not a guarantee.
+
 ### Verdict — v1.7.0 measure, data-list restack, image cap (2026-07-27)
 
 Paste → save → reopen-editor → copy, per the steps above; saved DOM captured at
@@ -266,14 +284,6 @@ survival, not computed value; that stays open below.
   settle **`white-space`**, which nothing in the system uses today and which
   was twice declined for the wikilink pill. **Owner:** idmx-225, testing as
   part of its own pin bump; the verdict comes back here dated.
-
-- Whether **`aria-hidden` and `tabindex`** survive (§2). v1.9.0's decorative
-  video poster needs both: `aria-hidden="true" tabindex="-1"` on the poster
-  anchor, `alt=""` on its image. Losing both is benign (pre-v1.9.0 behavior
-  minus the useless alt string); losing `tabindex` alone strands a keyboard
-  user on an element hidden from the a11y tree and needs a follow-up patch.
-  The specimen's video card is the test case — check the saved DOM for both
-  attributes on `[data-class="video-poster"]`. **Owner:** next paste test.
 
 - Whether the allowlist differs between paste-into-RCE and **imscc import**
   (the eventual delivery path). Re-run the specimen test on the first

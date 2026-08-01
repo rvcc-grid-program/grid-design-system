@@ -1,16 +1,19 @@
 /* video card poster accessible name — regression test.
 
-   The poster anchor holds nothing but the image, so the image's alt text was
-   the link's entire accessible name — in practice the word "Video" on every
-   card (idmx-225: 63 cards across 35 pages, 57% of its error-level findings).
-   The poster is now decorative: empty alt, aria-hidden, and OUT of the tab
-   order (aria-hidden on a focusable element is its own defect, axe's
-   aria-hidden-focus). The title anchor carries the name for the same href.
-   DECISIONS.md 27.
+   History, because the shape only makes sense with it:
 
-   Also pins the two structural facts consumers assert against: the poster and
-   the title are NOT siblings (Canvas's adjacent-links rule would fire if a
-   refactor flattened the card), and the title still takes a meaningful alt.
+   Through v1.8.1 the poster was an anchor holding nothing but the image, so
+   the image's alt was the link's entire accessible name — the word "Video" on
+   every card (idmx-225: 63 cards across 35 pages, 57% of its error-level
+   findings). v1.9.0 hid that anchor with aria-hidden + tabindex="-1"; Canvas
+   keeps aria-hidden and STRIPS tabindex, so shipped pages got a focusable
+   element missing from the accessibility tree — one silent tab stop per video.
+
+   v1.10.0 removes the mechanism instead of patching it: the poster is a bare
+   decorative <img>, so the card has exactly ONE link and there is no second
+   tab stop to name, hide, or strip. Nothing here depends on an attribute the
+   sanitizer can eat. CSS stretches the title link over the plate; that is
+   preview-only by design (Canvas strips ::after). DECISIONS.md 28.
 
    fetch is stubbed to fail so bestThumb takes its offline fallback — the test
    must not depend on the network.
@@ -36,20 +39,38 @@ async function card(alt) {
   return $;
 }
 
-test("the poster is decorative: empty alt, aria-hidden, out of the tab order", async () => {
+test("the card has exactly one link, and it is the title", async () => {
   const $ = await card("Video");
-  const poster = $("a.video-poster");
+  const links = $(".video-card a");
+  assert.equal(links.length, 1, "a second anchor is a second tab stop — that was the v1.9.0 bug");
+  assert.equal(links.attr("class"), "video-title");
+  assert.equal(links.attr("href"), `https://youtu.be/${ID}`);
+});
+
+test("the poster is a bare decorative image, not a link", async () => {
+  const $ = await card("Video");
+  const poster = $("img.video-poster");
   assert.equal(poster.length, 1);
-  assert.equal(poster.find("img").attr("alt"), "", "alt is empty, never the author's string");
-  assert.equal(poster.attr("aria-hidden"), "true");
-  assert.equal(poster.attr("tabindex"), "-1", "aria-hidden without this is aria-hidden-focus");
-  assert.equal(poster.attr("href"), `https://youtu.be/${ID}`, "still clickable to the same place");
+  assert.equal(poster.attr("alt"), "", "alt is empty, never the author's string");
+  assert.equal(poster.parent().attr("class"), "video-card", "not wrapped in an anchor");
+  assert.equal(poster.closest("a").length, 0);
+});
+
+test("nothing in the card relies on an attribute Canvas strips", async () => {
+  /* Canvas keeps aria-hidden and strips tabindex (measured 2026-07-31).
+     The poster must not carry either: aria-hidden on a focusable element is
+     axe's aria-hidden-focus, which is what the half-stripped v1.9.0 shipped. */
+  const $ = await card("Video");
+  const poster = $("img.video-poster");
+  assert.equal(poster.attr("tabindex"), undefined);
+  assert.equal(poster.attr("aria-hidden"), undefined);
+  assert.equal($(".video-card [tabindex]").length, 0);
 });
 
 test("a meaningful alt still names the title link, and never the poster", async () => {
   const $ = await card("File System Basics");
   assert.equal($("a.video-title").text(), "File System Basics");
-  assert.equal($("a.video-poster img").attr("alt"), "");
+  assert.equal($("img.video-poster").attr("alt"), "");
 });
 
 test("a useless alt falls back to the standard title", async () => {
@@ -57,15 +78,12 @@ test("a useless alt falls back to the standard title", async () => {
   assert.equal($("a.video-title").text(), "Watch on YouTube");
 });
 
-test("the card has exactly one link in the accessibility tree", async () => {
+test("the letterboxed marker rides on the poster's own class list", async () => {
+  /* The crop moved from `.video-poster img.letterboxed` to a second class on
+     the img itself when the wrapper anchor went away. data-class uses ~=, so
+     a multi-class list is fine for consumers. */
   const $ = await card("Video");
-  assert.equal($(".video-card a").length, 2, "both anchors are still emitted");
-  assert.equal($('.video-card a:not([aria-hidden="true"])').length, 1);
-});
-
-test("the poster and the title are not siblings (Canvas adjacent-links)", async () => {
-  const $ = await card("Video");
-  assert.equal($("a.video-poster").parent().attr("class"), "video-card");
-  assert.equal($("a.video-title").parent().attr("class"), "video-text");
-  assert.equal($("a.video-poster").siblings("a").length, 0);
+  const cls = $("img.video-poster").attr("class").split(/\s+/);
+  assert.ok(cls.includes("video-poster"));
+  assert.ok(cls.includes("letterboxed"), "offline fallback is the 4:3 hqdefault");
 });

@@ -562,7 +562,10 @@ on prose was the defect. No contrast pair changes — the
 **Two deviations from the handoff, both found by measuring the built specimen in
 a browser rather than reading the CSS:**
 
-1. **`.video-poster img` opts out of the image cap** (`max-width: 100%`). It sets
+1. **`.video-poster img` opts out of the image cap** (`max-width: 100%`).
+   *(Selector superseded 2026-07-31 — the poster stopped being a link, so the
+   rule is now `img.video-poster`; decision 28. The reasoning below stands.)*
+   It sets
    `width: 100%` and declared no `max-width`, so the new `.content img` ceiling
    clamped the poster to 720px inside an 846px card and left a gutter down the
    right of every video plate. The poster is full-bleed card chrome, not a
@@ -864,6 +867,90 @@ refactor fails the suite instead of shipping.
 
 Ships as **v1.9.0** (minor) — the emitted HTML for an existing construct
 changes.
+
+## The poster is not a link — one link per card, stretched by CSS, 2026-07-31
+
+Follow-up to decision 27 the same day, filed by idmx-225
+(`handoff/video-poster-canvas-strips-tabindex.md`) and verified against a real
+Canvas sandbox rather than a built fragment.
+
+**The verdict we asked for came back as the bad combination: Canvas keeps
+`aria-hidden` and strips `tabindex`.** 10 occurrences sent, zero stored. So
+v1.9.0's poster in a shipped Canvas page was an `<a href>` — still focusable —
+carrying `aria-hidden="true"`. A keyboard user tabs onto it and the screen
+reader says nothing: axe's `aria-hidden-focus`, three silent tab stops on a
+three-video page. The alt fix itself worked (`alt="Video"` is gone from the
+stored body, 1.1.1 and 2.4.4 genuinely fixed); **it was only the mechanism
+protecting the keyboard path that Canvas removed.** v1.9.0's own commit message
+called `tabindex` load-bearing, and it was right — which is exactly why losing
+it hurt.
+
+**The lesson is bigger than the card: never build a Canvas-bound mechanism out
+of an attribute the sanitizer can eat.** Recorded as a standing rule in
+CANVAS-NOTES §2. Don't try to make `tabindex` survive; we don't control that
+allowlist, and any fix depending on it regresses silently next time.
+
+**So the poster stops being a link.** It is now a bare `<img class="video-poster"
+alt="">`, a direct child of `.video-card`. With no second anchor there is no
+second tab stop — nothing to name, nothing to hide, nothing to strip. The card
+has exactly one link, the title, and it carries the name it always did.
+
+**Web guidance backs the shape.** W3C's technique **H2** (combining adjacent
+image and text links for the same resource) says an image and text pointing at
+one resource belong in ONE link with `alt=""` on the image — our two anchors
+were the textbook case. But the card literature (Nomensa, Kitty Giraudel,
+Berkeley DAP) warns against the naive reading, wrapping the whole card: the
+accessible name swallows every string inside it, which here would be
+"Video · YouTube Watch on YouTube" — worse in Canvas, where the kicker's
+uppercase is baked into the text nodes. **The pattern they recommend instead is
+the stretched link**, and that is what shipped: the anchor stays on the title
+only, and `a.video-title::after { position: absolute; inset: 0 }` expands its
+hit area over the whole plate. Note H2 is a technique, not a success criterion —
+redundant links are a quality matter, so this was a design call, not a
+compliance gate.
+
+**The stretch is preview/site-only, and that degradation is the point.** Canvas
+strips `::after` by nature (§1), so a Canvas card is an inert picture beside a
+working title link. **For once the failure direction is the safe one:** the
+Canvas result needs no sanitizer verdict to be correct, which is precisely what
+v1.9.0 lacked.
+
+**The human call that decided the shape:** sighted students can hit the title
+link; screen reader users need parity, not a second announcement. That ranks
+one clean link above a clickable picture, and it rules out the alternative
+idmx-225 offered (keep the poster a link, give it a real name, drop
+`aria-hidden`) — that shape is safe from the sanitizer too, but it puts two
+identical links in every card's rotor list, which is the noise the original
+handoff came here to remove.
+
+**CSS consequences, all small but none automatic:**
+
+- `.video-card` gains `position: relative` as the stretch's containing block.
+  Its existing `overflow: hidden` now also does the clipping the poster's
+  wrapper anchor used to do for the letterboxed crop.
+- `.video-poster` moved from the anchor to the img, so the rules merged and the
+  selector is **`img.video-poster`**, not `.video-poster` — it has to outrank
+  `.content img`'s 720px editorial ceiling, which it does on source order at
+  equal specificity. A bare `.video-poster` would lose to it and put a gutter
+  back on wide cards.
+- The letterbox crop is a second class on the img (`img.video-poster.letterboxed`).
+  `data-class` matching is `~=`, so consumer selectors handle the list fine.
+- **The print rule reuses the same `::after`** to print the video's URL, so it
+  now resets `position: static` — otherwise the printed address is absolutely
+  positioned over the card.
+
+`.video-title`, `.video-meta`, `.video-text`, `.video-kicker`, `.play-tile` and
+every class name are untouched, so idmx-225's `[data-class~="video-title"]`
+selectors still hold. Their duplicate-link-text exemption for that selector is
+now moot rather than wrong — one link per card can't be a duplicate.
+
+Pinned by `tests/video-poster-a11y.test.js`, rewritten for this contract: one
+link per card, poster not inside any anchor, and an explicit assertion that
+**nothing in the card carries `tabindex` or `aria-hidden`** — the trap that
+produced this decision fails the suite if anyone reaches for it again.
+
+Ships as **v1.10.0** (minor) — emitted HTML and CSS both change for an existing
+construct.
 
 ## Still open
 
