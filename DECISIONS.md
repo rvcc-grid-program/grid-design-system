@@ -952,6 +952,12 @@ produced this decision fails the suite if anyone reaches for it again.
 Ships as **v1.10.0** (minor) — emitted HTML and CSS both change for an existing
 construct.
 
+**Confirmed in Canvas the same day**, which decision 27 could not claim: shipped
+through idmx-225 to sandbox 3872257 (migration 34120014) and read back through
+the API — 3 cards, zero poster anchors, one link each, one focusable element
+each, `alt=""` intact, no `tabindex` anywhere on the page. Dated verdict table
+in CANVAS-NOTES §6.
+
 ## Still open
 
 - YouTube `<iframe>` embed via **imscc import** — paste path verified

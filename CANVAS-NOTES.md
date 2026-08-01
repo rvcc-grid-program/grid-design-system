@@ -255,6 +255,31 @@ pages`), which is the right shape: sent bytes vs. stored bytes, per attribute,
 mechanically. An accessibility guarantee asserted against pre-sanitizer markup
 is not a guarantee.
 
+### Verdict — v1.10.0 video card, measured on the STORED body (2026-07-31)
+
+Not a paste test: shipped through idmx-225 to the sandbox course 3872257
+(migration 34120014, module `11-embedded-media`, 0 errors / 0 warnings), then
+the page body was read back through the Canvas API and parsed. **This is the
+first verdict in this file taken from the import path rather than the RCE paste
+path**, and it agrees with the paste-path verdicts on every attribute it
+touches.
+
+`Topic: Embedded Media`, 3 video cards, as Canvas stores them:
+
+| Checked                                     | Verdict                              |
+| ------------------------------------------- | ------------------------------------ |
+| poster anchors (`a[data-class~=video-poster]`) | **0** — the v1.9.0 defect is gone    |
+| poster images with `alt=""`                 | 3 of 3 — empty alt SURVIVES          |
+| links per card                               | **1**, `video-title`, "Watch on YouTube" |
+| focusable elements per card                  | **1** — no silent tab stop           |
+| `aria-hidden` inside a card                  | 3 — all `play-tile`, non-focusable   |
+| `tabindex` anywhere on the page              | **0** — headings lost theirs, as expected |
+| stretched-link `::after`                     | absent, as designed — poster is inert here |
+
+Both predictions hold: the card degrades to an inert picture beside a working
+title link, and nothing on the page depends on an attribute the sanitizer
+removes.
+
 ### Verdict — v1.7.0 measure, data-list restack, image cap (2026-07-27)
 
 Paste → save → reopen-editor → copy, per the steps above; saved DOM captured at
